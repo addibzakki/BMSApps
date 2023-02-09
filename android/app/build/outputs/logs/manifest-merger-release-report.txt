@@ -86,7 +86,7 @@ MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\zakky\.gradle\caches\t
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5376f3c10895a5502061b2ac8ed69848\loader-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e08fbba4a0f462019aba9a0098567606\jetified-activity-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d51f7100cce5ce697cede9ea92143b70\jetified-exoplayer-2.13.2\AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\815aaf7be937fb2be2feb2d693dc886f\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\630df182651578a7430ba5619d92f8c5\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5dc53a54d78a2013e13ea7a87c8c8b79\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a0facfeaf3f521670d3995f10fa386d1\slidingpanelayout-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.customview:customview:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\9cbff826781ad1c387f53660899f1c2a\customview-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -598,8 +598,8 @@ MERGED from [androidx.activity:activity:1.1.0] C:\Users\zakky\.gradle\caches\tra
 MERGED from [androidx.activity:activity:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e08fbba4a0f462019aba9a0098567606\jetified-activity-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d51f7100cce5ce697cede9ea92143b70\jetified-exoplayer-2.13.2\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d51f7100cce5ce697cede9ea92143b70\jetified-exoplayer-2.13.2\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\815aaf7be937fb2be2feb2d693dc886f\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\815aaf7be937fb2be2feb2d693dc886f\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\630df182651578a7430ba5619d92f8c5\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.13.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\630df182651578a7430ba5619d92f8c5\jetified-exoplayer-ui-2.13.2\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5dc53a54d78a2013e13ea7a87c8c8b79\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5dc53a54d78a2013e13ea7a87c8c8b79\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a0facfeaf3f521670d3995f10fa386d1\slidingpanelayout-1.0.0\AndroidManifest.xml:20:5-44

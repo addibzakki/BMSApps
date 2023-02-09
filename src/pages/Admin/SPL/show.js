@@ -208,6 +208,15 @@ const ShowSPL = ({route, navigation}) => {
     }
   };
 
+  const checkStatus = statusResult => {
+    var includeStatus = ['approve', 'close'];
+    if (includeStatus.includes(statusResult)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <View style={styles.wrapper.page}>
       <Spinner
@@ -534,7 +543,7 @@ const ShowSPL = ({route, navigation}) => {
               value={header.note}
               editable={false}
             />
-            {header.request_status == 'close' && (
+            {checkStatus(header.request_status) && (
               <InputForm
                 placeholder="Result"
                 value={header.result_note}
