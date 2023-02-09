@@ -1,0 +1,1057 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Carbon;
+use Mail;
+use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use AppModel;
+use AppConnection;
+
+class ApiMeterController extends Controller
+{
+
+  public function database($meterid) {
+    $pos = strpos($meterid, '::');
+    if($pos === false) {
+      $db = '[ILO_Live].[mgr].';
+    } else {
+      $db = '[mmp_live].[mgr].';
+    }
+
+    return $db;
+  }
+
+  public function getMeterID($meterid)
+  {
+    $pos = strpos($meterid, '::');
+    if($pos === false) {
+      $meterID = $meterid;
+    } else {
+      $split = explode('::',$meterid);
+      $meterID = $split[0];
+    }
+
+    return $meterID;
+  }
+
+  public function getListTenant(){
+    $data = AppConnection::connect()->select("SELECT DISTINCT a.business_id, name FROM mgr.ar_debtor a 
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    where a.status = 'A'");
+    $arrayData = [];
+    $key = 0;
+    foreach($data as $data){
+      $arrayData[] = array(
+        'key'                 => $key++,
+        'id'                  => $data->business_id,
+        'label'               => $data->name,
+        'value'               => $data->business_id,
+        'tenant_code'         => $data->business_id,
+        'tenant_name'         => $data->name,
+      );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function getListEntity(){
+    $data = AppConnection::connect()->select("SELECT * FROM
+    (SELECT entity_cd, entity_name, mobile_use, db_route FROM [ILO_Live].[mgr].[cf_entity]
+    UNION ALL
+    SELECT entity_cd, entity_name, mobile_use, db_route FROM [mmp_live].[mgr].[cf_entity]) SQLa
+    WHERE SQLa.mobile_use = 'Y'");
+    $arrayData = [];
+    $key = 0;
+    foreach($data as $data){
+      $arrayData[] = array(
+        'key'                 => $key++,
+        'id'                  => $data->entity_cd.'::'.$data->db_route,
+        'label'               => $data->entity_name,
+        'value'               => $data->entity_cd.'::'.$data->db_route,
+      );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function getUser($email)
+  {
+    $user = collect(\AppModel::selectRaw("select emp_name from users where (email = '$email' OR username = '$email')"))->first();
+    return $user;
+  }
+
+  public function getMeter($meterID){
+    $query = "SELECT TOP 1 * FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND (meter_id = '$meterID' OR CONCAT(meter_id,'::',entity_cd) = '$meterID')";
+    $cek = AppModel::selectRaw($query);
+    $arrayData = [];
+    if (count($cek) > 0) {
+      $info = collect(\AppModel::selectRaw($query))->first();
+      $readDate = Carbon::parse($info->curr_read_date)->format('d-m-Y');
+      if ($info->read_by != 'null' || $info->read_by != '') {
+        $readBy = $this->getUser($info->read_by)->emp_name;
+        $message="Sorry, meter recording has been done by $readBy on the date $readDate, would you like to rescan?";
+      }else{
+        $message="Sorry, meter recording has been done on the date $readDate, would you like to rescan?";
+      }
+      // $arrayData['status'] = 300;
+      $arrayData['message'] = $message;
+      $code = 300;
+      $arrayData['validation'] = 'duplicate';
+    }else{
+      $data = collect(\AppConnection::connect()->select("SELECT TOP (1) a.*, b.business_id, b.name, b.project_no, c.ref_no
+      FROM ".$this->database($meterID)."[pm_meter_dtl_his] a
+      JOIN ".$this->database($meterID)."[ar_debtor] b ON a.debtor_acct = b.debtor_acct
+      LEFT JOIN ".$this->database($meterID)."[pm_lot_meter] c ON a.meter_id = c.meter_id AND a.entity_cd = c.entity_cd
+      WHERE (a.meter_id = '$meterID' OR a.meter_id+'::'+a.entity_cd = '$meterID') ORDER BY a.read_date DESC"))->first();
+      
+      if (!empty($data)) {
+        $arrayData['lastread'] = array(
+          'last_read_date'         => $data->read_date,
+          'last_read'              => $data->curr_read,
+          'last_read_high'         => $data->curr_read_high
+        );
+        $arrayData['tenantInfo'] = array(
+          'tenant_code' => $data->business_id,
+          'tenant_name' => $data->name,
+        );
+  
+        $arrayData['meterInfo'] = array(
+          'debtor_acct' => $data->debtor_acct,
+          'meter_id'    => $data->meter_id,
+          'entity_cd'   => $data->entity_cd,
+          'lot_no'      => $data->lot_no,
+          'project_no'  => $data->project_no,
+          'ref_no'      => $data->ref_no
+        );
+        $arrayData['message'] = 'Meter id founded';
+        $code = 200;
+        $status = 'valid';
+      }else{
+        $arrayData['message'] = "Sorry, the barcode doesn't match, re-scan?";
+        $code = 500;
+        $status = "notValid";
+      }
+      $arrayData['validation'] = $status;
+    }
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function listMeterOffline(){
+    $month = Carbon::now()->format('m');
+    $last_month = Carbon::now()->subMonth()->format('m');
+    $year = Carbon::now()->format('Y');
+    
+    // $query = "SELECT a.entity_cd, a.lot_no, a.project_no, a.debtor_acct, b.name as debtor_name, a.meter_id, a.read_date, a.curr_read as last_read, a.curr_read_high as last_read_high, b.business_id
+    // FROM mgr.pm_meter_dtl_his a
+    // JOIN mgr.ar_debtor b ON a.debtor_acct = b.debtor_acct
+    // WHERE YEAR(a.read_date) = '$year' AND (MONTH(a.read_date) = '$last_month' OR MONTH(a.read_date) = '$month')
+    // ORDER BY a.read_date DESC";
+    $query = "SELECT * FROM (
+      SELECT a.entity_cd, a.lot_no, a.project_no, a.debtor_acct, b.name as debtor_name, a.meter_id, a.read_date, a.curr_read as last_read, a.curr_read_high as last_read_high, b.business_id, CONVERT(varchar,c.ref_no,100) as ref_no
+          FROM [ILO_Live].[mgr].[pm_meter_dtl_his] a
+          JOIN [ILO_Live].[mgr].[ar_debtor] b ON a.debtor_acct = b.debtor_acct
+          LEFT JOIN [ILO_Live].[mgr].[pm_lot_meter] c ON a.meter_id = c.meter_id AND a.entity_cd = c.entity_cd
+      UNION ALL
+      SELECT a.entity_cd, a.lot_no, a.project_no, a.debtor_acct, b.name as debtor_name, a.meter_id, a.read_date, a.curr_read as last_read, a.curr_read_high as last_read_high, b.business_id, CONVERT(varchar,c.ref_no,100) as ref_no
+          FROM [mmp_live].[mgr].[pm_meter_dtl_his] a
+          JOIN [mmp_live].[mgr].[ar_debtor] b ON a.debtor_acct = b.debtor_acct
+          LEFT JOIN [mmp_live].[mgr].[pm_lot_meter] c ON a.meter_id = c.meter_id AND a.entity_cd = c.entity_cd) SQLa
+          WHERE YEAR(SQLa.read_date) = '$year' AND (MONTH(SQLa.read_date) = '$last_month' OR MONTH(SQLa.read_date) = '$month')
+          ORDER BY SQLa.read_date DESC";
+    $data = AppConnection::connect()->select($query);
+    // dd($data);
+    // $query = "SELECT entity_cd, lot_no, project_no, debtor_acct, debtor_name, meter_id, read_date, curr_read as last_read, curr_read_high as last_read_high, business_id FROM vw_pm_meter_dtl_his where YEAR(read_date) = '$year' AND (MONTH(read_date) = '$last_month' OR MONTH(read_date) = '$month')";
+    // $data = AppModel::selectRaw($query);
+    $arrayData = [];
+    foreach ($data as $data) {
+      $arrayData['list'][] = $data;
+    }
+    // dd(json_encode($arrayData['list']));
+    
+    $query_bms = "select * from bms_meter where YEAR(curr_read_date) = '$year' AND MONTH(curr_read_date) = '$month'";
+    $data_bms = AppModel::selectRaw($query_bms);
+      foreach ($data_bms as $data_bms) {
+        $arrayData['list_bms'][] = $data_bms;
+      }
+    
+      // $arr = array_map('utf8_encode', $arrayData);
+    $result = json_encode($arrayData, JSON_INVALID_UTF8_IGNORE);
+    // dd($result);
+    return $result;
+  }
+
+  public function meterReading($meterID){
+    $exp = explode('::',$meterID);
+    $meter = $exp[0];
+    $entity = $exp[1];
+    $db = $exp[2];
+    if($db === 'ILO_Live') {
+      $db = '[ILO_Live].[mgr].';
+    } else {
+      $db = '[mmp_live].[mgr].';
+    }
+    $data = collect(\AppConnection::connect()->select("SELECT TOP (1) a.*, b.business_id, b.name, b.project_no, c.ref_no
+      FROM ".$db."[pm_meter_dtl_his] a
+      JOIN ".$db."[ar_debtor] b ON a.debtor_acct = b.debtor_acct
+      LEFT JOIN ".$db."[pm_lot_meter] c ON a.meter_id = c.meter_id AND a.entity_cd = c.entity_cd
+      WHERE a.meter_id = '$meter' AND a.entity_cd = '$entity' ORDER BY a.read_date DESC"))->first();
+    // dd($data, $meter, $entity);
+    // $data = collect(\AppConnection::connect()->select("SELECT TOP (1) a.*, b.business_id, b.name, b.project_no
+    // FROM mgr.pm_meter_dtl_his a
+    // JOIN mgr.ar_debtor b ON a.debtor_acct = b.debtor_acct
+    // WHERE a.meter_id = '$meterID' ORDER BY a.read_date DESC"))->first();
+    
+    $arrayData = [];
+
+    if (!empty($data)) {
+      $arrayData['lastread'] = array(
+        'last_read_date'         => $data->read_date,
+        'last_read'              => $data->curr_read,
+        'last_read_high'         => $data->curr_read_high
+      );
+      $arrayData['tenantInfo'] = array(
+        'tenant_code' => $data->business_id,
+        'tenant_name' => $data->name,
+      );
+
+      $arrayData['meterInfo'] = array(
+        'debtor_acct' => $data->debtor_acct,
+        'meter_id'    => $data->meter_id,
+        'entity_cd'   => $data->entity_cd,
+        'lot_no'      => $data->lot_no,
+        'project_no'  => $data->project_no,
+        'ref_no'      => $data->ref_no
+      );
+      
+      // $arrayData['lastread'] = array(
+      //   'last_read_date'         => $data->read_date,
+      //   'last_read'              => $data->curr_read,
+      //   'last_read_high'         => $data->curr_read_high
+      // );
+      // $arrayData['tenantInfo'] = array(
+      //   'tenant_code' => $data->business_id,
+      //   'tenant_name' => $data->name,
+      // );
+
+      // $arrayData['meterInfo'] = array(
+      //   'debtor_acct' => $data->debtor_acct,
+      //   'meter_id'    => $meterID,
+      //   'entity_cd'   => $data->entity_cd,
+      //   'lot_no'      => $data->lot_no,
+      //   'project_no'  => $data->project_no
+      // );
+      $status = 'valid';
+    }else{
+      $status = 'notValid';
+    }
+
+    $arrayData['validation'] = $status;
+
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function getDataMeter($tenant){
+    $selectTop = AppConnection::connect()->select("select * from mgr.pm_meter_dtl_his where entity_cd = '3015' and debtor_acct = '$tenant' order by read_date desc");
+    $arrayData = [];
+    $arrayData['list'][] = $selectTop;
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  // public function createReadingMeter(Request $request)
+  // {
+  //   $month = Carbon::now()->format('m');
+  //   $year = Carbon::now()->format('Y');
+
+  //   $check = AppConnection::connect()->select("SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE YEAR(read_date) = '$year' AND MONTH(read_date) = '$month' AND (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC");
+    
+  //   if ($check > 1) {
+  //     $message = 'Sorry, meter capture already done';
+  //       $code = 300;
+  //   }else{
+  //     $getMeterInfo = collect(\AppConnection::connect()->select("SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC"))->first(); 
+  //     if ($request->curr_read_high == '' || $request->curr_read_high == '0') {
+  //       $curr_read_high = 0;
+  //     }else{
+  //       $curr_read_high = $request->curr_read_high;
+  //     }
+  
+  //     $photoproof = array();
+  //       if ($request->hasFile("file")) {
+  //         for($i = 0; $i < count($request->file("file")); $i++){
+  //           $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+  //           $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+  //           $photoproof[] .= $imageName;
+  //         }
+  //         $photoproof_split = implode(';;', $photoproof);
+  //       }else{
+  //         $photoproof_split = NULL;
+  //       }
+  //     $array = array(
+  //           'entity_cd'           => $request->entity_cd,
+  //           'project_no'          => $request->project_no,
+  //           'debtor_acct'         => $request->debtor_acct,
+  //           'lot_no'              => $request->lot_no,
+  //           'debtor_name'         => $request->debtor_name,
+  //           'meter_id'            => $request->meter_id,
+  //           'meter_cd'            => $getMeterInfo->meter_cd,
+  //           'type'                => $request->type,
+  //           'last_read_date'      => $getMeterInfo->read_date,
+  //           'last_read'           => $getMeterInfo->curr_read,
+  //           'last_read_high'      => $getMeterInfo->curr_read_high,
+  //           'curr_read_date'      => Carbon::now(),
+  //           'curr_read'           => floatval($request->curr_read),
+  //           'curr_read_high'      => floatval($curr_read_high),
+  //           'flag'                => 'U',
+  //           'attachment'          => $photoproof_split,
+  //           'tenant_name'         => $request->tenant_name,
+  //           'signature'           => $request->signature,
+  //           'status'              => 'S',
+  //           'read_by'             => $request->read_by
+  //         );
+  
+  //     $input_data =  AppModel::insert('bms_meter', $array);
+  //     if ($input_data) {
+  //       $code = 200;
+  //       $message = 'success';
+  //       if ($request->tenant_available == 'false') {
+  //         $param = str_replace("==","",base64_encode($request->meter_id.'::'.Carbon::now()->format('m').'::'.Carbon::now()->format('Y')));
+          
+  //         $content = $this->contentEmail($request->read_by, $param);
+  //         Mail::send('email.email_approval', ['content' => $content], function ($m) {
+  //           $m->from('no-reply@mmproperty.com');
+  //           $m->to('muhammad.zakki@mmproperty.com')
+  //             ->cc('muhammad.dhuharis@mmproperty.com')
+  //           ->subject('Meter Reading');
+  //         });
+
+  //         $query = "SELECT * FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND (meter_id = '$request->meter_id' OR CONCATE(meter_id,'::',entity_cd) = '$request->meter_id')";
+  //         $get = collect(\AppModel::selectRaw($query))->first();
+  
+  //         $array = array(
+  //           'entity_cd'           => $request->entity_cd,
+  //           'project_no'          => $request->project_no,
+  //           'debtor_acct'         => $request->debtor_acct,
+  //           'curr_read_date'      => Carbon::now(),
+  //           'rowID'               => $get->rowID,
+  //           'meter_id'            => $request->meter_id,
+  //           'status'              => 'H'
+  //         );
+  //         AppModel::insert('bms_meter_sign', $array);
+  //       }
+  //     }else{
+  //       $message = 'error';
+  //       $code = 500;
+  //     }
+  //   }
+    
+  //     $response = array(
+  //       'code'           => $code,
+  //       'message'        => $message
+  //     );
+
+  //   return response()->json($response);
+  // }
+
+  public function createReadingMeter(Request $request)
+  {
+    $month = Carbon::now()->format('m');
+    $year = Carbon::now()->format('Y');
+
+    $exp = explode('::',$request->meter_id);
+    if (count($exp) > 2 ) {
+      $meter = $exp[0];
+      $entity = $exp[1];
+      $db = $exp[2];
+      if($db === 'ILO_Live') {
+        $db = '[ILO_Live].[mgr].';
+      } else {
+        $db = '[mmp_live].[mgr].';
+      }
+      $queryCheck = "SELECT TOP (1) * FROM ".$db."[pm_meter_dtl_his] WHERE YEAR(read_date) = '$year' AND MONTH(read_date) = '$month' AND meter_id = '$meter' AND entity_cd = '$entity' ORDER BY read_date DESC";
+      $queryGet = "SELECT TOP (1) * FROM ".$db."[pm_meter_dtl_his] WHERE meter_id = '$meter' AND entity_cd = '$entity' ORDER BY read_date DESC";
+    }else{
+      $queryCheck = "SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE YEAR(read_date) = '$year' AND MONTH(read_date) = '$month' AND (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC";
+      $queryGet = "SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC";
+    }
+    
+    $check = AppConnection::connect()->select($queryCheck);
+    
+    // if (count($check) > 1) {
+    //   $message = 'Sorry, meter capture already done';
+    //     $code = 300;
+    // }else{
+      $getMeterInfo = collect(\AppConnection::connect()->select($queryGet))->first(); 
+      if ($request->curr_read_high == '' || $request->curr_read_high == '0') {
+        $curr_read_high = 0;
+      }else{
+        $curr_read_high = $request->curr_read_high;
+      }
+  
+      $photoproof = array();
+        if ($request->hasFile("file")) {
+          for($i = 0; $i < count($request->file("file")); $i++){
+            $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+            $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+            $photoproof[] .= $imageName;
+          }
+          $photoproof_split = implode(';;', $photoproof);
+        }else{
+          $photoproof_split = NULL;
+        }
+
+      $array = array(
+            'entity_cd'           => $request->entity_cd,
+            'project_no'          => $request->project_no,
+            'debtor_acct'         => $request->debtor_acct,
+            'lot_no'              => $request->lot_no,
+            'debtor_name'         => $request->debtor_name,
+            'meter_id'            => $this->getMeterID($request->meter_id),
+            // 'meter_id'            => $request->meter_id,
+            'meter_cd'            => $getMeterInfo->meter_cd,
+            'type'                => $request->type,
+            'last_read_date'      => $getMeterInfo->read_date,
+            'last_read'           => $getMeterInfo->curr_read,
+            'last_read_high'      => $getMeterInfo->curr_read_high,
+            'curr_read_date'      => Carbon::now(),
+            'curr_read'           => floatval($request->curr_read),
+            'curr_read_high'      => floatval($curr_read_high),
+            'flag'                => 'U',
+            'attachment'          => $photoproof_split,
+            'tenant_name'         => $request->tenant_name,
+            'signature'           => $request->signature,
+            'status'              => 'S',
+            'read_by'             => $request->read_by,
+            'longitude'           => $request->longitude,
+            'latitude'            => $request->latitude
+          );
+  
+      $input_data =  AppModel::insert('bms_meter', $array);
+      if ($input_data) {
+        $code = 200;
+        $message = 'success';
+        if ($request->tenant_available == 'false') {
+          $param = str_replace("==","",base64_encode($this->getMeterID($request->meter_id).'::'.Carbon::now()->format('m').'::'.Carbon::now()->format('Y')));
+          
+          $content = $this->contentEmail($param, $request->meter_id);
+          Mail::send('email.email_approval', ['content' => $content], function ($m) {
+            $m->from('no-reply@mmproperty.com');
+            $m->to('muhammad.zakki@mmproperty.com')
+              ->cc('muhammad.dhuharis@mmproperty.com')
+            ->subject('Meter Reading');
+          });
+
+          $query = "SELECT * FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND (meter_id = '$request->meter_id' OR CONCAT(meter_id,'::',entity_cd) = '$request->meter_id')";
+          $get = collect(\AppModel::selectRaw($query))->first();
+  
+          $array = array(
+            'entity_cd'           => $request->entity_cd,
+            'project_no'          => $request->project_no,
+            'debtor_acct'         => $request->debtor_acct,
+            'curr_read_date'      => Carbon::now(),
+            'rowID'               => $get->rowID,
+            'meter_id'            => $this->getMeterID($request->meter_id),
+            'status'              => 'H'
+          );
+          AppModel::insert('bms_meter_sign', $array);
+        }
+      }else{
+        $message = 'error';
+        $code = 500;
+      }
+    // }
+    
+      $response = array(
+        'code'           => $code,
+        'message'        => $message
+      );
+
+    return response()->json($response);
+  }
+
+
+  public function contentEmail($param, $meter_id)
+  {
+    $query = "SELECT distinct 
+    CASE
+    WHEN d.level_no = '01' THEN b.descs +' (Lantai 1)'
+    WHEN d.level_no = 'DS' THEN b.descs +' (Lantai '+ d.descs+')'
+    WHEN d.level_no = 'GR' THEN b.descs +' ('+d.descs + ' Floor)'
+    WHEN d.level_no = 'NA' THEN b.descs
+    ELSE b.descs +' ('+d.descs+')'
+    END as location, e.ref_no FROM ".$this->database($meter_id)."[pm_meter_dtl_his] a
+    JOIN ".$this->database($meter_id)."[pl_project] b ON a.entity_cd = b.entity_cd AND a.project_no = b.project_no
+    LEFT JOIN ".$this->database($meter_id)."[pm_lot] c ON b.entity_cd = c.entity_cd AND a.lot_no = c.lot_no AND a.project_no = c.project_no
+    LEFT JOIN ".$this->database($meter_id)."[pm_level] d ON c.level_no = d.level_no
+    LEFT JOIN ".$this->database($meter_id)."[pm_lot_meter] e ON a.meter_id = e.meter_id
+    WHERE (a.meter_id = '$meter_id' OR a.meter_id+'::'+a.entity_cd = '$meter_id')";
+    $sql = collect(\AppConnection::connect()->select($query))->first();
+
+    $content = '
+    <table width="100%" style="border-collapse:collapse">
+      <tr>
+        <td class="header">
+          <h4>
+          Meter Recording Signature
+          </h4>
+        </td>
+      </tr>
+      <tr>
+        <td class="container">
+          <table width="100%">
+            <tr>
+              <td colspan="3">Dear Tenant,</td>
+            </tr>
+            <tr>
+              <td colspan="3">Berikut adalah konfirmasi hasil pencatatan meter pada :</td>
+            </tr>
+            <tr>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td style="width: 10%">Panel No.</td>
+              <td style="width: 90%; font-weight: bold;">: '.$sql->ref_no.'</td>
+            </tr>
+            <tr>
+              <td style="width: 10%">Lokasi</td>
+              <td style="width: 90%; font-weight: bold;">: '.$sql->location.'</td>
+            </tr>
+            <tr>
+              <td style="width: 10%">Tanggal</td>
+              <td style="width: 90%; font-weight: bold;">: '.Carbon::now()->format('d F Y').'</td>
+            </tr>
+            <tr>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="3">Please klik tombol "Check & Sign" sebagai validasi dan konfirmasi</td>
+            </tr>
+            <tr>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="font-size: 12px;">NOTE : This meter reading will be automatically signed on behalf of the relevant tenant if there is no response within 5 hours after the meter reading
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align:center">
+                <table>
+                  <tr>
+                    <td class="btn-accept"><a href="http://tenantportal.mmproperty.com/meter/confirmation/'.$param.'" target="_blank">Check & Sign</a></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>';
+
+    return $content;
+  }
+
+  public function setDBFlow($data)
+  {
+    $exp = explode('::',$data);
+    $flowData = array();
+    $flowData['meter'] = $exp[0];
+    $flowData['entity'] = $exp[1];
+    if($exp[2] === 'ILO_Live') {
+      $flowData['db'] = '[ILO_Live].[mgr].';
+    } else {
+      $flowData['db'] = '[mmp_live].[mgr].';
+    }
+
+    return  $flowData;
+  }
+
+  public function createReadingMeterDev(Request $request)
+  {
+    $month = Carbon::now()->format('m');
+    $year = Carbon::now()->format('Y');
+
+    $exp = explode('::',$request->meter_id);
+    if (count($exp) > 2 ) {
+      $meter = $exp[0];
+      $entity = $exp[1];
+      $db = $exp[2];
+      if($db === 'ILO_Live') {
+        $db = '[ILO_Live].[mgr].';
+      } else {
+        $db = '[mmp_live].[mgr].';
+      }
+      $queryCheck = "SELECT TOP (1) * FROM ".$db."[pm_meter_dtl_his] WHERE YEAR(read_date) = '$year' AND MONTH(read_date) = '$month' AND meter_id = '$meter' AND entity_cd = '$entity' ORDER BY read_date DESC";
+      $queryGet = "SELECT TOP (1) * FROM ".$db."[pm_meter_dtl_his] WHERE meter_id = '$meter' AND entity_cd = '$entity' ORDER BY read_date DESC";
+    }else{
+      $queryCheck = "SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE YEAR(read_date) = '$year' AND MONTH(read_date) = '$month' AND (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC";
+      $queryGet = "SELECT TOP (1) * FROM ".$this->database($request->meter_id)."[pm_meter_dtl_his] WHERE (meter_id = '$request->meter_id' OR meter_id+'::'+entity_cd = '$request->meter_id') ORDER BY read_date DESC";
+    }
+    
+    $check = AppConnection::connect()->select($queryCheck);
+    
+    if ($check > 1) {
+      $message = 'Sorry, meter capture already done';
+        $code = 300;
+    }else{
+      $getMeterInfo = collect(\AppConnection::connect()->select($queryGet))->first(); 
+      if ($request->curr_read_high == '' || $request->curr_read_high == '0') {
+        $curr_read_high = 0;
+      }else{
+        $curr_read_high = $request->curr_read_high;
+      }
+  
+      $photoproof = array();
+        if ($request->hasFile("file")) {
+          for($i = 0; $i < count($request->file("file")); $i++){
+            $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+            $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+            $photoproof[] .= $imageName;
+          }
+          $photoproof_split = implode(';;', $photoproof);
+        }else{
+          $photoproof_split = NULL;
+        }
+
+      $array = array(
+            'entity_cd'           => $request->entity_cd,
+            'project_no'          => $request->project_no,
+            'debtor_acct'         => $request->debtor_acct,
+            'lot_no'              => $request->lot_no,
+            'debtor_name'         => $request->debtor_name,
+            'meter_id'            => $this->getMeterID($request->meter_id),
+            // 'meter_id'            => $request->meter_id,
+            'meter_cd'            => $getMeterInfo->meter_cd,
+            'type'                => $request->type,
+            'last_read_date'      => $getMeterInfo->read_date,
+            'last_read'           => $getMeterInfo->curr_read,
+            'last_read_high'      => $getMeterInfo->curr_read_high,
+            'curr_read_date'      => Carbon::now(),
+            'curr_read'           => floatval($request->curr_read),
+            'curr_read_high'      => floatval($curr_read_high),
+            'flag'                => 'U',
+            'attachment'          => $photoproof_split,
+            'tenant_name'         => $request->tenant_name,
+            'signature'           => $request->signature,
+            'status'              => 'S',
+            'read_by'             => $request->read_by,
+            'longitude'           => $request->longitude,
+            'latitude'            => $request->latitude
+          );
+  
+      $input_data =  AppModel::insert('bms_meter_dev', $array);
+      if ($input_data) {
+        $code = 200;
+        $message = 'success';
+        if ($request->tenant_available == 'false') {
+          $param = str_replace("==","",base64_encode($request->meter_id.'::'.Carbon::now()->format('m').'::'.Carbon::now()->format('Y')));
+          
+          $content = $this->contentEmail($request->read_by, $param);
+          Mail::send('email.email_approval', ['content' => $content], function ($m) {
+            $m->from('no-reply@mmproperty.com');
+            $m->to('muhammad.zakki@mmproperty.com')
+              ->cc('muhammad.dhuharis@mmproperty.com')
+            ->subject('Meter Reading');
+          });
+
+          $query = "SELECT * FROM bms_meter_dev WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND (meter_id = '$request->meter_id' OR CONCATE(meter_id,'::',entity_cd) = '$request->meter_id')";
+          $get = collect(\AppModel::selectRaw($query))->first();
+  
+          $array = array(
+            'entity_cd'           => $request->entity_cd,
+            'project_no'          => $request->project_no,
+            'debtor_acct'         => $request->debtor_acct,
+            'curr_read_date'      => Carbon::now(),
+            'rowID'               => $get->rowID,
+            'meter_id'            => $request->meter_id,
+            'status'              => 'H'
+          );
+          AppModel::insert('bms_meter_sign', $array);
+        }
+      }else{
+        $message = 'error';
+        $code = 500;
+      }
+    }
+    
+      $response = array(
+        'code'           => $code,
+        'message'        => $message
+      );
+
+    return response()->json($response);
+  }
+
+  public function getHistoryMeter($type, $businessID, $readBy){
+    if ($readBy == 'All') {
+      $whereReadBy = "";
+    }else{
+      $whereReadBy = " AND read_by = '$readBy'";
+    }
+    if ($type == 'EL') {
+      $type_desc = 'ELECTRIC';
+      $uom = 'Kwh';
+    } else {
+      $type_desc = 'WATER';
+      $uom = 'm2';
+    }
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+
+    $data = AppModel::selectRaw("SELECT * FROM .bms_meter WHERE meter_cd LIKE '$type%' AND debtor_acct IN($listDebtor) $whereReadBy");
+    $arrayData = [];
+    foreach($data as $data){
+      // if (!empty($data->attachment)) {
+      //   $list = explode(';;',$data->attachment);
+      //   foreach($list as $key => $value){
+      //     $arrayData['attachment'] = array(
+      //                     'filename' => $value,
+      //                   );
+      //   }
+      // }
+
+      $arrayData[] = array(
+                      'rowID'           => $data->rowID,
+                      'meter_id'        => $data->meter_id,
+                      'debtor_acct'     => $data->debtor_acct,
+                      'debtor_name'     => $data->debtor_name,
+                      'curr_read_date'  => $data->curr_read_date,
+                      'curr_read'       => $data->curr_read,
+                      'curr_read_high'  => $data->curr_read_high,
+                      'last_read_date'  => $data->last_read_date,
+                      'last_read'       => $data->last_read,
+                      'last_read_high'  => $data->last_read_high,
+                      'type'            => $type,
+                      'type_desc'       => $type_desc,
+                      'uom'             => $uom,
+                      'flag'            => $data->flag,
+                      'attachment'      => $data->attachment,
+                      'tenant_name'     => $data->tenant_name,
+                      'signature'       => $data->signature
+                    );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function model_reading_meter($businessID, $type)
+  {
+    $qry = "SELECT COUNT(*) AS total FROM (
+      SELECT DISTINCT b.meter_id FROM mgr.ar_debtor a
+          JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+          WHERE a.business_id = '$businessID' AND SUBSTRING(meter_cd, 1, 1) = '$type' AND MONTH(b.read_date) = MONTH(DATEADD(month, -1,GETDATE())) AND YEAR(b.read_date) = YEAR(DATEADD(year, 1, GETDATE()))) SQLa";
+  
+    $res = collect(\AppConnection::connect()->select($qry))->first()->total;
+    return $res;
+  }
+
+  public function model_remaining_meter($businessID, $type)
+  {
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+    $qry_bms = "SELECT COUNT(*) AS total FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND type = '$type' AND debtor_acct IN ($listDebtor)";
+    $count_bms = collect(\AppModel::selectRaw($qry_bms))->first()->total;
+    
+    $qry = "SELECT COUNT(*) AS total FROM (
+      SELECT DISTINCT b.meter_id FROM mgr.ar_debtor a
+          JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+          WHERE a.business_id = '$businessID' AND SUBSTRING(meter_cd, 1, 1) = '$type' AND MONTH(b.read_date) = MONTH(DATEADD(month, -1,GETDATE())) AND YEAR(b.read_date) = YEAR(DATEADD(year, 1, GETDATE()))) SQLa";
+    $res = collect(\AppConnection::connect()->select($qry))->first()->total;
+    // dd($listMeter);
+    return $res-$count_bms;
+  }
+
+  public function model_read_meter($businessID, $type)
+  {
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+    $qry_bms = "SELECT COUNT(*) AS total FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND type = '$type' AND debtor_acct IN ($listDebtor)";
+    $res = collect(\AppModel::selectRaw($qry_bms))->first()->total;
+    
+    
+    return $res;
+  }
+
+  public function getSummary($businessID, $userRead){
+    if ($userRead == 'All') {
+      $readBy = "";
+    }else{
+      $readBy = " AND read_by = '$userRead'";
+    }
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+
+    $queryCount = "SELECT * FROM bms_meter WHERE debtor_acct IN($listDebtor) AND MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE())";
+
+    // $total_reading_el = AppModel::selectRaw("$queryCount AND meter_cd LIKE 'EL%' $readBy");
+    $total_reading_el = $this->model_reading_meter($businessID, 'E');
+    $unreading_el = $this->model_remaining_meter($businessID, 'E');
+    $reading_el = $this->model_read_meter($businessID, 'E');
+    $total_reading_wt = $this->model_reading_meter($businessID, 'W');
+    $unreading_wt = $this->model_remaining_meter($businessID, 'W');
+    $reading_wt = $this->model_read_meter($businessID, 'W');
+    
+    $arrayData = array(
+      'total_reading_el'  => $total_reading_el,
+      'reading_el'        => $reading_el,
+      'unreading_el'      => $unreading_el,
+      'total_reading_wt'  => $total_reading_wt,
+      'reading_wt'        => $reading_wt,
+      'unreading_wt'      => $unreading_wt,
+    );
+    
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function getReading($type, $businessID)
+  {
+    if ($type == 'EL') {
+      $type = 'E';
+    }else{
+      $type = 'W';
+    }
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+    $qry_bms = "SELECT * FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND type = '$type' AND debtor_acct IN ($listDebtor)";
+    $data = AppModel::selectRaw($qry_bms);
+
+    $arrayData = [];
+    foreach($data as $data){
+
+      $arrayData[] = array(
+                      'rowID'           => $data->rowID,
+                      'meter_id'        => $data->meter_id,
+                      'debtor_acct'     => $data->debtor_acct,
+                      'curr_read_date'  => $data->curr_read_date,
+                      'read_by'         => $this->getUser($data->read_by)->emp_name,
+                    );
+    }
+
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function getUnreading($type, $businessID)
+  {
+    if ($type == 'EL') {
+      $type = 'E';
+    }else{
+      $type = 'W';
+    }
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+    $qry_bms = "SELECT meter_id FROM bms_meter WHERE MONTH(curr_read_date) = MONTH(GETDATE()) AND YEAR(curr_read_date) = YEAR(GETDATE()) AND type = '$type' AND debtor_acct IN ($listDebtor)";
+    $meter = AppModel::selectRaw($qry_bms);
+    $collectMeter = [];
+    foreach ($meter as $key => $value) {
+      $collectMeter[] = $value->meter_id;
+    }
+    $listMeter = "'" . implode ( "', '", $collectMeter ) . "'";
+
+    $qry = "SELECT * FROM (
+      SELECT DISTINCT b.meter_id, c.ref_no FROM mgr.ar_debtor a
+          JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+		  LEFT JOIN mgr.pm_lot_meter c on b.meter_id = c.meter_id
+          WHERE a.business_id = '$businessID' AND SUBSTRING(b.meter_cd, 1, 1) = '$type' AND MONTH(b.read_date) = MONTH(DATEADD(month, -1,GETDATE())) AND YEAR(b.read_date) = YEAR(DATEADD(year, 1, GETDATE())) AND b.meter_id NOT IN ($listMeter)) SQLa";
+    $data = AppConnection::connect()->select($qry);
+
+    $arrayData = [];
+    foreach($data as $data){
+
+      $arrayData[] = array(
+                      'meter_id'  => $data->meter_id,
+                      'ref_no'    => $data->ref_no,
+                    );
+    }
+
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function searchMeter($type, $businessID, $flag){
+    
+    if ($type == 'EL') {
+      $type_desc = 'ELECTRIC';
+      $uom = 'Kwh';
+    } else {
+      $type_desc = 'WATER';
+      $uom = 'm2';
+    }
+    $debtor = AppConnection::connect()->select("SELECT DISTINCT a.debtor_acct FROM mgr.ar_debtor a
+    JOIN mgr.pm_meter_dtl_his b ON a.debtor_acct = b.debtor_acct
+    WHERE a.business_id = '$businessID'");
+    $collectDebtor = [];
+    foreach ($debtor as $key => $value) {
+      $collectDebtor[] = $value->debtor_acct;
+    }
+
+    $listDebtor = "'" . implode ( "', '", $collectDebtor ) . "'";
+
+    // $data = AppModel::selectRaw("SELECT * FROM .bms_meter WHERE meter_cd LIKE '$type%' AND flag='$flag' AND debtor_acct IN($listDebtor)");
+    $data = AppModel::selectRaw("SELECT 
+    DISTINCT 
+     a.debtor_acct, 
+     a.meter_id, 
+     a.debtor_name, 
+     a.meter_cd,
+     b.last_read,
+     b.last_read_date,
+     b.last_read,
+     b.last_read_high,
+     b.curr_read_date,
+     b.curr_read,
+     b.curr_read_high,
+     b.flag,
+     b.attachment,
+     b.rowID
+    FROM .bms_meter a
+    outer apply (
+      SELECT 
+      last_read_date,
+      last_read,
+      last_read_high,
+      curr_read_date,
+      curr_read,
+      curr_read_high,
+      attachment,
+      rowID,
+      flag
+      FROM .bms_meter 
+      WHERE meter_id = a.meter_id 
+      AND curr_read_date = (SELECT MAX(curr_read_date) FROM .bms_meter WHERE meter_id = a.meter_id)
+    ) as b
+    WHERE meter_cd LIKE '$type%' 
+    AND b.flag='$flag' 
+    AND debtor_acct IN($listDebtor)");
+    $arrayData = [];
+    foreach($data as $data){
+      // if (!empty($data->attachment)) {
+      //   $list = explode(';;',$data->attachment);
+      //   foreach($list as $key => $value){
+      //     $arrayData['attachment'] = array(
+      //                     'filename' => $value,
+      //                   );
+      //   }
+      // }
+
+      $arrayData[] = array(
+                      'rowID'           => $data->rowID,
+                      'meter_id'        => $data->meter_id,
+                      'debtor_acct'     => $data->debtor_acct,
+                      'debtor_name'     => $data->debtor_name,
+                      'curr_read_date'  => $data->curr_read_date,
+                      'curr_read'       => $data->curr_read,
+                      'curr_read_high'  => $data->curr_read_high,
+                      'last_read_date'  => $data->last_read_date,
+                      'last_read'       => $data->last_read,
+                      'last_read_high'  => $data->last_read_high,
+                      'type'            => $type,
+                      'type_desc'       => $type_desc,
+                      'uom'             => $uom,
+                      'flag'            => $data->flag,
+                      'attachment'      => $data->attachment
+                    );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function getListMaster(){
+    $arrayData = [];
+    $dataStatus = AppModel::selectRaw("SELECT DISTINCT(overtime_status) AS status FROM .bms_overtime");
+    $arrayData['optStatus'][] = array(
+      'id'       => 5,
+      'label'    => 'All',
+    );
+    foreach ($dataStatus as $dataStatus) {
+      if ($dataStatus->status == 0) {
+        $overtime_status = 'Awaiting Approval';
+      }else if($dataStatus->status == 2){
+        $overtime_status = 'Request Update';
+      }else if($dataStatus->status == 3){
+        $overtime_status = 'Approve Update';
+      }else{
+        $overtime_status = 'Approved';
+      }
+
+      $arrayData['optStatus'][] = array(
+        'id'       => $dataStatus->status,
+        'label'    => $overtime_status,
+      );
+    }
+
+    $dataCompany = AppModel::selectRaw("SELECT a.tenant_id, b.company_name from .bms_tenant a
+    JOIN .bms_tenant_company b ON a.tenant_code = b.tenant_code");
+    $arrayData['optCompany'][] = array(
+      'id'       => 0,
+      'label'    => 'All',
+    );
+    foreach ($dataCompany as $dataCompany) {
+      $arrayData['optCompany'][] = array(
+        'id'       => $dataCompany->tenant_id,
+        'label'    => $dataCompany->company_name,
+      );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  
+}

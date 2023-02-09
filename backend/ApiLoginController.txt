@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Carbon;
+use Mail;
+use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use AppModel;
+
+class ApiLoginController extends Controller
+{
+  public function ldap(Request $request) {
+    $username = $request->usernm;
+    $password = $request->passwd; 
+    $auth = array('username' => $username, 'password' => $password);
+    $this->login_by_ldap($auth);
+  }
+
+  public function login_by_ldap($auth) {
+    $username = str_replace("@mmproperty.com","",$auth['username']);
+    $password = $auth['password'];
+    $ldapconfig['host'] = 'ldap://10.8.1.63';//CHANGE THIS TO THE CORRECT LDAP SERVER
+    $ldapconfig['port'] = '389';
+    $ldapconfig['basedn'] = 'ou=Employee,dc=ad,dc=mmproperty,dc=com';//CHANGE THIS TO THE CORRECT BASE DN
+    $ldapconfig['usersdn'] = 'cn=Manager';//CHANGE THIS TO THE CORRECT USER OU/CN
+    $ds=ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+    ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+    ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+    ldap_set_option($ds, LDAP_OPT_NETWORK_TIMEOUT, 10);
+    $dn="uid=".$username.",".$ldapconfig['basedn'];
+    header("Content-type: application/json; charset=ISO-8859-1");
+    if ($bind=@ldap_bind($ds, $dn, $password)) {  
+      $filter="(uid=$username)";
+      $result = ldap_search($ds,"ou=Employee,dc=ad,dc=mmproperty,dc=com",$filter);
+      $info = ldap_get_entries($ds, $result);
+      $sql = "SELECT email, username, emp_name, ISNULL(emp_photo, '') as photo, company_name, emp_job_position FROM users a, mst_company b WHERE a.emp_sub_unit = b.company_code AND (email = '".$auth['username']."' OR username = '".$username."')";
+      $ray = DB::connection('sqlsrv_dev')
+            ->select($sql);
+      if($ray) {
+        $res['res'] = "success";
+        $res['profile'] = array("uid" => $ray[0]->username, "mail" => $ray[0]->email, "name" => ucwords($ray[0]->emp_name), "photo" => trim($ray[0]->photo), "company" => $ray[0]->company_name, "level" => $ray[0]->emp_job_position); 
+        echo json_encode($res);
+      }
+      @ldap_close($ds);
+    } else {
+      $res['res'] = "error";
+      echo json_encode($res);
+    }
+  }
+
+  public function login_tenant(Request $request)
+  {
+    $token_tenant = strtoupper($request->token_tn);
+    $get_token = AppModel::selectCount('bms_tenant','tenant_token', $token_tenant);
+    if ($get_token > 0) {
+      $status = 'found';
+      $profile = DB::connection('sqlsrv_dev')
+                ->table('bms_tenant')
+                ->join('bms_tenant_company', 'bms_tenant.tenant_code', '=', 'bms_tenant_company.tenant_code')
+                ->select('bms_tenant.tenant_id', 'bms_tenant.tenant_code', 'bms_tenant.tenant_person', 'bms_tenant.tenant_person_position', 'bms_tenant.tenant_contact', 'bms_tenant.tenant_email', 'bms_tenant.tenant_token', 'bms_tenant_company.company_name', 'bms_tenant.created_at', 'bms_tenant.created_by')
+                ->where('bms_tenant.tenant_token', $token_tenant)
+                ->first();
+    }else{
+      $status = 'not found';
+      $profile = '';
+    }
+    $response = array(
+      'status'        => $status,
+      'token_tenant'  => $token_tenant,
+      'profile'       => $profile
+    );
+
+    return response()->json($response);
+  }
+
+  public function contentEmail($token)
+  {
+    $content = '
+    <table width="100%" style="border-collapse:collapse">
+      <tr>
+        <td class="container">
+          <table width="100%">
+            <tr>
+              <td colspan="3">This token for Login Building Management System :</td>
+            </tr>
+            <tr>
+              <td colspan="3"><h1>'.$token.'</h1></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td class="footer">
+          <p><i>This email send from website mynet <a href="https://mynet.mmproperty.com/" target="_blank">https://mynet.mmproperty.com/</a></i></p>
+        </td>
+      </tr>
+    </table>';
+
+    return $content;
+  }
+
+  public function request_token(Request $request)
+  {
+    $tenant_email = $request->tenant_email;
+    $get_tenant = AppModel::selectCount('mmp_dev.dbo.bms_tenant','tenant_email', $tenant_email);
+    if ($get_tenant > 0) {
+      $token = strtoupper(substr(md5(uniqid(rand(), true)),0,5));
+      $array = array(
+          'tenant_token' => $token,
+        );
+        $sql = DB::connection('sqlsrv_dev')
+          ->table('bms_tenant')
+          ->where('tenant_email',$tenant_email)
+          ->update($array);
+      $content = $this->contentEmail($token);
+      Mail::send('api.email_notification', ['content' => $content], function ($m) use ($tenant_email) {
+        $m->from('no-reply@mmproperty.com');
+        $m->to($tenant_email)
+        // ->cc($ccEmail)
+        ->subject('Token Login');
+      });
+      $status = 'success';
+    }else{
+      $status = 'fail';
+    }
+    $response = array(
+      'status'        => $status,
+      'tenant_email'    => $request->tenant_email
+    );
+
+    return response()->json($response);
+  }
+}

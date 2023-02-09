@@ -1,0 +1,1179 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Carbon;
+use Mail;
+use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use AppModel;
+use AppConnection;
+
+class ApiHelpdeskController extends Controller
+{
+    public function getData(){
+        $data = AppModel::selectAll('bms_ticket');
+        $arrayData = [];
+        foreach($data as $data){
+            $arrayData[] = array(
+                'ticket_no' => $data->tn_ticket_number,
+                'title' => $data->tn_ticket_subject,
+                'time' => 'Date '.Carbon::parse($data->tn_ticket_post)->format('d/m/Y'),
+                'status' => 'New Ticket',
+                'status_class' => array(
+                    'primary' => true
+                ),
+                'status_icon' => 'add',
+                'route_screen' => ''
+            );
+        }
+        $ticket = json_encode($arrayData);
+        return $ticket;
+    }
+    
+
+    public function getStatus($tenant_id){
+        $data = AppModel::selectRaw("SELECT *, (SELECT COUNT(*) FROM bms_tenant_ticket WHERE status_id = a.status_id AND tenant_id = '$tenant_id') AS total_ticket FROM bms_status a WHERE active = 1 and (using_for = 'all' or using_for = 'external')");
+        $arrayData = [];
+        foreach($data as $data){
+            $arrayData[] = array(
+                'status_name' => $data->status_name,
+                'status_color' => $data->status_color,
+                'status_total' => $data->total_ticket
+            );
+        }
+        $status = json_encode($arrayData);
+        return $status;
+    }
+
+
+
+
+  public function create_ticket(Request $request)
+  {
+    $generateNumber = AppModel::autonumber('bms_tenant_ticket', 'tenant_ticket_id', 6, 'BMS');
+    // dd($generateNumber);
+      $photoproof = array();
+      if ($request->hasFile("file")) {
+        for($i = 0; $i < count($request->file("file")); $i++){
+          $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+          $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+          $photoproof[] .= $imageName;
+        }
+        $photoproof_split = implode(';;', $photoproof);
+      }else{
+        $photoproof_split = NULL;
+      }
+
+      if ($request->ticket <> 3) {
+        $array = array(
+              'tenant_ticket_id'          => $generateNumber,
+              'tenant_id'                 => $request->user,
+              'form_id'                   => $request->ticket,
+              // 'type_id'                   => $request->ticket_type,
+              'category_id'               => $request->ticket_category,
+              // 'tn_ticket_subject'      => $request->ticket_subject,
+              'tenant_ticket_location'    => $request->ticket_location,
+              'tenant_ticket_description' => $request->ticket_description,
+              'tenant_ticket_attachment'  => $photoproof_split,
+              'tenant_ticket_post'        => Carbon::now(),
+              'status_id'                 => 1,
+            );
+      }else{
+        $array = array(
+          'tenant_ticket_id'          => $generateNumber,
+          'tenant_id'                 => $request->user,
+          'form_id'                   => 1,
+          'type_id'                   => 3,
+          'category_id'               => $request->ticket_category,
+          // 'tn_ticket_subject'      => $request->ticket_subject,
+          'tenant_ticket_location'    => $request->ticket_location,
+          'tenant_ticket_description' => $request->ticket_description,
+          'tenant_ticket_attachment'  => $photoproof_split,
+          'tenant_ticket_post'        => Carbon::now(),
+          'status_id'                 => 1,
+        );
+      }
+
+
+    $input_data =  AppModel::insert('bms_tenant_ticket', $array);
+
+
+    if ($input_data) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function getTicketRecently(){
+    $data = AppModel::selectRaw("SELECT a.tenant_ticket_id, a.tenant_ticket_description, b.form_desc, c.type_desc, d.category_desc, a.tenant_ticket_location, FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post, e.status_name, e.status_color
+                        FROM bms_tenant_ticket a
+                        LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+                        LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+                        LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+                        LEFT JOIN bms_status e ON a.status_id = e.status_id
+                        where CONVERT(date,a.tenant_ticket_post) = CONVERT(DATE,getdate()) order by a.tenant_ticket_post desc");
+    $arrayData = [];
+    foreach($data as $data){
+      $arrayData[] = array(
+                      'ticket_no' => $data->tenant_ticket_id,
+                      'ticket_form' => $data->form_desc,
+                      'ticket_type' => $data->type_desc,
+                      'ticket_category' => $data->category_desc,
+                      'ticket_location' => $data->tenant_ticket_location,
+                      'ticket_post' => $data->tn_ticket_post,
+                      'ticket_status_name'  => $data->status_name,
+                      'ticket_status_color' => $data->status_color,
+                      'ticket_description' => $data->tenant_ticket_description,
+                    );
+    }
+
+    $ticket = json_encode($arrayData);
+    return $ticket;
+  }
+
+  public function get_form_ticket(){
+    $data = AppModel::selectRaw("select form_id, form_desc from bms_ticket_form a
+    UNION
+    select type_id AS form_id, type_desc AS form_desc from bms_ticket_type where type_id = '3'");
+    $arrayData = [];
+    foreach($data as $data){
+      $arrayData[] = array(
+                      'label' => $data->form_desc,
+                      'value' => $data->form_id,
+                    );
+    }
+
+    $form = json_encode($arrayData);
+    return $form;
+  }
+
+  public function get_type_ticket($form_id){
+    $data = AppModel::selectRaw("select * from bms_ticket_type where form_id = '$form_id'");
+    $arrayData = [];
+    foreach($data as $data){
+      $arrayData[] = array(
+                      'label' => $data->type_desc,
+                      'value' => $data->type_id,
+                      // 'type_attachment' => $data->attachment,
+                    );
+    }
+
+    $type = json_encode($arrayData);
+    return $type;
+  }
+
+  public function get_category_ticket($type_id){
+    if ($type_id <> '3') {
+      $data = AppModel::selectRaw("select * from bms_ticket_category where type_id = 1");
+    }else{
+      $data = AppModel::selectRaw("select * from bms_ticket_category where type_id = '$type_id'");
+    }
+    $arrayData = [];
+    foreach($data as $data){
+      $arrayData['list'][] = array(
+        'label' => $data->category_desc,
+        'value' => $data->category_id,
+      );
+    }
+    $arrayData['requirement'] = true;
+
+    $category = json_encode($arrayData);
+    return $category;
+  }
+
+  public function get_ticket_attachment($id){
+    $data = AppModel::singleSelect('bms_tenant_ticket', 'tenant_ticket_id', $id);
+    $arrayData = [];
+    if (!empty($data->tenant_ticket_attachment)) {
+      $list = explode(';;',$data->tenant_ticket_attachment);
+      foreach($list as $key => $value){
+        $arrayData[] = array(
+                        'filename' => $value,
+                      );
+      }
+    }
+
+    $attachment = json_encode($arrayData);
+    return $attachment;
+  }
+
+  public function getTicketHistory($tenant_id){
+    $data = AppModel::selectRaw("SELECT 
+                        a.tenant_ticket_id, 
+                        a.tenant_ticket_description, 
+                        b.form_desc, 
+                        c.type_desc, 
+                        d.category_desc, 
+                        a.tenant_ticket_location, 
+                        FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post, 
+                        FORMAT(a.tenant_ticket_post,'dd MMMM yyyy') AS tn_ticket_post_date, 
+                        e.status_name, 
+                        e.status_color, 
+                        a.rating, 
+                        a.rating_comment, 
+                        a.status_id,
+                        a.rejected
+                        FROM bms_tenant_ticket a
+                        LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+                        LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+                        LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+                        LEFT JOIN bms_status e ON a.status_id = e.status_id
+                        WHERE a.tenant_id = '$tenant_id'
+                        AND (a.rejected = 0 OR a.rejected IS NULL)
+                        ORDER BY a.tenant_ticket_id DESC
+                        ");
+    $arrayData = [];
+    foreach($data as $data){
+      $getStatus = collect(\AppModel::selectRaw("select distinct status_id from bms_action_taken where tenant_ticket_id = '$data->tenant_ticket_id'"))->first();
+      if(empty($getStatus)){
+        $status_id = $data->status_id;
+      }else{
+        $status_id = $getStatus->status_id;
+      }
+      $arrayData[] = array(
+                      'ticket_no'               => $data->tenant_ticket_id,
+                      'ticket_form'             => $data->form_desc,
+                      'ticket_type'             => $data->type_desc,
+                      'ticket_category'         => $data->category_desc,
+                      'ticket_location'         => $data->tenant_ticket_location,
+                      'ticket_post'             => $data->tn_ticket_post,
+                      'ticket_post_date'        => $data->tn_ticket_post_date,
+                      'ticket_status_name'      => $data->status_name,
+                      'ticket_status_color'     => $data->status_color,
+                      'ticket_description'      => $data->tenant_ticket_description,
+                      'ticket_activity_status'  => $status_id,
+                      'ticket_rating_point'     => $data->rating,
+                      'ticket_rating_comment'   => $data->rating_comment,
+                      'ticket_rejected'         => $data->rejected
+                    );
+    }
+
+    $ticket = json_encode($arrayData);
+    return $ticket;
+  }
+
+  public function getTicketHistoryEngineer($engineer_id, $level){
+    if ($level != 'Admin') {
+      $where = "WHERE a.tenant_ticket_id IN (SELECT tenant_ticket_id FROM bms_assignment_pic WHERE engineer_username = '".$engineer_id."')";
+    }else{
+      $where = "";
+    }
+    $data = AppModel::selectRaw("SELECT a.tenant_ticket_id, a.tenant_ticket_description, b.form_desc, c.type_desc, d.category_desc, a.tenant_ticket_location, FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post, FORMAT(a.tenant_ticket_post,'dd MMMM yyyy') AS tn_ticket_post_date, e.status_name, e.status_color, a.rating, a.rating_comment, a.status_id
+                        FROM bms_tenant_ticket a
+                        LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+                        LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+                        LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+                        LEFT JOIN bms_status e ON a.status_id = e.status_id
+                        $where
+                        ORDER BY a.tenant_ticket_id DESC
+                        ");
+    $arrayData = [];
+    foreach($data as $data){
+      $getStatus = collect(\AppModel::selectRaw("select distinct status_id from bms_action_taken where tenant_ticket_id = '$data->tenant_ticket_id'"))->first();
+      if(empty($getStatus)){
+        $status_id = $data->status_id;
+      }else{
+        $status_id = $getStatus->status_id;
+      }
+      $arrayData[] = array(
+                      'ticket_no' => $data->tenant_ticket_id,
+                      'ticket_form' => $data->form_desc,
+                      'ticket_type' => $data->type_desc,
+                      'ticket_category' => $data->category_desc,
+                      'ticket_location' => $data->tenant_ticket_location,
+                      'ticket_post' => $data->tn_ticket_post,
+                      'ticket_post_date' => $data->tn_ticket_post_date,
+                      'ticket_status_name'  => $data->status_name,
+                      'ticket_status_color' => $data->status_color,
+                      'ticket_description' => $data->tenant_ticket_description,
+                      'ticket_activity_status' => $status_id,
+                      'ticket_rating_point' => $data->rating,
+                      'ticket_rating_comment' => $data->rating_comment,
+                    );
+    }
+
+    $ticket = json_encode($arrayData);
+    return $ticket;
+  }
+
+  public function submitAssignment(Request $request)
+  {
+    if ($request->eng_level == 'Supervisor') {
+      if (!empty($request->ticket_type) || $request->ticket_type != '') {
+        $ticket_type = $request->ticket_type;
+  
+        $query = "select * from bms_ticket_category where type_id = '$ticket_type' and category_desc = (select category_desc from bms_ticket_category where category_id = (select category_id from bms_tenant_ticket where tenant_ticket_id = '$request->ticket_no'))";
+        $getType = collect(\AppModel::selectRaw($query))->first();
+        $qr = "update bms_tenant_ticket set type_id = '$ticket_type', category_id = '$getType->category_id' where tenant_ticket_id = '$request->ticket_no'";
+        AppModel::updateRaw($qr);
+      }
+      $input_data = true;
+			$SQL = "SELECT status_id, assignment_seq FROM 
+					bms_tenant_ticket a, bms_assignment_pic b WHERE a.tenant_ticket_id = b.tenant_ticket_id
+					AND a.tenant_ticket_id = '".$request->ticket_no."'";
+			$result = AppModel::selectRaw($SQL);
+
+      $qry = AppModel::deleteRaw("DELETE FROM bms_assignment_pic WHERE tenant_ticket_id = '". $request->ticket_no ."' AND assignment_response IS NULL AND assignment_seq = '2'"  );
+      
+			$SupervisorAssignment = $request->data;
+			$engineer_assignment_from = str_replace("@mmproperty.com","",$request->eng_username);
+			foreach($SupervisorAssignment as $val) {
+				if($val['isChecked'] == 'true') {
+          $engineer_username = $val['username'];
+          $get = AppModel::selectRaw("select * from bms_assignment_pic where tenant_ticket_id = '$request->ticket_no' AND assignment_seq = '2' AND engineer_username='$engineer_username'");
+          if (count($get) < 1) {
+            $array = array(
+                    'tenant_ticket_id'          => $request->ticket_no,
+                    'assignment_seq'            => '2',
+                    'engineer_username'         => $engineer_username,
+                    'assignment_from'           => $engineer_assignment_from,
+                    'assignment_response'    	  => NULL,
+                    'created_date' 			        => Carbon::now()
+                  );
+            $input_data =  AppModel::insert('bms_assignment_pic', $array);
+          }
+				}
+      }
+      
+      if ($request->type == 'assignment') {
+        $SQL = "UPDATE bms_assignment_pic SET assignment_response = '".date('Y-m-d H:i:s')."' WHERE engineer_username = '".$engineer_assignment_from."' AND tenant_ticket_id = '".$request->ticket_no."'";
+        // // $input_data = AppModel::update('bms_assignment_pic', 'tenant_ticket_id', $request->ticket_no, array('status_id' => 2) );
+        $input_data = AppModel::updateRaw($SQL);
+      }
+			
+		}else {
+      $SupervisorAssignment = $request->data;	
+      
+      $SQL = "SELECT status_id, assignment_seq FROM 
+          bms_tenant_ticket a, bms_assignment_pic b WHERE a.tenant_ticket_id = b.tenant_ticket_id
+          AND a.tenant_ticket_id = '".$request->ticket_no."'";
+      $result = AppModel::selectRaw($SQL);		
+      if(count($result) >= '1' && $result[0]->status_id == '2' && $result[0]->assignment_seq == '1') {
+        $qry = AppModel::delete('bms_assignment_pic', 'tenant_ticket_id', $request->ticket_no);
+      }
+      for($i=0; $i<count($SupervisorAssignment);$i++) {
+        if($SupervisorAssignment[$i]['isChecked'] == 'true') {	
+           $array = array(
+                  'tenant_ticket_id'          => $request->ticket_no,
+                  'assignment_seq'            => '1',
+                  'engineer_username'         => $SupervisorAssignment[$i]['username'],
+                  'assignment_from'           => $request->eng_username,
+                  'assignment_response'    	  => NULL,
+                  'created_date' 			  => date('Y-m-d H:i:s')
+                );
+          $input_data =  AppModel::insert('bms_assignment_pic', $array);
+        }
+      }
+      
+      $input_data = AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket_no, array('status_id' => 2) );
+    }
+
+
+    
+    if ($input_data) {
+		  $message = 'success';
+		  $code = 200;
+		}else{
+		  $message = 'error';
+		  $code = 500;
+		}
+		$response = array(
+		  'code'           => $code,
+		  'message'        => $message,
+    );
+
+		
+		return response()->json($response);
+  }
+
+  public function takeAssignment(Request $request)
+  {
+    if ($request->eng_level != 'Supervisor') {
+      $checkStatus = AppModel::singleSelect('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket_no);
+      if ($checkStatus->status_id < 3) {
+        AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket_no, array('status_id' => 3));
+      }
+    }
+    $SQL = "UPDATE bms_assignment_pic SET assignment_response = '".date('Y-m-d H:i:s')."' WHERE engineer_username = '".$request->eng_username."' AND tenant_ticket_id = '".$request->ticket_no."'";
+    $input_data = AppModel::updateRaw($SQL);
+
+    
+    if ($input_data) {
+		  $message = 'success';
+		  $code = 200;
+		}else{
+		  $message = 'error';
+		  $code = 500;
+		}
+		$response = array(
+		  'code'           => $code,
+		  'message'        => $message,
+    );
+
+		
+		return response()->json($response);
+  }
+
+  public function getListStatus(Request $request){
+    // $user = str_replace("@mmproperty.com","",$request->usernm);
+    $user = $request->usernm;
+		$level = $request->level;
+		
+		if($level == 'Admin') {
+      $condition = "";
+      $where = "AND level_for in('admin', 'spv', 'staff')";
+		} else if ($level == 'Supervisor') {
+			$condition = " AND  tenant_ticket_id IN (SELECT tenant_ticket_id FROM bms_assignment_pic WHERE engineer_username = '".$user."')";
+      $where = "AND level_for in('spv', 'staff')";
+    } else {
+			$condition = " AND  tenant_ticket_id IN (SELECT tenant_ticket_id FROM bms_assignment_pic WHERE engineer_username = '".$user."')";
+      $where = "AND level_for = 'staff'";
+    }
+		
+		$sql = "SELECT *, 
+				(SELECT COUNT(*) FROM bms_tenant_ticket WHERE status_id = a.status_id ".$condition.") AS total_ticket 
+				FROM bms_status a WHERE active = 1 and (using_for = 'all' or using_for = 'internal') ".$where."";
+		$data = AppModel::selectRaw($sql);
+		$arrayData = [];
+		foreach($data as $data){
+		  $arrayData[] = array(
+						  'status_name' => $data->status_name,
+						  'status_color' => $data->status_color,
+						  'status_total' => $data->total_ticket
+						);
+		}
+
+		$status = json_encode($arrayData);
+		return $status;
+  }
+  
+  public function getListEngineer(Request $request) {
+		$FilterEng = ''; 
+		if(!empty($request->engineer)) {
+			$FilterEng = " AND (a.emp_name LIKE '%".$request->engineer."%' OR a.username LIKE '%".$request->engineer."%')";
+    }
+		
+		if($request->eng_level == 'Admin') {
+			$sql = "SELECT username, emp_name, 
+					CASE WHEN a.username = b.engineer_username THEN 'true' ELSE 'false' END AS isChecked FROM users a 
+					LEFT JOIN bms_assignment_pic b ON a.username = b.engineer_username AND b.tenant_ticket_id = '".$request->ticket_no."'
+					WHERE emp_job_position = 'Supervisor' AND emp_division_id = '18' AND a.status = '1'";
+		} else if ($request->eng_level == 'Supervisor') {
+			if($request->page !== 'list-engineer') {
+				$sql = "SELECT username, emp_name, 
+						CASE WHEN a.username = b.engineer_username  AND b.assignment_response != '' THEN 'true' ELSE 'false' END AS isChecked 
+						FROM users a 
+						LEFT JOIN bms_assignment_pic b ON a.username = b.engineer_username
+						WHERE emp_division_id = '18' AND a.status = '1'  AND b.tenant_ticket_id = '".$request->ticket_no."' order by assignment_seq";
+			} else {
+        $sql = "SELECT username, emp_name, 
+						CASE WHEN a.username = b.engineer_username THEN 'true' ELSE 'false' END AS isChecked 
+						FROM users a 
+						LEFT JOIN bms_assignment_pic b ON a.username = b.engineer_username AND b.tenant_ticket_id = '".$request->ticket_no."'
+						WHERE 
+						emp_division_id = '18' AND emp_job_position = 'Engineer' AND a.status = '1'".$FilterEng;
+			}
+		}else{
+      $sql = "SELECT username, emp_name, 
+						CASE WHEN a.username = b.engineer_username  AND b.assignment_response != '' THEN 'true' ELSE 'false' END AS isChecked 
+						FROM users a 
+						LEFT JOIN bms_assignment_pic b ON a.username = b.engineer_username
+						WHERE emp_division_id  = '18'  AND a.status = '1'  AND b.tenant_ticket_id = '".$request->ticket_no."' order by assignment_seq";
+    }
+		
+		$data = AppModel::selectRaw($sql);
+		$arrayData = [];
+		foreach($data as $data){
+			$arrayData['engineer'][] = array(
+											"username" => $data->username,
+											"fullname" => ucwords($data->emp_name),
+											"isChecked" => $data->isChecked
+										);	
+		}
+		return json_encode($arrayData);
+  }
+
+  public function getListType(Request $request) {
+		
+    $sql = "select * from bms_ticket_type where form_id = (select form_id from bms_tenant_ticket where tenant_ticket_id = '$request->ticket_no')";
+		$data = AppModel::selectRaw($sql);
+		$arrayData = [];
+		foreach($data as $data){
+      if ($data->type_id <> '3') {
+        $arrayData['type'][] = array(
+          'label' => $data->type_desc,
+          'value' => $data->type_id,
+          "isChecked" => false
+        );	
+      }
+		}
+		return json_encode($arrayData);
+  }
+  
+  public function getTIcketEngineer($ticket_no){
+		$sql = "SELECT a.tenant_ticket_id, g.company_name, f.tenant_person, a.tenant_ticket_description, b.form_id, b.form_desc, c.type_id, c.type_desc, 
+    d.category_id, d.category_desc, a.tenant_ticket_location, FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post,
+    e.status_color, e.status_name, e.status_id,  a.tenant_ticket_attachment,
+    (SELECT max(assignment_seq) FROM bms_assignment_pic WHERE tenant_ticket_id = a.tenant_ticket_id) as seq_pic,
+    a.rating, a.rating_comment
+				FROM bms_tenant_ticket a
+				LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+				LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+				LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+				LEFT JOIN bms_status e ON a.status_id = e.status_id
+				LEFT JOIN bms_tenant f ON a.tenant_id = f.tenant_id
+				LEFT JOIN bms_tenant_company g ON f.tenant_code = g.tenant_code
+				WHERE tenant_ticket_id = '".$ticket_no."'";
+		$data = AppModel::selectRaw($sql);		
+			
+		$arrayData = [];
+		foreach($data as $data){
+			$arrayData['ticket'] = array(
+								  'ticket_no' => $data->tenant_ticket_id,
+                  'ticket_form_id' => $data->form_id,
+								  'ticket_form' => $data->form_desc,
+                  'tenant_ticket_id' => $data->tenant_ticket_id,
+								  'company_name' => $data->company_name,
+								  'tenant_person' => $data->tenant_person,
+                  'ticket_type_id' => $data->type_id,
+								  'ticket_type' => $data->type_desc,
+                  'ticket_category_id' => $data->category_id,
+								  'ticket_category' => $data->category_desc,
+								  'ticket_location' => $data->tenant_ticket_location,
+								  'ticket_post' => $data->tn_ticket_post,
+								  'ticket_status_color' => $data->status_color,
+								  'ticket_description' => $data->tenant_ticket_description,
+                  'ticket_status' => $data->status_name,
+                  'ticket_rating_point' => $data->rating,
+                  'ticket_rating_comment' => $data->rating_comment,
+								  'seq_pic' => $data->seq_pic,
+								  'status_id' => $data->status_id
+								);
+			
+			$pic = $data->tenant_ticket_attachment;
+		}
+
+		$list = explode(';;',$pic);			
+		foreach($list as $value) {
+			$arrayData['attach'][] = $value;
+		}
+		$attachment = json_encode($arrayData);
+		return $attachment;
+  }
+  
+  public function getListActivity($ticket_no){
+    $sql = "SELECT a.*, b.emp_name, b.emp_photo FROM bms_action_taken a
+    LEFT JOIN mmp_mynet.dbo.users b ON a.engineering_username = b.username 
+    WHERE a.tenant_ticket_id = '".$ticket_no."'";
+    $data = AppModel::selectRaw($sql);		
+    $total = count($data);
+			
+    $arrayData = [];
+    $i = 0;
+		foreach($data as $data){
+      
+      $list = explode(';;',$data->attachment);			
+      $arrayImage = [];
+      foreach($list as $value) {
+        $arrayImage[] = $value;
+      }
+      $need = [];
+      if ($data->request_item > 0) {
+        if ($data->confirm_item == 0) {
+          $where = "";
+        }else{
+          $where = " AND SQLa.confirm_item = 1";
+        }
+        $queryNeed = "SELECT * FROM
+        (SELECT runID, tenant_ticket_id, action_id, item_cd, item_descs, qty, confirm_item FROM bms_action_staging
+        UNION
+        SELECT runID, tenant_ticket_id, action_id, item_cd, item_descs, qty, confirm_item FROM bms_need_item) SQLa
+        WHERE SQLa.tenant_ticket_id = '$ticket_no' AND SQLa.action_id = '$data->runID' $where";
+        $sqlNeed = AppModel::selectRaw($queryNeed);
+        $i = 0;
+        foreach ($sqlNeed as $key => $value) {
+          if (!empty($value->item_cd)) {
+            $text = substr($value->item_descs, 0, 3);
+            $getListItem = AppConnection::connect()->select("select TOP(100) item_cd, Convert(nvarchar(50),descs)+' - '+Convert(nvarchar(50),uom) as descs from mgr.po_item where category_cd like 'BM%' and descs like '$text%' order by descs");
+            $arrayList = [];
+            $key = 0;
+            $arrayList[] = array(
+              'key'                 => $key++,
+              'id'                  => $key++,
+              'label'               => 'OTHER',
+              'item_code'           => '0',
+              'value'               => '0',
+              'item_name'           => 'OTHER',
+            );
+            foreach($getListItem as $datas){
+              $arrayList[] = array(
+                'key'                 => $key++,
+                'id'                  => $key++,
+                'label'               => $datas->descs,
+                'item_code'           => $datas->item_cd,
+                'value'               => $datas->item_cd,
+                'item_name'           => $datas->descs,
+              );
+            }
+          } else{
+            $getListItem = AppConnection::connect()->select("select TOP(100) item_cd, Convert(nvarchar(50),descs)+' - '+Convert(nvarchar(50),uom) as descs from mgr.po_item where category_cd like 'BM%' order by descs");
+            $arrayList = [];
+            $key = 0;
+            $arrayList[] = array(
+              'key'                 => $key++,
+              'id'                  => $key++,
+              'label'               => 'REQUEST ITEM',
+              'item_code'           => '0',
+              'value'               => '0',
+              'item_name'           => 'REQUEST ITEM',
+            );
+            foreach($getListItem as $datas){
+              $arrayList[] = array(
+                'key'                 => $key++,
+                'id'                  => $key++,
+                'label'               => $datas->descs,
+                'item_code'         => $datas->item_cd,
+                'value'         => $datas->item_cd,
+                'item_name'         => $datas->descs,
+              );
+            }
+          }
+
+          $need[] = array(
+            'id' => $i++,
+            'runID' => $value->runID,
+            'open' => false,
+            'description' => (empty($value->item_cd) ? $value->item_descs:null),
+            'showNote'  => (empty($value->item_cd) ? true:false),
+            'qty' => strval($value->qty),
+            'value' => (empty($value->item_cd) ? '0':$value->item_cd),
+            'isChecked' => false,
+            'items' => $arrayList,
+          );
+        }
+      }
+      
+      $arrayData['list'][] = array(
+                  'key' => $i++,
+                  'runID'  => $data->runID,
+                  'username'  => $data->emp_name,
+								  'engineering_username' => $data->engineering_username,
+                  'description' => $data->description,
+                  'time_taken'  => Carbon::parse($data->created_date)->format('Y-m-d').' '.$data->time_taken,
+                  'created_date' => $data->created_date,
+                  'attachment'  => $arrayImage,
+                  'request_item' => $data->request_item,
+                  'request_item_description' => $data->request_item_description,
+                  'request_item_need' => $need,
+                  'status_id' => $data->status_id,
+                  'photo' =>$data->emp_photo,
+                  'confirm_item' => $data->confirm_item
+                );      
+    }
+    
+    $getStatus = collect(\AppModel::selectRaw("select distinct status_id from bms_action_taken where tenant_ticket_id = '$ticket_no'"))->first();
+    if ($total > 0) {
+      $arrayData['status'] = $getStatus->status_id;
+    }else{
+      $arrayData['status'] = 1;
+    }
+    $arrayData['total'] = $total;
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function createActivityTaken(Request $request)
+  {
+    if ($request->level != 'Supervisor') {
+      $check = AppModel::singleSelect('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket);
+      if ($check->status_id == '3') {
+        AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket, array('status_id' => 4));
+      }
+    }
+    
+    $photoproof = array();
+    if ($request->hasFile("file")) {
+      for($i = 0; $i < count($request->file("file")); $i++){
+        $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+        $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+        $photoproof[] .= $imageName;
+      }
+      $photoproof_split = implode(';;', $photoproof);
+    }else{
+      $photoproof_split = NULL;
+    }
+
+    $array = array(
+      'tenant_ticket_id'      => $request->ticket,
+      'engineering_username'  => $request->username,
+      'description'           => $request->activity,
+      'attachment'            => $photoproof_split,
+      'status_id'             => ($request->request_item > 0 ? 5:4),
+      'time_taken'            => $request->time_taken,
+      'request_item'          => $request->request_item,
+      'created_date'          => Carbon::now()
+    );
+  
+    AppModel::insert('bms_action_taken', $array);
+
+    if ($request->request_item > 0) {
+      $getActionID = collect(\AppModel::selectRaw("select runID from bms_action_taken where tenant_ticket_id = '$request->ticket' order by runID desc"))->first();
+      $list = json_decode($request->request_item_list);
+      foreach ($list as $key => $val) {
+        $item_cd = $val->value;
+        if ($item_cd != '' ) {
+          $getDescs = collect(\AppConnection::connect()->select("select * from mgr.po_item where item_cd = '$item_cd'"))->first();
+          
+          if ($item_cd == '0') {
+            $arrayDataReq = array(
+              'tenant_ticket_id'  => $request->ticket,
+              'action_id'         => $getActionID->runID,
+              'item_cd'           => NULL,
+              'qty'               => $val->qty,
+              'item_descs'        => $val->description,
+            );
+            AppModel::insert('bms_action_staging', $arrayDataReq);
+          }else{
+            $arrayDataReq = array(
+              'tenant_ticket_id'  => $request->ticket,
+              'action_id'         => $getActionID->runID,
+              'item_cd'           => $item_cd,
+              'qty'               => $val->qty,
+              'item_descs'        => $getDescs->descs,
+            );
+            AppModel::insert('bms_need_item', $arrayDataReq);
+          }
+        }
+      }
+
+      AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket, array('status_id' => 5));
+    }else{
+      $request_item_description = NULL;
+    }
+      $update_data = AppModel::update('bms_action_taken', 'tenant_ticket_id', $request->ticket, array('status_id' => ($request->request_item > 0 ? 5:4)));
+      if ($update_data) {
+        $message = 'success';
+        $code = 200;
+      }else{
+        $message = 'error';
+        $code = 500;
+      }
+      $response = array(
+        'code'           => $code,
+        'message'        => $message,
+      );
+      
+    return response()->json($response);
+  }
+
+
+  public function updateConfirmItem(Request $request)
+  {
+      $list = json_decode($request->request_item_list);
+      foreach($list AS $key => $val){
+        $item_cd = $val->value;
+        if ($val->isChecked == true) {
+          if ($item_cd == '0') {
+            $arrayReq = array(
+              'confirm_item'              => 1,
+              'confirm_date'              => Carbon::now()
+            );
+            AppModel::update('bms_action_staging', 'runID', $val->runID, $arrayReq);
+          }else{
+            $arrayReq = array(
+              'confirm_item'              => 1,
+              'confirm_date'              => Carbon::now()
+            );
+            AppModel::update('bms_need_item', 'runID', $val->runID, $arrayReq);
+          }
+        }
+      }
+
+    $array = array(
+          'confirm_item'              => 1,
+          'confirm_date'              => Carbon::now()
+        );
+    $update_data =  AppModel::update('bms_action_taken', 'runID', $request->runID, $array);
+    if ($update_data) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+    return response()->json($response);
+  }
+
+  public function updateReleaseItem(Request $request)
+  {
+    $query = "SELECT * FROM [mmp_dev].[dbo].[bms_action_taken] where tenant_ticket_id = '$request->ticket' and request_item = 1 and confirm_item = 0";
+    $cek = count(AppModel::selectRaw($query));
+    $array = array(
+          'status_id'              => 4
+        );
+        AppModel::update('bms_action_taken', 'runID', $request->runID, $array);
+    if ($cek == 0) {
+      AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket, $array);
+    }
+    $response = array(
+      'code'           => 200,
+      'message'        => 'success',
+    );
+    return response()->json($response);
+  }
+  
+  public function updateActivityTaken(Request $request)
+  {
+
+    if ($request->hasFile("file")) {
+      $photoproof = array();
+      for($i = 0; $i < count($request->file("file")); $i++){
+        $imageName = 'DC-'.$i.'-'.time().'.'.$request->file("file")[$i]->getClientOriginalExtension();
+        $request->file("file")[$i]->move(public_path('img/bms/photo/'), $imageName);
+        $photoproof[] .= $imageName;
+      }
+      $im = AppModel::singleSelect('bms_action_taken','runID',$request->runID);
+      if (!empty($im->attachment)) {
+        $dataim = explode(';;',$im->attachment);
+        for ($g=0; $g < count($dataim); $g++) {
+          $photoproof[] .= $dataim[$g];
+        }
+      }
+      $photoproof_split = implode(';;', $photoproof);
+    }else{
+      $photoproof = array();
+      $im = AppModel::singleSelect('bms_action_taken','runID',$request->runID);
+      if (empty($im->attachment)) {
+        $photoproof_split = null;
+      }else{
+        $dataim = explode(';;',$im->attachment);
+        for ($g=0; $g < count($dataim); $g++) {
+          $photoproof[] .= $dataim[$g];
+        }
+        $photoproof_split = implode(';;', $photoproof);
+      }
+      $imageName = null;
+    }
+
+    
+
+    if ($request->request_item > 0) {
+      if ($request->confirm_item == 0) {
+        AppModel::delete('bms_action_staging', 'action_id', $request->runID);
+        AppModel::delete('bms_need_item', 'action_id', $request->runID);
+        $list = json_decode($request->request_item_list);
+        foreach($list AS $key => $val){
+          $item_cd = $val->value;
+          if ($item_cd != '' ) {
+            $getDescs = collect(\AppConnection::connect()->select("select * from mgr.po_item where item_cd = '$item_cd'"))->first();
+            if ($item_cd == '0') {
+              $arrayDataReq = array(
+                'tenant_ticket_id'  => $request->ticket,
+                'action_id'         => $request->runID,
+                'item_cd'           => NULL,
+                'qty'               => $val->qty,
+                'item_descs'        => $val->description,
+              );
+              AppModel::insert('bms_action_staging', $arrayDataReq);
+            }else{
+              $arrayDataReq = array(
+                'tenant_ticket_id'  => $request->ticket,
+                'action_id'         => $request->runID,
+                'item_cd'           => $item_cd,
+                'qty'               => $val->qty,
+                'item_descs'        => $getDescs->descs,
+              );
+              AppModel::insert('bms_need_item', $arrayDataReq);
+            }
+          }
+          
+        }
+      $status = 5;
+      AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket, array('status_id' => 5));
+      }
+
+    
+  }else{
+    AppModel::delete('bms_action_staging', 'action_id', $request->runID);
+    AppModel::delete('bms_need_item', 'action_id', $request->runID);
+    $status = 4;
+  }
+
+    $array = array(
+          'request_item'              => $request->request_item,
+          'description'               => $request->activity,
+          'attachment'                => $photoproof_split,
+          // 'status_id'                 => $status,
+          'updated_date'              => Carbon::now()
+        );
+    $input_data =  AppModel::update('bms_action_taken', 'runID', $request->runID, $array);
+    // AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $request->ticket, array('status_id' => $status));
+    if ($input_data) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function updateStatusTicket(Request $request)
+  {
+    $ticket = $request->ticket_no;
+    $status = $request->status;
+
+    if ($request->type == 'action-taken') {
+      if ($status == 6) {
+        AppModel::update('bms_action_taken', 'tenant_ticket_id', $ticket, array('status_id' => $status));
+        $array = array(
+          'status_id'         => $status,
+          'tenant_ticket_done' => Carbon::now()
+        );
+        $request_update =  AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $ticket, $array);
+      }else{
+        $request_update = AppModel::update('bms_action_taken', 'tenant_ticket_id', $ticket, array('status_id' => $status));
+      }
+    }else{
+      $array = array(
+        'status_id'           => $status,
+        'rating'              => $request->rating,
+        'rating_comment'      => $request->comment,
+        'tenant_ticket_done'  => Carbon::now()
+      );
+      $request_update =  AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $ticket, $array);
+    }
+
+    if ($request_update) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  
+  public function getListAssignment(Request $request) {
+		$level = $request->level;
+    $status = AppModel::singleSelect('bms_status', 'status_name', $request->status)->status_id;
+    // $user = str_replace("@mmproperty.com","",$request->usernm);
+    $user = $request->usernm;
+	
+		$join = '';
+		if($level == 'Admin') {
+      $condition = " WHERE a.status_id = '$status'";
+      $where = "WHERE a.status_id != 7 AND a.rejected <> 1";
+		} else if ($level == 'Supervisor') {
+			$join 	= " LEFT JOIN bms_assignment_pic f ON a.tenant_ticket_id = f.tenant_ticket_id";
+      $condition = " WHERE f.engineer_username = '$user' AND a.status_id = '$status' AND a.rejected <> 1";
+      $where = "WHERE b.engineer_username = '$user' AND a.status_id != 7 AND a.rejected <> 1";
+		} else {
+			$join 	= " LEFT JOIN bms_assignment_pic f ON a.tenant_ticket_id = f.tenant_ticket_id";
+      $condition = " WHERE f.engineer_username = '".$user."' AND a.status_id = '$status' AND a.rejected <> 1";
+      $where = "WHERE b.engineer_username = '$user' AND a.status_id NOT IN('2', '6', '7') AND a.rejected <> 1";
+      // $condition = " WHERE f.engineer_username = '".$user."' AND a.status_id NOT IN('6', '7')";
+		}
+
+		$sql = "SELECT a.tenant_ticket_id, a.tenant_ticket_description, b.form_desc, c.type_desc, d.category_desc, a.tenant_ticket_location, FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post, FORMAT(a.tenant_ticket_post,'dd/MM/yyyy') AS tn_ticket_post_year, e.status_color,
+    e.status_name
+    FROM bms_tenant_ticket a
+    LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+    LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+    LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+    LEFT JOIN bms_status e ON a.status_id = e.status_id " .$join . $condition . " ORDER BY a.tenant_ticket_post DESC";		
+		$data = AppModel::selectRaw($sql);
+
+    $query_total = "SELECT COUNT(*) AS val FROM bms_tenant_ticket a
+    JOIN bms_assignment_pic b ON a.tenant_ticket_id = b.tenant_ticket_id $where
+    ";
+
+    $total = collect(\AppModel::selectRaw($query_total))->first();
+		$arrayData = [];
+    $arrayData['total'][] = $total->val;
+		foreach($data as $data){
+		  $arrayData['list'][] = array(
+                      'ticket_no' => $data->tenant_ticket_id,
+                      'ticket_form' => $data->form_desc,
+                      'ticket_type' => $data->type_desc,
+                      'ticket_category' => $data->category_desc,
+                      'ticket_location' => $data->tenant_ticket_location,
+                      'ticket_post' => $data->tn_ticket_post,
+                      'ticket_post_year' => $data->tn_ticket_post_year,
+                      'ticket_status_color' => $data->status_color,
+                      'ticket_status_name' => $data->status_name,
+                      'ticket_description' => $data->tenant_ticket_description,
+                    );
+		}
+     
+
+		$status = json_encode($arrayData);
+		return $status;
+  }
+
+  public function getListAssignmentNew(Request $request) {
+    $status = AppModel::singleSelect('bms_status', 'status_name', $request->status)->status_id;
+		$sql = "SELECT a.tenant_ticket_id, a.tenant_ticket_description, b.form_desc, c.type_desc, d.category_desc, a.tenant_ticket_location, FORMAT(a.tenant_ticket_post,'hh:mm tt') AS tn_ticket_post, FORMAT(a.tenant_ticket_post,'dd/MM/yyyy') AS tn_ticket_post_year, e.status_color,
+    e.status_name
+    FROM bms_tenant_ticket a
+    LEFT JOIN bms_ticket_form b ON a.form_id = b.form_id
+    LEFT JOIN bms_ticket_type c ON a.type_id= c.type_id
+    LEFT JOIN bms_ticket_category d ON a.category_id= d.category_id
+    LEFT JOIN bms_status e ON a.status_id = e.status_id WHERE a.status_id = '1' order by a.tenant_ticket_post desc";		
+		$data = AppModel::selectRaw($sql);
+
+		$arrayData = [];
+		foreach($data as $data){
+		  $arrayData[] = array(
+                      'ticket_no' => $data->tenant_ticket_id,
+                      'ticket_form' => $data->form_desc,
+                      'ticket_type' => $data->type_desc,
+                      'ticket_category' => $data->category_desc,
+                      'ticket_location' => $data->tenant_ticket_location,
+                      'ticket_post' => $data->tn_ticket_post,
+                      'ticket_post_year' => $data->tn_ticket_post_year,
+                      'ticket_status_color' => $data->status_color,
+                      'ticket_status_name' => $data->status_name,
+                      'ticket_description' => $data->tenant_ticket_description,
+                    );
+		}
+
+		$status = json_encode($arrayData);
+		return $status;
+  }
+  
+  public function deleteActivityTaken(Request $request)
+  {
+    $delete_data =  AppModel::delete('bms_action_taken', 'runID', $request->runID);
+    if ($delete_data) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function getListItem(){
+    $data = AppConnection::connect()->select("select TOP(100) item_cd, Convert(nvarchar(50),descs)+' - '+Convert(nvarchar(50),uom) as descs from mgr.po_item where category_cd like 'BM%' order by descs");
+    $arrayData = [];
+    $key = 0;
+    $arrayData[] = array(
+      'key'                 => $key++,
+      'id'                  => $key++,
+      'label'               => 'REQUEST ITEM',
+      'item_code'           => '0',
+      'value'               => '0',
+      'item_name'           => 'REQUEST ITEM',
+    );
+    foreach($data as $data){
+      $arrayData[] = array(
+        'key'                 => $key++,
+        'id'                  => $key++,
+        'label'               => $data->descs,
+        'item_code'         => $data->item_cd,
+        'value'         => $data->item_cd,
+        'item_name'         => $data->descs,
+      );
+    }
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function search_item(Request $request){
+    $text = $request->text;
+    $data = AppConnection::connect()->select("select TOP(100) item_cd, Convert(nvarchar(50),descs)+' - '+Convert(nvarchar(50),uom) as descs from mgr.po_item where category_cd like 'BM%' and descs like '$text%' order by descs");
+    $arrayData = [];
+    $key = 0;
+    $arrayData[] = array(
+      'key'                 => $key++,
+      'id'                  => $key++,
+      'label'               => 'OTHER',
+      'item_code'           => '0',
+      'value'               => '0',
+      'item_name'           => 'OTHER',
+    );
+    foreach($data as $data){
+      $arrayData[] = array(
+        'key'                 => $key++,
+        'id'                  => $key++,
+        'label'               => $data->descs,
+        'item_code'           => $data->item_cd,
+        'value'               => $data->item_cd,
+        'item_name'           => $data->descs,
+      );
+    }
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+  public function rejectTicket(Request $request)
+  {
+    $ticket = $request->ticket_no;
+    $rejected = $request->rejected;
+    $rejected_as = $request->rejected_as;
+    $rejected_by = $request->rejected_by;
+    
+    $array = array(
+      'rejected'       => $rejected,
+      'rejected_as'    => $rejected_as,
+      'rejected_by'    => $rejected_by,
+      'rejected_date'  => Carbon::now()
+    );
+    $request_update =  AppModel::update('bms_tenant_ticket', 'tenant_ticket_id', $ticket, $array);
+
+    if ($request_update) {
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  
+}

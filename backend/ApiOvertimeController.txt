@@ -1,0 +1,770 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Carbon;
+use Mail;
+use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use AppModel;
+use AppConnection;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+class ApiOvertimeController extends Controller
+{
+  public function create_overtime(Request $request)
+  {
+    $generateNumber = AppModel::autonumber('bms_overtime', 'overtime_code', 6, 'BMS-OT-');    
+    $array = array(
+          'overtime_date'           => Carbon::now(),
+          'overtime_code'           => $generateNumber,
+          'tenant_id'               => $request->tenant,
+          'overtime_type'           => $request->type,
+          'overtime_zone'           => $request->zone,
+          'overtime_duration'       => $request->duration,
+          'overtime_start'          => $request->start,
+          'overtime_end'            => $request->end,
+          'overtime_status'         => 0,
+          'overtime_approval'       => 0,
+          'overtime_approval_date'  => NULL,
+          'overtime_approval_by'    => NULL,
+
+        );
+    $input_data =  AppModel::insert('bms_overtime', $array);
+
+    if ($input_data) {
+      $getTenant = AppModel::singleSelect('bms_tenant', 'tenant_id', $request->tenant);
+      $arrayLog = array(
+        'overtime_code'           => $generateNumber,
+        'overtime_duration'       => $request->duration,
+        'overtime_end'            => $request->end,
+        'overtime_status'         => 0,
+        'overtime_approval'       => 0,
+        'overtime_approval_date'  => NULL,
+        'overtime_approval_by'    => NULL,
+        'overtime_update_desc'    => 'Submit',
+        'created_at'              => Carbon::now(),
+        'created_by'              => $getTenant->tenant_person,
+      );
+      AppModel::insert('bms_overtime_log', $arrayLog);
+      foreach ($request->isUser as $key => $value) {
+        if ($value != '' || !empty($value)) {
+          $arrayUser = array(
+            'overtime_code'  => $generateNumber,
+            'overtime_date'  => Carbon::now(),
+            'overtime_user'  => $value
+          );
+          AppModel::insert('bms_overtime_user', $arrayUser);
+        }
+      }
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function getOvertime($param, $tenant_id){
+    if ($param == 'open') {
+      $where = 'AND a.overtime_status = 0';
+    }else{
+      $where = '';
+    }
+    $data = AppModel::selectRaw("SELECT a.*, b.type_desc AS overtime_type, c.tenant_person, d.company_name, (SELECT COUNT(*) FROM bms_overtime_user WHERE overtime_code = a.overtime_code ) AS totalUser FROM bms_overtime AS a
+    JOIN bms_overtime_type AS b ON a.overtime_type = b.type_id
+    LEFT JOIN bms_tenant AS c ON a.tenant_id = c.tenant_id
+    LEFT JOIN bms_tenant_company AS d ON c.tenant_code = d.tenant_code WHERE a.tenant_id = '$tenant_id' $where");
+    $arrayData = [];
+    $count = 0;
+    foreach($data as $data){
+      $data_user = AppModel::selectRaw("SELECT overtime_user FROM bms_overtime_user WHERE overtime_code = '$data->overtime_code'");
+      $overtime_user = [];
+      foreach ($data_user as $key => $value) {
+        $overtime_user[] = $value->overtime_user;
+      }
+      if ($data->overtime_status == 0) {
+        $overtime_status = 'Awaiting Approval';
+      }else if($data->overtime_status == 2){
+        $overtime_status = 'Request Update';
+      }else if($data->overtime_status == 3){
+        $overtime_status = 'Approve Update';
+      }else{
+        $overtime_status = 'Approved';
+      }
+      $arrayData['list'][] = array(
+        'overtime_date'         => $data->overtime_date,
+        'overtime_code'         => $data->overtime_code,
+        'tenant_id'             => $data->tenant_id,
+        'tenant_name'           => $data->company_name,
+        'overtime_duration'     => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_duration,
+        'overtime_type'         => $data->overtime_type,
+        'overtime_zone'         => $data->overtime_zone,
+        'overtime_start'        => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_start,
+        'overtime_end'          => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_end,
+        'overtime_status_code'  => $data->overtime_status,
+        'overtime_status'       => $overtime_status,
+        'total_user'            => $data->totalUser,
+        'overtime_user'         => $overtime_user
+      );
+      $count++;
+    }
+
+    $arrayData['total'][] = $count;
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function getListTypeOvertime(){
+    $data = AppModel::selectRaw("SELECT *
+                        FROM bms_overtime_type");
+    $arrayData = [];
+    foreach($data as $data){
+      $arrayData[] = array(
+                      'id'       => $data->type_id,
+                      'label'    => $data->type_desc,
+                      'start'    => $data->type_start_time,
+                      'end'      => $data->type_end_time,
+                    );
+    }
+
+    $result = json_encode($arrayData);
+    return $result;
+  }
+
+
+  public function request_update_overtime(Request $request)
+  {
+    $overtime_code = $request->overtime_code;
+    $array = array(
+          'overtime_status'         => 2,
+          'overtime_approval'       => 0,
+          'overtime_approval_date'  => NULL,
+          'overtime_approval_by'    => NULL,
+        );
+    $request_update =  AppModel::update('bms_overtime', 'overtime_code', $overtime_code, $array);
+    if ($request_update) {
+      $getData = AppModel::singleSelect('bms_overtime', 'overtime_code', $overtime_code);
+      $arrayLog = array(
+        'overtime_code'           => $getData->overtime_code,
+        'overtime_duration'       => $getData->overtime_duration,
+        'overtime_end'            => $getData->overtime_end,
+        'overtime_status'         => 2,
+        'overtime_approval'       => 0,
+        'overtime_approval_date'  => NULL,
+        'overtime_approval_by'    => NULL,
+        'overtime_update_desc'    => 'Request Modify',
+        'created_at'              => Carbon::now(),
+        'created_by'              => $request->created_by,
+      );
+      AppModel::insert('bms_overtime_log', $arrayLog);
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function exportReportOvertimeContent($sql, $generateBy, $sheet, $styling)
+  {
+    $col = 1;
+    $row = 10;
+    $no = 1;
+    $minutes = 0;
+    if (count($sql) > 0) {
+      foreach ($sql as $sql) {
+        list($hour, $minute) = explode(':',$sql->TotalHours);
+        $minutes += $hour * 60;
+        $minutes += $minute;
+
+
+        $sheet->getStyle("A$row:K$row")->applyFromArray($styling['all']);
+        $sheet->getStyle("A$row")->getAlignment()->setHorizontal('center');
+        $sheet->getStyle("D$row:F$row")->getAlignment()->setHorizontal('center');
+        $sheet->getStyle("G$row:K$row")->getAlignment()->setHorizontal('center');
+        $sheet->getStyle("K$row")->getAlignment()->setHorizontal('center');
+  
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($no);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->Days);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->Dates);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->DateFrom);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->DateTo);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->countOvertimeShow);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->HKAC);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->HKNAC);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->HLAC);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->HLNAC);
+        $col = $col + 1;
+        $sheet->getCellByColumnAndRow($col, $row)->setValue($sql->TotalHoursShow);
+
+        $col = 1;
+        $row++;
+        $no++;
+      }
+      $hours = floor($minutes / 60);
+      $minutes -= $hours * 60;
+      $grandHour = sprintf('%02d:%02d', $hours, $minutes);
+      $sheet->getStyle("A$row:K$row")->applyFromArray($styling['all']);
+      $sheet->getCellByColumnAndRow(11, $row)->setValue(str_replace(':', '.', $grandHour));
+      $sheet->getStyle("K$row")->getFont()->setBold(true);
+    }else{
+      $sheet->getCellByColumnAndRow(1, $row)->setValue('No Data Found');
+      $sheet->mergeCells("A$row:K$row");
+    }
+
+    $row = $row+4;
+
+    $sheet->getCellByColumnAndRow(2, $row)->setValue('Jakarta, '.Carbon::now()->format('d F Y'));
+    $sheet->mergeCells("B$row:E$row");
+    $row = $row+1;
+    $sheet->getCellByColumnAndRow(2, $row)->setValue('Dibuat Oleh,');
+    $sheet->mergeCells("B$row:E$row");
+    $sheet->getCellByColumnAndRow(7, $row)->setValue('Diketahui Oleh,');
+    $sheet->mergeCells("G$row:J$row");
+    $row = $row+5;
+    $sheet->getCellByColumnAndRow(2, $row)->setValue($generateBy);
+    $sheet->mergeCells("B$row:E$row");
+    $sheet->getCellByColumnAndRow(7, $row)->setValue('Lambert Jansen');
+    $sheet->mergeCells("G$row:J$row");
+    $sheet->getStyle("B$row")->getFont()->setBold(true);
+    $sheet->getStyle("G$row")->getFont()->setBold(true);
+    $row = $row+1;
+    $sheet->getCellByColumnAndRow(2, $row)->setValue('Staff BM');
+    $sheet->mergeCells("B$row:E$row");
+    $sheet->getCellByColumnAndRow(7, $row)->setValue('Head Of Building Maintenance');
+    $sheet->mergeCells("G$row:J$row");
+    $sheet->getStyle("B$row")->getFont()->setBold(true);
+    $sheet->getStyle("G$row")->getFont()->setBold(true);
+
+    return $sheet;
+  }
+
+  public function export_excel(Request $request)
+  {
+    $company = $request->company;
+    $status = $request->status;
+    $startTime = Carbon::parse($request->startTime);
+    $endTime = Carbon::parse($request->endTime);
+    // $emailTo = $request->emailTo;
+    $generateBy = $request->generateBy;
+
+    if ($company != '0') {
+      $whereCompany = "AND tenant_id = '$company'";
+      $sqlCompany = collect(\AppModel::selectRaw("SELECT company_name FROM bms_tenant a
+      JOIN bms_tenant_company b ON a.tenant_code = b.tenant_code
+      WHERE a.tenant_id = '$company'"))->first();
+      $getCompany = $sqlCompany->company_name;
+    } else {
+      $whereCompany = "";
+      $getCompany = 'ALL';
+    }
+
+    if ($status != '5') {
+      $whereStatus = "AND overtime_status = '$status'";
+    } else {
+      $whereStatus = "";
+    }
+
+
+    $sql = AppModel::selectRaw("SELECT
+    (CASE WHEN DATENAME(dw, overtime_date)='Sunday' THEN 'Minggu'
+    WHEN DATENAME(dw, overtime_date)='Monday' THEN 'Senin'
+    WHEN DATENAME(dw, overtime_date)='Tuesday' THEN 'Selasa'
+    WHEN DATENAME(dw, overtime_date)='Wednesday' THEN 'Rabu'
+    WHEN DATENAME(dw, overtime_date)='Thursday' THEN 'Kamis'
+    WHEN DATENAME(dw, overtime_date)='Friday' THEN 'Jumat' ELSE 'Sabtu' END ) AS Days,
+    CONVERT(VARCHAR(20),overtime_date,105) AS Dates,
+    CONVERT(VARCHAR(5), overtime_start, 8) AS DateFrom,
+    CONVERT(VARCHAR(5), overtime_end, 8) AS DateTo,
+    CONVERT(VARCHAR(5), overtime_duration, 8) AS countOvertime,
+    (DATEPART(hour, overtime_duration) + .01 * DATEPART(minute, overtime_duration) + .01 * DATEPART(second, overtime_duration)) AS countOvertimeShow,
+    (CASE WHEN overtime_type = 1 THEN overtime_zone
+    ELSE '' END) AS HKAC,
+    (CASE WHEN overtime_type = 2 THEN overtime_zone
+    ELSE '' END) AS HKNAC,
+    (CASE WHEN overtime_type = 3 THEN overtime_zone
+    ELSE '' END) AS HLAC,
+    (CASE WHEN overtime_type = 4 THEN overtime_zone
+    ELSE '' END) AS HLNAC,
+    CONVERT(VARCHAR(5), overtime_duration, 8) AS TotalHours,
+    (DATEPART(hour, overtime_duration) + .01 * DATEPART(minute, overtime_duration) + .01 * DATEPART(second, overtime_duration)) AS TotalHoursShow
+    FROM bms_overtime WHERE CONVERT(DATE,overtime_date) BETWEEN '$startTime' AND '$endTime' $whereCompany $whereStatus");
+
+    $content = '
+    <table width="100%" style="border-collapse:collapse">
+      <tr>
+        <td class="header">
+          <h4>
+            REPORTING OVERTIME
+          </h4>
+        </td>
+      </tr>
+      <tr>
+        <td class="container">
+          <table width="100%">
+            <tr>
+              <td style="width:20%">Tenant</td>
+              <td style="width:5%">:</td>
+              <td style="width:75%"> '.strtoupper($getCompany).'</td>
+            </tr>
+            <tr>
+              <td style="width:20%">Periode</td>
+              <td style="width:5%">:</td>
+              <td style="width:75%"> '.$startTime->format('d F Y').' s/d '.$endTime->format('d F Y').'</td>
+            </tr>
+            <tr>
+              <td style="width:20%">Generate By</td>
+              <td style="width:5%">:</td>
+              <td style="width:75%"> '.$generateBy.'</td>
+            </tr>
+            <tr>
+              <td style="width:20%">Generate Time</td>
+              <td style="width:5%">:</td>
+              <td style="width:75%"> '.Carbon::now()->format('d F Y H:i:s').'</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>';
+
+
+    $styling = array(
+      'all' => array(
+        'borders' => array(
+          'allBorders' => array(
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'color' => array('argb' => '9999999'),
+          ),
+        ),
+      ),
+      'top' => array(
+        'borders' => array(
+          'allBorders' => array(
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'color' => array('argb' => '9999999'),
+          ),
+          'bottom' => array(
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+            'color' => array('argb' => '9999999'),
+          ),
+        ),
+      ),
+      'alignment' => array(
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+      );
+
+    $temporary_html_file = public_path('temp_html') ."/";
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'REPORT REPORTING OVERTIME');
+    $sheet->setCellValue('A2', 'INTIRUB BUSSINESS PARK');
+    $sheet->setCellValue('A4', 'Perusahaan');
+    $sheet->mergeCells('A4:B4');
+    $sheet->setCellValue('C4', ': '.strtoupper($getCompany));
+    $sheet->setCellValue('A5', 'Periode');
+    $sheet->mergeCells('A5:B5');
+    $sheet->setCellValue('C5', ': '.$startTime->format('d F Y').' s/d '.$endTime->format('d F Y'));
+    $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal('center');
+    $sheet->mergeCells('A1:K1');
+    $sheet->mergeCells('A2:K2');
+    $sheet->mergeCells('C4:K4');
+    $sheet->mergeCells('C5:K5');
+    $sheet->getStyle("A1:A2")->getFont()->setBold(true)->setSize(14);
+    
+    $sheet->getStyle('A7:J3')->getAlignment()->setHorizontal('center');
+    $sheet->setCellValue('A7', 'No' );
+    $sheet->mergeCells('A7:A9');
+    $sheet->getColumnDimension("A")->setAutoSize(true);
+    $sheet->setCellValue('B7', 'Hari' );
+    $sheet->mergeCells('B7:B9');
+    $sheet->getColumnDimension("B")->setAutoSize(true);
+    $sheet->setCellValue('C7', 'Tanggal' );
+    $sheet->mergeCells('C7:C9');
+    $sheet->getColumnDimension("C")->setAutoSize(true);
+    $sheet->setCellValue('D7', 'Waktu Lembur' );
+    $sheet->mergeCells('D7:E7');
+    $sheet->setCellValue('D8', 'Dari' );
+    $sheet->mergeCells('D8:D9');
+    $sheet->getColumnDimension("D")->setWidth(20);
+    $sheet->setCellValue('E8', 's/d' );
+    $sheet->mergeCells('E8:E9');
+    $sheet->getColumnDimension("E")->setWidth(20);
+    $sheet->setCellValue('F7', 'Jumlah Jam Lembur' );
+    $sheet->mergeCells('F7:F9');
+    $sheet->getColumnDimension("F")->setAutoSize(true);
+    $sheet->setCellValue('G7', 'Zona Lembur' );
+    $sheet->mergeCells('G7:J7');
+    $sheet->setCellValue('G8', 'Hari Kerja' );
+    $sheet->setCellValue('G9', 'AC' );
+    $sheet->setCellValue('H9', 'Non AC' );
+    $sheet->mergeCells('G8:H8');
+    $sheet->getColumnDimension("G")->setWidth(10);
+    $sheet->getColumnDimension("H")->setWidth(10);
+    $sheet->setCellValue('I8', 'Hari Libur' );
+    $sheet->setCellValue('I9', 'AC' );
+    $sheet->setCellValue('J9', 'Non AC' );
+    $sheet->mergeCells('I8:J8');
+    $sheet->getColumnDimension("I")->setWidth(10);
+    $sheet->getColumnDimension("J")->setWidth(10);
+    $sheet->setCellValue('K7', 'Jam' );
+    $sheet->mergeCells('K7:K9');
+    $sheet->getColumnDimension("K")->setAutoSize(true);
+    
+    $sheet->getStyle("A7:K9")->getFont()->setBold(true);
+    $sheet->getStyle("A7:K9")->applyFromArray($styling['top']);
+    $sheet->getStyle('A7:K9')->getAlignment()->setHorizontal('center');
+    $sheet->getStyle('A7:K9')->getAlignment()->setVertical('center');
+    
+    $sheet = $this->exportReportOvertimeContent($sql, $generateBy, $sheet, $styling);
+
+    $sheet->setShowGridlines(false);
+    
+    $writer = new Xlsx($spreadsheet);
+    $fileName='report_leave_management.xlsx';
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+    $writer->save('/opt/webdev/mynet/public/download/'.$fileName);
+    ob_end_clean();
+
+    Mail::send('prospect.email_notification', ['content' => $content], function ($m) use ($writer, $fileName) {
+      $m->from('no-reply@mmproperty.com','Reporting Overtime');
+      // $m->attachData($writer, 'reporting.xlsx');
+      $m->attach('/opt/webdev/mynet/public/download/'.$fileName);
+      // $m->to($emailTo)
+        // ->cc('fuad.maulana@mmproperty.com')
+      $m->to('muhammad.zakki@mmproperty.com')
+        // ->cc('fuad.maulana@mmproperty.com')
+      ->subject('Reporting Overtime');
+    });
+
+    $code = '200';
+    $message = 'success';
+
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function getListOvertime($params){
+    $where = '';
+    if ($params != 'all') {
+      $where = "WHERE a.overtime_status = '$params'";
+    }else{
+      $where = "";
+    }
+    $data = AppModel::selectRaw("SELECT a.*, b.type_desc AS overtime_type, c.tenant_person, d.company_name, (SELECT COUNT(*) FROM bms_overtime_user WHERE overtime_code = a.overtime_code ) AS totalUser 
+    FROM bms_overtime AS a
+    JOIN bms_overtime_type AS b ON a.overtime_type = b.type_id
+    LEFT JOIN bms_tenant AS c ON a.tenant_id = c.tenant_id
+    LEFT JOIN bms_tenant_company AS d ON c.tenant_code = d.tenant_code
+    $where");
+    $arrayData = [];
+    $count = 0;
+    foreach($data as $data){
+      $data_user = AppModel::selectRaw("SELECT overtime_user FROM bms_overtime_user WHERE overtime_code = '$data->overtime_code'");
+      $overtime_user = [];
+      foreach ($data_user as $key => $value) {
+        $overtime_user[] = $value->overtime_user;
+      }
+      if ($data->overtime_status == 0) {
+        $overtime_status = 'Awaiting Approval';
+      }else if($data->overtime_status == 2){
+        $overtime_status = 'Request Update';
+      }else if($data->overtime_status == 3){
+        $overtime_status = 'Approve Update';
+      }else{
+        $overtime_status = 'Approved';
+      }
+      $arrayData['list'][] = array(
+        'overtime_date'         => $data->overtime_date,
+        'overtime_code'         => $data->overtime_code,
+        'tenant_id'             => $data->tenant_id,
+        'tenant_name'           => $data->company_name,
+        'overtime_duration'     => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_duration,
+        'overtime_type'         => $data->overtime_type,
+        'overtime_zone'         => $data->overtime_zone,
+        'overtime_start'        => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_start,
+        'overtime_end'          => Carbon::parse($data->overtime_date)->format('Y-m-d').' '.$data->overtime_end,
+        'overtime_status_code'  => $data->overtime_status,
+        'overtime_status'       => $overtime_status,
+        'total_user'            => $data->totalUser,
+        'overtime_user'         => $overtime_user
+      );
+      $count++;
+    }
+
+    $arrayData['total'][] = $count;
+
+    $dataStatus = AppModel::selectRaw("SELECT DISTINCT(overtime_status) AS status FROM bms_overtime");
+    $arrayData['optStatus'][] = array(
+      'id'       => 0,
+      'label'    => 'All',
+    );
+    foreach ($dataStatus as $dataStatus) {
+      if ($dataStatus->status == 0) {
+        $overtime_status = 'Awaiting Approval';
+      }else if($dataStatus->status == 2){
+        $overtime_status = 'Request Update';
+      }else if($dataStatus->status == 3){
+        $overtime_status = 'Approve Update';
+      }else{
+        $overtime_status = 'Approved';
+      }
+
+      $arrayData['optStatus'][] = array(
+        'id'       => $dataStatus->status,
+        'label'    => $overtime_status,
+      );
+    }
+
+    $dataCompany = AppModel::selectRaw("SELECT a.tenant_id, b.company_name from bms_tenant a
+    JOIN bms_tenant_company b ON a.tenant_code = b.tenant_code");
+    $arrayData['optCompany'][] = array(
+      'id'       => 0,
+      'label'    => 'All',
+    );
+    foreach ($dataCompany as $dataCompany) {
+      $arrayData['optCompany'][] = array(
+        'id'       => $dataCompany->tenant_id,
+        'label'    => $dataCompany->company_name,
+      );
+    }
+
+    $status = json_encode($arrayData);
+    return $status;
+  }
+
+  public function approve_overtime(Request $request)
+  {
+    $overtime_code = $request->overtime_code;
+    $array = array(
+          'overtime_status'         => 1,
+          'overtime_approval'       => 1,
+          'overtime_approval_date'  => Carbon::now(),
+          'overtime_approval_by'    => $request->approve_by,
+        );
+    $request_update =  AppModel::update('bms_overtime', 'overtime_code', $overtime_code, $array);
+    if ($request_update) {
+      $getData = AppModel::singleSelect('bms_overtime', 'overtime_code', $overtime_code);
+      $arrayLog = array(
+        'overtime_code'           => $getData->overtime_code,
+        'overtime_duration'       => $getData->overtime_duration,
+        'overtime_end'            => $getData->overtime_end,
+        'overtime_status'         => 1,
+        'overtime_approval'       => 1,
+        'overtime_approval_date'  => Carbon::now(),
+        'overtime_approval_by'    => $request->approve_by,
+        'overtime_update_desc'    => 'Approve',
+        'created_at'              => Carbon::now(),
+        'created_by'              => $request->approve_by,
+      );
+      AppModel::insert('bms_overtime_log', $arrayLog);
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function approve_update_overtime(Request $request)
+  {
+    $overtime_code = $request->overtime_code;
+    $array = array(
+          'overtime_status'         => 3,
+          'overtime_approval'       => 1,
+          'overtime_approval_date'  => Carbon::now(),
+          'overtime_approval_by'    => $request->approve_by,
+        );
+    $request_update =  AppModel::update('bms_overtime', 'overtime_code', $overtime_code, $array);
+    if ($request_update) {
+      $getData = AppModel::singleSelect('bms_overtime', 'overtime_code', $overtime_code);
+      $arrayLog = array(
+        'overtime_code'           => $getData->overtime_code,
+        'overtime_duration'       => $getData->overtime_duration,
+        'overtime_end'            => $getData->overtime_end,
+        'overtime_status'         => 3,
+        'overtime_approval'       => 1,
+        'overtime_approval_date'  => Carbon::now(),
+        'overtime_approval_by'    => $request->approve_by,
+        'overtime_update_desc'    => 'Approve Modify',
+        'created_at'              => Carbon::now(),
+        'created_by'              => $request->approve_by,
+      );
+      AppModel::insert('bms_overtime_log', $arrayLog);
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function update_overtime(Request $request)
+  {
+    $overtime_code = $request->overtime_code;
+    $array = array(
+      'overtime_status'        => 0,
+      'overtime_end'           => $request->overtime_end,
+      'overtime_duration'      => $request->overtime_duration,
+      'overtime_approval'       => 0,
+      'overtime_approval_date'  => NULL,
+      'overtime_approval_by'    => NULL,
+    );
+    $request_update =  AppModel::update('bms_overtime', 'overtime_code', $overtime_code, $array);
+    if ($request_update) {
+      $arrayLog = array(
+        'overtime_code'           => $overtime_code,
+        'overtime_duration'       => $request->overtime_duration,
+        'overtime_end'            => $request->overtime_end,
+        'overtime_status'         => 0,
+        'overtime_approval'       => 0,
+        'overtime_approval_date'  => NULL,
+        'overtime_approval_by'    => NULL,
+        'overtime_update_desc'    => 'Modified',
+        'created_at'              => Carbon::now(),
+        'created_by'              => $request->modified_by,
+      );
+      AppModel::insert('bms_overtime_log', $arrayLog);
+      $message = 'success';
+      $code = 200;
+    }else{
+      $message = 'error';
+      $code = 500;
+    }
+    $response = array(
+      'code'           => $code,
+      'message'        => $message,
+    );
+
+    return response()->json($response);
+  }
+
+  public function overtimeResult(Request $request)
+  {
+    $company = $request->company;
+    $status = $request->status;
+    $startTime = Carbon::parse($request->startTime);
+    $endTime = Carbon::parse($request->endTime);
+
+    if ($company != '0') {
+      $whereCompany = "AND tenant_id = '$company'";
+      $sqlCompany = collect(\AppModel::selectRaw("SELECT company_name FROM bms_tenant a
+      JOIN bms_tenant_company b ON a.tenant_code = b.tenant_code
+      WHERE a.tenant_id = '$company'"))->first();
+      $getCompany = $sqlCompany->company_name;
+    } else {
+      $whereCompany = "";
+      $getCompany = 'ALL';
+    }
+
+    if ($status != '5') {
+      $whereStatus = "AND overtime_status = '$status'";
+    } else {
+      $whereStatus = "";
+    }
+    $sql = AppModel::selectRaw("SELECT
+    overtime_code,
+    (CASE WHEN DATENAME(dw, overtime_date)='Sunday' THEN 'Minggu'
+    WHEN DATENAME(dw, overtime_date)='Monday' THEN 'Senin'
+    WHEN DATENAME(dw, overtime_date)='Tuesday' THEN 'Selasa'
+    WHEN DATENAME(dw, overtime_date)='Wednesday' THEN 'Rabu'
+    WHEN DATENAME(dw, overtime_date)='Thursday' THEN 'Kamis'
+    WHEN DATENAME(dw, overtime_date)='Friday' THEN 'Jumat' ELSE 'Sabtu' END ) AS Days,
+    CONVERT(VARCHAR(20),overtime_date,105) AS Dates,
+    CONVERT(VARCHAR(5), overtime_start, 8) AS DateFrom,
+    CONVERT(VARCHAR(5), overtime_end, 8) AS DateTo,
+    CONVERT(VARCHAR(5), overtime_duration, 8) AS countOvertime,
+    (DATEPART(hour, overtime_duration) + .01 * DATEPART(minute, overtime_duration) + .01 * DATEPART(second, overtime_duration)) AS countOvertimeShow,
+    (CASE WHEN overtime_type = 1 THEN overtime_zone
+    ELSE '' END) AS HKAC,
+    (CASE WHEN overtime_type = 2 THEN overtime_zone
+    ELSE '' END) AS HKNAC,
+    (CASE WHEN overtime_type = 3 THEN overtime_zone
+    ELSE '' END) AS HLAC,
+    (CASE WHEN overtime_type = 4 THEN overtime_zone
+    ELSE '' END) AS HLNAC,
+    CONVERT(VARCHAR(5), overtime_duration, 8) AS TotalHours,
+    (DATEPART(hour, overtime_duration) + .01 * DATEPART(minute, overtime_duration) + .01 * DATEPART(second, overtime_duration)) AS TotalHoursShow,
+    overtime_status
+    FROM bms_overtime WHERE CONVERT(date,overtime_date) BETWEEN '$startTime' AND '$endTime' $whereCompany $whereStatus");
+
+    $list = '';
+    $arrayData = [];
+    $minutes = 0;
+    if (count($sql) > 0) {
+      foreach ($sql as $sql) {
+        list($hour, $minute) = explode(':',$sql->TotalHours);
+        $minutes += $hour * 60;
+        $minutes += $minute;
+        $arrayData[] = array(
+          'overtime_code' => $sql->overtime_code,
+          'day'           => $sql->Days,
+          'dates'         => $sql->Dates,
+          'timeFrom'      => $sql->DateFrom,
+          'timeTo'        => $sql->DateTo,
+          'totalOvertime' => $sql->countOvertimeShow,
+          'hkac'          => $sql->HKAC,
+          'hknac'         => $sql->HKNAC,
+          'hlac'          => $sql->HLAC,
+          'hlnac'         => $sql->HLNAC,
+          'status'        => $sql->overtime_status
+        );
+      }
+    }
+    
+
+    $result = json_encode($arrayData);
+    return $result;
+  }
+  
+}
