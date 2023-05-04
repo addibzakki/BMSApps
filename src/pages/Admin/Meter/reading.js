@@ -49,7 +49,7 @@ const AdminMeterReading = ({navigation}) => {
 
   const onSetMeterID = typing => {
     console.log(value);
-    if (value === null) {
+    if (value == null) {
       Alert.alert('Attention', 'Please select entity first');
     } else {
       setMeterID(typing);

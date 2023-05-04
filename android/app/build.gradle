@@ -144,8 +144,8 @@ android {
         applicationId "com.mmpbmsappeng"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.2.0"
+        versionCode appVersionCode.toInteger()
+        versionName appVersionName
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
     }

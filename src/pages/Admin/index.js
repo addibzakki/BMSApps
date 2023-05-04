@@ -148,7 +148,8 @@ const AdminDashboard = ({navigation}) => {
       };
 
       const resD = await DashboardAPIService.getDashboard(data);
-      if (resD != 'undefined') {
+
+      if (typeof resD !== 'undefined') {
         if (resD.data.show_message == true) {
           Alert.alert('Alert', resD.data.message, [
             {
@@ -190,7 +191,7 @@ const AdminDashboard = ({navigation}) => {
       }
     } catch (error) {
       if (error.message == 'Network Error') {
-        Alert.alert('Jaringan Error', 'Silahkan periksa jaringan anda 1');
+        Alert.alert('Jaringan Error', 'Silahkan periksa jaringan anda');
       } else {
         Alert.alert('Error', error.message);
         console.log(error);
@@ -265,7 +266,7 @@ const AdminDashboard = ({navigation}) => {
       navigation.replace('AdminDashboard');
     } catch (error) {
       if (error.message == 'Network Error') {
-        Alert.alert('Jaringan Error', 'Silahkan periksa jaringan anda 2');
+        Alert.alert('Jaringan Error', 'Silahkan periksa jaringan anda');
       } else {
         Alert.alert('Error', error.message);
         console.log(error);
@@ -331,37 +332,40 @@ const AdminDashboard = ({navigation}) => {
   const dumpData = async () => {
     try {
       const resp = await MeterAPIService.fetchListMeterOffline();
-      resp.data.list.map(value => {
-        inputTables(db, value, 'list_meter');
-      });
-      if (typeof resp.data.list_bms !== 'undefined') {
-        resp.data.list_bms.map(val => {
-          inputTables(db, val, 'bms_meter');
+
+      if (typeof resp !== 'undefined') {
+        resp.data.list.map(value => {
+          inputTables(db, value, 'list_meter');
+        });
+        if (typeof resp.data.list_bms !== 'undefined') {
+          resp.data.list_bms.map(val => {
+            inputTables(db, val, 'bms_meter');
+          });
+        }
+        db.transaction(txn => {
+          txn.executeSql(
+            'SELECT * FROM list_meter',
+            [],
+            (txn, res) => {
+              console.log('Total data di list_meter:' + res.rows.length);
+            },
+            error => {
+              console.log('error on select table list_meter ' + error.message);
+            },
+          );
+
+          txn.executeSql(
+            'SELECT * FROM bms_meter',
+            [],
+            (txn, res) => {
+              console.log('Total data di bms_meter:' + res.rows.length);
+            },
+            error => {
+              console.log('error on select table bms_meter ' + error.message);
+            },
+          );
         });
       }
-      db.transaction(txn => {
-        txn.executeSql(
-          'SELECT * FROM list_meter',
-          [],
-          (txn, res) => {
-            console.log('Total data di list_meter:' + res.rows.length);
-          },
-          error => {
-            console.log('error on select table list_meter ' + error.message);
-          },
-        );
-
-        txn.executeSql(
-          'SELECT * FROM bms_meter',
-          [],
-          (txn, res) => {
-            console.log('Total data di bms_meter:' + res.rows.length);
-          },
-          error => {
-            console.log('error on select table bms_meter ' + error.message);
-          },
-        );
-      });
     } catch (error) {
       if (error.message == 'Network Error') {
         Alert.alert('Jaringan Error', 'Silahkan periksa jaringan anda 4');

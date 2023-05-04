@@ -88,6 +88,7 @@ const AdminHelpdeskShow = ({navigation}) => {
       // setImage([...res_engineer.data.attach]);
       dispatch(setRefresh(false));
       dispatch(setLoading(false));
+      setLoadingData(false);
     } catch (error) {
       Alert.alert('Error', error.message);
       dispatch(setRefresh(false));

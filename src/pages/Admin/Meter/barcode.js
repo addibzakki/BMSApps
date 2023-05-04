@@ -62,7 +62,7 @@ const AdminMeterBarcode = ({navigation}) => {
   };
 
   const handleCekMeterID = async value => {
-    if (networkContext.networkInfo === true) {
+    if (networkContext.networkInfo == true) {
       try {
         setLoading(true);
         const res = await MeterAPIService.getMeter(value);
@@ -90,11 +90,15 @@ const AdminMeterBarcode = ({navigation}) => {
       }
     } else {
       setLoading(true);
+      var meterSplit = value.split('::');
+      if (meterSplit[0] == 'gardu-induk') {
+        value = meterSplit[0].concat('::', meterSplit[1], '::', meterSplit[2]);
+      }
       var temp = [];
       db.transaction(txn => {
         txn.executeSql(
-          "SELECT * FROM bms_meter WHERE (meter_id = ? OR meter_id ||'::'|| entity_cd = ?) LIMIT 1",
-          [value, value],
+          "SELECT * FROM bms_meter WHERE (meter_id = ? OR meter_id ||'::'|| entity_cd = ? OR meter_id ||'::'|| entity_cd ||'::'|| project_no = ?) LIMIT 1",
+          [value, value, value],
           (txn, res) => {
             console.log(res, 'bms_meter');
             if (res.rows.length > 0) {
