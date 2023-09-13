@@ -1,4 +1,4 @@
-#Thu Feb 09 16:23:24 ICT 2023
-base.0=D\:\\Project\\React Native\\Develope\\BMSApp-Develope\\android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+#Mon Sep 11 14:38:40 ICT 2023
+base.0=D\:\\0. KERJAAN\\PROJECT\\React Native\\Develope\\BMSApp-Develope\\android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

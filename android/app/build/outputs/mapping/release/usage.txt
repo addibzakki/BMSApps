@@ -4433,7 +4433,6 @@ androidx.recyclerview.widget.DefaultItemAnimator:
 com.google.android.datatransport.runtime.scheduling.SchedulingConfigModule:
     public void <init>()
 com.google.android.exoplayer2.RendererCapabilities$AdaptiveSupport
-androidx.core.view.ScaleGestureDetectorCompat
 androidx.core.view.ViewGroupCompat:
     private void <init>()
     public static boolean onRequestSendAccessibilityEvent(android.view.ViewGroup,android.view.View,android.view.accessibility.AccessibilityEvent)
@@ -4444,6 +4443,7 @@ androidx.core.view.ViewGroupCompat:
     public static int getNestedScrollAxes(android.view.ViewGroup)
     public static final int LAYOUT_MODE_CLIP_BOUNDS
     public static final int LAYOUT_MODE_OPTICAL_BOUNDS
+androidx.core.view.ScaleGestureDetectorCompat
 androidx.core.app.NotificationCompat$CarExtender
 com.google.android.exoplayer2.extractor.ts.Id3Reader:
     private static final java.lang.String TAG
@@ -31826,26 +31826,26 @@ com.google.android.material.resources.TextAppearance:
 androidx.appcompat.view.StandaloneActionMode:
     private boolean mFocusable
 com.google.android.exoplayer2.ui.spherical.-$$Lambda$SphericalGLSurfaceView$svRenkwMuRhLEst9s1zm1Jg6UCE
-com.google.android.exoplayer2.video.VideoRendererEventListener$-CC
-com.google.android.exoplayer2.drm.DrmSession$-CC:
-    public static boolean $default$playClearSamplesWithoutKeys(com.google.android.exoplayer2.drm.DrmSession)
-com.google.android.exoplayer2.analytics.AnalyticsListener$-CC
-com.google.android.exoplayer2.device.DeviceListener$-CC
 com.google.android.exoplayer2.video.VideoListener$-CC:
     public static void $default$onVideoSizeChanged(com.google.android.exoplayer2.video.VideoListener,int,int,int,float)
     public static void $default$onRenderedFirstFrame(com.google.android.exoplayer2.video.VideoListener)
-com.google.android.exoplayer2.source.MediaSourceEventListener$-CC
+com.google.android.exoplayer2.analytics.AnalyticsListener$-CC
+com.google.android.exoplayer2.audio.AudioSink$Listener$-CC
 com.google.android.exoplayer2.audio.AudioListener$-CC
+com.google.android.exoplayer2.drm.DrmSession$-CC:
+    public static boolean $default$playClearSamplesWithoutKeys(com.google.android.exoplayer2.drm.DrmSession)
+com.google.android.exoplayer2.device.DeviceListener$-CC
+com.google.android.exoplayer2.audio.AudioRendererEventListener$-CC
 com.google.android.exoplayer2.drm.DrmSessionEventListener$-CC:
     public static void $default$onDrmKeysLoaded(com.google.android.exoplayer2.drm.DrmSessionEventListener,int,com.google.android.exoplayer2.source.MediaSource$MediaPeriodId)
     public static void $default$onDrmSessionManagerError(com.google.android.exoplayer2.drm.DrmSessionEventListener,int,com.google.android.exoplayer2.source.MediaSource$MediaPeriodId,java.lang.Exception)
     public static void $default$onDrmKeysRestored(com.google.android.exoplayer2.drm.DrmSessionEventListener,int,com.google.android.exoplayer2.source.MediaSource$MediaPeriodId)
     public static void $default$onDrmKeysRemoved(com.google.android.exoplayer2.drm.DrmSessionEventListener,int,com.google.android.exoplayer2.source.MediaSource$MediaPeriodId)
 com.google.android.exoplayer2.source.ads.AdsLoader$AdViewProvider$-CC
-com.google.android.exoplayer2.audio.AudioRendererEventListener$-CC
-com.google.android.exoplayer2.audio.AudioSink$Listener$-CC
 com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy$-CC:
     public static long $default$getBlacklistDurationMsFor(com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy,int,long,java.io.IOException,int)
     public static long $default$getBlacklistDurationMsFor(com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy,com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy$LoadErrorInfo)
     public static long $default$getRetryDelayMsFor(com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy,int,long,java.io.IOException,int)
     public static long $default$getRetryDelayMsFor(com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy,com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy$LoadErrorInfo)
+com.google.android.exoplayer2.source.MediaSourceEventListener$-CC
+com.google.android.exoplayer2.video.VideoRendererEventListener$-CC

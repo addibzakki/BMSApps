@@ -40,7 +40,6 @@ const AdminHelpdeskEngineer = ({navigation}) => {
         eng_username: LoginReducer.form.profile.uid,
         eng_level: LoginReducer.form.profile.level,
       };
-
       const res = await CorrectiveAPIService.getListEngineerCorrective(params);
       if (typeof res.data.engineer != 'undefined') {
         dispatch(setListEngineerCorrective(res.data.engineer));

@@ -20,6 +20,7 @@ export const collection = reducer => {
   createTables(db, 'bms_meter');
   createTables(db, 'list_meter');
   createTables(db, 'bms_meter_temp');
+  createTables(db, 'bms_volume_trx_temp');
   createTables(db, 'bms_meter_log');
 
   db_pv_checklist_tmp(db);

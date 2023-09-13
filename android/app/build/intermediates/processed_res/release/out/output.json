@@ -39,18 +39,18 @@
         "splits": [
           {
             "filterType": "ABI",
-            "value": "x86_64"
+            "value": "armeabi-v7a"
           }
         ],
-        "versionCode": 4194317,
+        "versionCode": 1048589,
         "versionName": "1.0.13",
-        "filterName": "x86_64",
-        "outputFile": "app-x86_64-release.apk",
-        "fullName": "x86_64Release",
-        "baseName": "x86_64-release",
-        "dirName": "x86_64\\"
+        "filterName": "armeabi-v7a",
+        "outputFile": "app-armeabi-v7a-release.apk",
+        "fullName": "armeabi-v7aRelease",
+        "baseName": "armeabi-v7a-release",
+        "dirName": "armeabi-v7a\\"
       },
-      "path": "resources-x86_64Release.ap_",
+      "path": "resources-armeabi-v7aRelease.ap_",
       "properties": {
         "packageId": "com.bmsappdev",
         "split": "",
@@ -66,18 +66,18 @@
         "splits": [
           {
             "filterType": "ABI",
-            "value": "armeabi-v7a"
+            "value": "x86_64"
           }
         ],
-        "versionCode": 1048589,
+        "versionCode": 4194317,
         "versionName": "1.0.13",
-        "filterName": "armeabi-v7a",
-        "outputFile": "app-armeabi-v7a-release.apk",
-        "fullName": "armeabi-v7aRelease",
-        "baseName": "armeabi-v7a-release",
-        "dirName": "armeabi-v7a\\"
+        "filterName": "x86_64",
+        "outputFile": "app-x86_64-release.apk",
+        "fullName": "x86_64Release",
+        "baseName": "x86_64-release",
+        "dirName": "x86_64\\"
       },
-      "path": "resources-armeabi-v7aRelease.ap_",
+      "path": "resources-x86_64Release.ap_",
       "properties": {
         "packageId": "com.bmsappdev",
         "split": "",

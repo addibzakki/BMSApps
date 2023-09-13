@@ -1,4 +1,4 @@
-import {uploadTables, uploadPendingTables} from './combinations';
+import {uploadTables, uploadPendingTables, uploadTablesMaster} from './combinations';
 import {createTables} from './create';
 import {
   deleteTables,
@@ -13,6 +13,7 @@ import {collection} from './collection';
 
 export {
   uploadTables,
+  uploadTablesMaster,
   uploadPendingTables,
   createTables,
   deleteTables,

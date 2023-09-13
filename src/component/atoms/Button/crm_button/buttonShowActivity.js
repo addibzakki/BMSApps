@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text} from 'react-native';
 import {Button} from 'native-base';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 export const ButtonShowActivity = props => {
   const handleGoTo = () => {
@@ -15,7 +16,7 @@ export const ButtonShowActivity = props => {
       <Text
         style={{
           color: '#FFF',
-          fontSize: 18,
+          fontSize: RFPercentage(2),
           fontWeight: 'bold',
           textAlign: 'center',
         }}>

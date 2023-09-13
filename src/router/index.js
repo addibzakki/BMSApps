@@ -27,6 +27,8 @@ import {
   AdminMeterFilter,
   AdminMeterBarcode,
   AdminMeterWriting,
+  AdminMeterWritingUpdate,
+  AdminMeterWritingMaster,
   AdminMeterHistory,
   AdminMeterRead,
   AdminMeterUnread,
@@ -70,6 +72,10 @@ import {
   AdminPreventifListShowCheckStandart,
   AdminPreventifListShowHistoryChecklist,
   ListApprovalSPL,
+  PettyDashboard,
+  PettyDetail,
+  PettyCapture,
+  PettyShowCapture
 } from '../pages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colorsBar, colorLogo} from '../utils';
@@ -670,6 +676,20 @@ const Router = () => {
         }}
       />
       <Stack.Screen
+        name="AdminMeterWritingUpdate"
+        component={AdminMeterWritingUpdate}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AdminMeterWritingMaster"
+        component={AdminMeterWritingMaster}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="AdminMeterDetail"
         component={AdminMeterDetail}
         options={{
@@ -973,6 +993,34 @@ const Router = () => {
       <Stack.Screen
         name="AdminPreventifListShowHistoryChecklist"
         component={AdminPreventifListShowHistoryChecklist}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyDashboard"
+        component={PettyDashboard}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyDetail"
+        component={PettyDetail}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyCapture"
+        component={PettyCapture}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyShowCapture"
+        component={PettyShowCapture}
         options={{
           headerShown: false,
         }}

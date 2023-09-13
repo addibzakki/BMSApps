@@ -15,6 +15,7 @@ const initialState = {
   pic_assigned: null,
   stateData: [],
   runID: null,
+  is_ticket_pd: null,
 };
 
 const CorrectiveReducer = (state = initialState, action) => {
@@ -30,6 +31,7 @@ const CorrectiveReducer = (state = initialState, action) => {
         ticket_no: action.data.tenant_ticket_id,
         ticket_status_id: action.data.status_id,
         ticket_status_tenant: action.data.status_tenant,
+        is_ticket_pd: action.data.is_ticket_pd,
       };
     case 'SET_TICKET_NO_CORRECTIVE':
       return {

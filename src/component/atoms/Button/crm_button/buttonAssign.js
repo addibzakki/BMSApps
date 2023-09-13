@@ -8,6 +8,7 @@ import {
   setTicketTypeCorrective,
   setTypeCorrective,
 } from '../../../../redux';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 export const ButtonAssign = props => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ export const ButtonAssign = props => {
       <Text
         style={{
           color: '#FFF',
-          fontSize: 18,
+          fontSize: RFPercentage(2),
           fontWeight: 'bold',
           textAlign: 'center',
         }}>

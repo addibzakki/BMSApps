@@ -386,7 +386,7 @@ const FormModify = props => {
     }
   };
   const updateActivity = async () => {
-    console.log('tes');
+    console.log('tes update');
     try {
       // setLoading(true);
       let uploadData = new FormData();
@@ -423,8 +423,6 @@ const FormModify = props => {
       const res = await CorrectiveAPIService.updateActivityTakenCorrective(
         uploadData,
       );
-      console.log(res.data);
-      return false;
       if (res.data.message == 'success') {
         console.log(res.data.status);
         setLoading(false);

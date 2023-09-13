@@ -46,6 +46,7 @@ import {
 import AuthenticationAPIService from '../../services/Authentication/AuthenticationService';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import SPLAPIService from '../../services/SPL/APIservice';
+import PettyLAPIService from '../../services/Petty/PettyAPIService';
 
 const AdminDashboard = ({navigation}) => {
   const dispatch = useDispatch();
@@ -71,11 +72,13 @@ const AdminDashboard = ({navigation}) => {
   const [resultOvertime, setResultOvertime] = useState('');
   const [point, setPoint] = useState(0);
   const [dataSPL, setDataSPL] = useState([]);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     if (GlobalReducer.refresh == true) {
       getDataDashboard();
       getPoint();
+      checkPetty();
     }
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -83,6 +86,7 @@ const AdminDashboard = ({navigation}) => {
       getPoint();
       dumpData();
       collection(LoginReducer);
+      checkPetty();
     });
 
     return () => {
@@ -122,7 +126,33 @@ const AdminDashboard = ({navigation}) => {
       route: 'AdminSPL',
       notification_val: valNotifSpl,
       notification: notifSpl,
+    }
+  ];
+  const menuPetty = [
+    {
+      rowID: 1,
+      title: 'Cash Advance',
+      icon: 'cash-outline',
+      route: 'PettyDashboard',
+      notification_val: 1,
+      notification: 'TRUE',
     },
+    {
+      rowID: 2,
+      title: 'Cash Advance Pending',
+      icon: 'cash',
+      route: 'PettyDashboard',
+      notification_val: 0,
+      notification: 'TRUE',
+    },
+    {
+      rowID: 3,
+      title: 'History Cash Advance',
+      icon: 'newspaper-outline',
+      route: 'Comming',
+      notification_val: 0,
+      notification: 'FALSE',
+    }
   ];
 
   const getDataDashboard = async () => {
@@ -149,6 +179,8 @@ const AdminDashboard = ({navigation}) => {
         ],
         status: 1,
       };
+
+      console.log(data);
 
       const res = await DashboardAPIService.getDashboard(data);
       console.log(res.data);
@@ -226,6 +258,17 @@ const AdminDashboard = ({navigation}) => {
         Alert.alert('Error', error.message);
       }
     }
+  };
+
+  const checkPetty = async () => {
+      try {
+        const res = await PettyLAPIService.getBalance(LoginReducer.form.profile.uid);
+        console.log(res.data.data);
+        setBalance(res.data.data.balance_format);
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Error', error.message);
+      }
   };
 
   const onCheckOut = async () => {
@@ -371,7 +414,6 @@ const AdminDashboard = ({navigation}) => {
     }
   };
 
-  var imageSource = '';
   if (
     !(
       LoginReducer.form.profile.profile_photo == '' ||
@@ -644,6 +686,7 @@ const AdminDashboard = ({navigation}) => {
             </View>
           </View>
         )}
+        
         <View
           style={{
             borderWidth: 1,
@@ -654,7 +697,9 @@ const AdminDashboard = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <ListMenu list={menu} navigation={navigation} />
+          <ListMenu list={menuPetty} navigation={navigation} />
         </View>
+        
         <View style={styles.wrapper.menu}>
           <View style={styles.space(10)} />
           <View>

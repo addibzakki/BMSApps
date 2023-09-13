@@ -22,6 +22,8 @@ import AdminMeterUpload from './Admin/Meter/upload';
 import AdminMeterFilter from './Admin/Meter/filter';
 import AdminMeterBarcode from './Admin/Meter/barcode';
 import AdminMeterWriting from './Admin/Meter/writing';
+import AdminMeterWritingUpdate from './Admin/Meter/writing_update';
+import AdminMeterWritingMaster from './Admin/Meter/writing_master';
 import AdminMeterHistory from './Admin/Meter/history';
 import AdminMeterRead from './Admin/Meter/read';
 import AdminMeterUnread from './Admin/Meter/unread';
@@ -69,6 +71,12 @@ import AdminPreventifListShowChecklist from './Admin/Assignment/Preventif/list_s
 import AdminPreventifListShowCheckStandart from './Admin/Assignment/Preventif/list_show_check_standart';
 import AdminPreventifListShowHistoryChecklist from './Admin/Assignment/Preventif/list_show_history_checklist';
 
+/* PETTY CASH */
+import PettyDashboard from './Petty';
+import PettyDetail from './Petty/detail';
+import PettyCapture from './Petty/capture';
+import PettyShowCapture from './Petty/show_capture';
+
 export {
   Splash,
   Introduce,
@@ -94,6 +102,8 @@ export {
   AdminMeterFilter,
   AdminMeterBarcode,
   AdminMeterWriting,
+  AdminMeterWritingUpdate,
+  AdminMeterWritingMaster,
   AdminMeterHistory,
   AdminMeterRead,
   AdminMeterUnread,
@@ -136,4 +146,8 @@ export {
   AdminPreventifListShowChecklist,
   AdminPreventifListShowCheckStandart,
   AdminPreventifListShowHistoryChecklist,
+  PettyDashboard,
+  PettyDetail,
+  PettyCapture,
+  PettyShowCapture
 };

@@ -162,7 +162,7 @@ export const ButtonIconBadge = ({
         style={{
           marginTop: 5,
           color: '#FFFFFF',
-          fontSize: RFPercentage(1.7),
+          fontSize: RFPercentage(1.5),
           // fontWeight: 'bold',
           textTransform: 'uppercase',
           textAlign: 'center',
