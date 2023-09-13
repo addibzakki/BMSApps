@@ -27,6 +27,7 @@ const AdminHelpdeskType = ({navigation}) => {
   }, [navigation, GlobalReducer.refresh === true]);
 
   const getData = async () => {
+    console.log(CorrectiveReducer.ticket_no);
     try {
       const res = await CorrectiveAPIService.getListType(
         CorrectiveReducer.ticket_no,

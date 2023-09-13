@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Project\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-fr\\values-fr.xml",
+            "outputFile": "D:\\0. KERJAAN\\PROJECT\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-fr\\values-fr.xml",
             "map": [
                 {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\49b5b235b5d5369a7b369de133c1145b\\jetified-firebase-messaging-21.1.0\\res\\values-fr\\values.xml",

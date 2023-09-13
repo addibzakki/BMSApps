@@ -1181,6 +1181,26 @@ library {
     sha256: "+T\352\244,\2418\301\261\317\324n\232N\273)\220B\340t\370\206\032\267\264\336\242\362\223O\377\343"
   }
 }
+library {
+  maven_library {
+    groupId: "com.github.barteksc"
+    artifactId: "android-pdf-viewer"
+    version: "2.8.2"
+  }
+  digests {
+    sha256: "\333\231\2127j\374\246Ui\256\001E\036\244\235r\223V_\373\373\002\244+\303\375\357k\030\262/D"
+  }
+}
+library {
+  maven_library {
+    groupId: "com.github.barteksc"
+    artifactId: "pdfium-android"
+    version: "1.7.1"
+  }
+  digests {
+    sha256: "\364\336p\334\254~E\035\376Xf1`\370\334\305.~\344*\273)\330\225[\263\320\215\365\351s\354"
+  }
+}
 library_dependencies {
   library_dep_index: 1
   library_dep_index: 2
@@ -1867,6 +1887,14 @@ library_dependencies {
 }
 library_dependencies {
   library_index: 117
+}
+library_dependencies {
+  library_index: 118
+  library_dep_index: 119
+}
+library_dependencies {
+  library_index: 119
+  library_dep_index: 62
 }
 module_dependencies {
   module_name: "base"

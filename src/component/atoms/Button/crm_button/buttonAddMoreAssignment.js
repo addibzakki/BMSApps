@@ -1,13 +1,14 @@
 import React from 'react';
 import {Text} from 'react-native';
 import {Button} from 'native-base';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   setTicketPriorityCorrective,
   setTypeCorrective,
   setTicketTypeCorrective,
   setTicketCategoryCorrective,
 } from '../../../../redux';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 export const ButtonAddMoreAssigment = props => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export const ButtonAddMoreAssigment = props => {
       <Text
         style={{
           color: '#FFF',
-          fontSize: 18,
+          fontSize: RFPercentage(2),
           fontWeight: 'bold',
           textAlign: 'center',
         }}>

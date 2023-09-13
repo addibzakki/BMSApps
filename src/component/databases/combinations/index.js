@@ -37,7 +37,6 @@ export const uploadTables = (db, params) => {
       uploadData.append('tenant_available', tenant_available);
       uploadData.append('longitude', longitude);
       uploadData.append('latitude', latitude);
-
       const res = await MeterAPIService.createReadingMeter(uploadData);
       if (res.data.code == 200) {
         inputTablesLog(db, data, 'bms_meter_log', 'success');

@@ -45,6 +45,8 @@ import AdminPreventifConfirmSubmit from './Admin/Assignment/Preventif/list_confi
 import AdminPreventifListShowChecklist from './Admin/Assignment/Preventif/list_show_checklist';
 import AdminPreventifListShowCheckStandart from './Admin/Assignment/Preventif/list_show_check_standart';
 import AdminPreventifListShowHistoryChecklist from './Admin/Assignment/Preventif/list_show_history_checklist';
+import AdminPreventifListAssignment from './Admin/Assignment/Preventif/list_asignment';
+import AdminPreventiveAssetHistory from './Admin/Assignment/Preventif/list_asset_history';
 
 /* DASHBOARD SPL */
 import AdminSPL from './Admin/SPL/index';
@@ -109,4 +111,6 @@ export {
   AdminPreventifListShowChecklist,
   AdminPreventifListShowCheckStandart,
   AdminPreventifListShowHistoryChecklist,
+  AdminPreventifListAssignment,
+  AdminPreventiveAssetHistory,
 };

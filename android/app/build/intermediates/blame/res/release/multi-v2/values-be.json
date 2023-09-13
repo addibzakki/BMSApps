@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Project\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-be\\values-be.xml",
+            "outputFile": "D:\\0. KERJAAN\\PROJECT\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-be\\values-be.xml",
             "map": [
                 {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\ea9c34f2f0968d57b6b29868547f0686\\jetified-play-services-base-17.0.0\\res\\values-be\\values.xml",

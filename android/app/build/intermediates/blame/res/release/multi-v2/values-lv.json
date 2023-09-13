@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Project\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-lv\\values-lv.xml",
+            "outputFile": "D:\\0. KERJAAN\\PROJECT\\React Native\\Production\\BMSApp-Production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-lv\\values-lv.xml",
             "map": [
                 {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\b058cda32d7fc75b0153169eacbd0342\\appcompat-1.1.0\\res\\values-lv\\values-lv.xml",

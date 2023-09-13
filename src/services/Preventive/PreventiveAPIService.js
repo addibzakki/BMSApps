@@ -85,6 +85,9 @@ const PreventiveAPIService = {
   getImageFromPreventive: function(params) {
     return axios.get('/preventive-maintenances/image-befores/' + params);
   },
+  getListAssetHistory: function (params) {
+    return axios.get('/preventive-maintenances/histories/asset/' + params);
+  },
 };
 
 export default PreventiveAPIService;

@@ -49,6 +49,7 @@ import {
   AdminPreventifListShowChecklist,
   AdminPreventifListShowCheckStandart,
   AdminPreventifListShowHistoryChecklist,
+  AdminPreventifListAssignment,
   AdminSPL,
   RequestSPL,
   ListSPL,
@@ -57,6 +58,7 @@ import {
   ApprovalSPL,
   FormApprovalSPL,
   ListApprovalSPL,
+  AdminPreventiveAssetHistory,
 } from '../pages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colorsBar, colorLogo} from '../utils';
@@ -355,7 +357,7 @@ function AdminSPVPreventifApproval() {
   );
 }
 
-function AdminPICPreventifDashboard() {
+function AdminPreventiveAssignment() {
   return (
     <Tabs.Navigator
       tabBarOptions={{
@@ -373,7 +375,7 @@ function AdminPICPreventifDashboard() {
       inactiveColor={colorsBar.inactive}>
       <Tabs.Screen
         name="Preventive"
-        component={AdminPreventif}
+        component={AdminPreventifListAssignment}
         options={{
           tabBarLabel: 'Preventive',
           tabBarIcon: ({focused}) => {
@@ -783,13 +785,6 @@ const Router = () => {
         }}
       />
       <Stack.Screen
-        name="AdminPICPreventifDashboard"
-        component={AdminPICPreventifDashboard}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="AdminPreventifPhotoBefore"
         component={AdminPreventifPhotoBefore}
         options={{
@@ -869,6 +864,20 @@ const Router = () => {
       <Stack.Screen
         name="AdminPreventifListShowHistoryChecklist"
         component={AdminPreventifListShowHistoryChecklist}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AdminPreventiveAssignment"
+        component={AdminPreventiveAssignment}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AdminPreventiveAssetHistory"
+        component={AdminPreventiveAssetHistory}
         options={{
           headerShown: false,
         }}

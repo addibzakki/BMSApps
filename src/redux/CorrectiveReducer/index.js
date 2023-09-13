@@ -7,6 +7,7 @@ const initialState = {
   type: null,
   ticket_type: null,
   ticket_category: null,
+  ticket_purpose: null,
   ticket_priority: null,
   list_engineer: [],
   list_menu: [],
@@ -14,6 +15,7 @@ const initialState = {
   pic_assigned: null,
   stateData: [],
   runID: null,
+  is_ticket_pd: null,
 };
 
 const CorrectiveReducer = (state = initialState, action) => {
@@ -29,6 +31,7 @@ const CorrectiveReducer = (state = initialState, action) => {
         ticket_no: action.data.tenant_ticket_id,
         ticket_status_id: action.data.status_id,
         ticket_status_tenant: action.data.status_tenant,
+        is_ticket_pd: action.data.is_ticket_pd,
       };
     case 'SET_TICKET_NO_CORRECTIVE':
       return {
@@ -64,6 +67,11 @@ const CorrectiveReducer = (state = initialState, action) => {
       return {
         ...state,
         ticket_category: action.ticket_category,
+      };
+    case 'SET_TICKET_PURPOSE_CORRECTIVE':
+      return {
+        ...state,
+        ticket_purpose: action.ticket_purpose,
       };
     case 'SET_TICKET_PRIORITY_CORRECTIVE':
       return {

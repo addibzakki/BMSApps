@@ -70,7 +70,7 @@ const AdminAssignment = ({navigation}) => {
         key: 0,
         title: 'PREVENTIVE MAINTENANCE',
         icon: 'ios-clipboard-outline',
-        nav: 'AdminPICPreventifDashboard',
+        nav: 'AdminPreventif',
         badge: true,
         count: countPreventif,
       },

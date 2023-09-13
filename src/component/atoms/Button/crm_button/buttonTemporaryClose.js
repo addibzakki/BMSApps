@@ -144,7 +144,7 @@ export const ButtonTemporaryCloseActivity = props => {
       <Text
         style={{
           color: '#FFF',
-          fontSize: RFPercentage(2.5),
+          fontSize: RFPercentage(2),
           fontWeight: 'bold',
           textAlign: 'center',
         }}>

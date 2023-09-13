@@ -4,6 +4,7 @@ import {Button} from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
 import {CorrectiveAPIService} from '../../../../services';
 import {setLoading, setRefresh} from '../../../../redux';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 export const ButtonRequestTransfer = props => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ export const ButtonRequestTransfer = props => {
       <Text
         style={{
           color: '#FFF',
-          fontSize: 18,
+          fontSize: RFPercentage(2),
           fontWeight: 'bold',
           textAlign: 'center',
         }}>

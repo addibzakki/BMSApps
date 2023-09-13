@@ -1,25 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, Alert} from 'react-native';
-import {dropTable, SubMenuCorrective, TopHeader} from '../../../../component';
+import {SubMenuCorrective, TopHeader} from '../../../../component';
 import {useDispatch, useSelector} from 'react-redux';
 import {CorrectiveAPIService} from '../../../../services';
 import {global_style} from '../../../../styles';
 import {setListMenuCorrective, setRefresh} from '../../../../redux';
 import {fetch_cm_action} from '../../../../component/databases/combinations/combination_cm_action';
-import {Fab, Icon} from 'native-base';
+import { Fab, Icon } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {db_cm_tenant_ticket_tmp} from '../../../../component/databases/create/create_cm_tenant_ticket';
-import {db_cm_assignment_pic_tmp} from '../../../../component/databases/create/create_cm_assignment_pic';
-import {db_cm_onhand_tmp} from '../../../../component/databases/create/create_cm_onhand';
-import {db_gl_user_tmp} from '../../../../component/databases/create/create_gl_user';
-import {db_gl_area_tmp} from '../../../../component/databases/create/create_gl_area';
-import {db_cm_item_tmp} from '../../../../component/databases/create/create_cm_item';
-import {fetch_cm_tenant_ticket} from '../../../../component/databases/combinations/combination_cm_tenant_ticket';
-import {fetch_cm_assignment_pic} from '../../../../component/databases/combinations/combination_cm_assignment_pic';
-import {fetch_cm_onhand} from '../../../../component/databases/combinations/combination_cm_onhand';
-import {fetch_gl_user} from '../../../../component/databases/combinations/combination_gl_user';
-import {fetch_gl_area} from '../../../../component/databases/combinations/combination_gl_area';
-import {fetch_cm_item} from '../../../../component/databases/combinations/combination_cm_item';
 import {refresh_cm} from '../../../../component/databases/combinations/combination_cm_refresh';
 
 const AdminHelpdesk = ({navigation}) => {
@@ -27,6 +15,7 @@ const AdminHelpdesk = ({navigation}) => {
   const dispatch = useDispatch();
   const LoginReducer = useSelector(state => state.LoginReducer);
   const GlobalReducer = useSelector(state => state.GlobalReducer);
+
   const [loadingProcess, setLoadingProcess] = useState(false);
   const [titleProcess, setTitleProcess] = useState('');
 
@@ -38,12 +27,10 @@ const AdminHelpdesk = ({navigation}) => {
     });
     return unsubscribe;
   }, [navigation, GlobalReducer.refresh == true]);
-
   const changeModal = (set, title = '') => {
     setLoadingProcess(set);
     setTitleProcess(title);
   };
-
   const getData = async () => {
     try {
       const params = {
@@ -51,7 +38,6 @@ const AdminHelpdesk = ({navigation}) => {
         level: LoginReducer.form.profile.level,
       };
       const res = await CorrectiveAPIService.getSubMenuTicket(params);
-      console.log(res.data);
       dispatch(setListMenuCorrective([...res.data]));
       dispatch(setRefresh(false));
     } catch (error) {
@@ -79,13 +65,12 @@ const AdminHelpdesk = ({navigation}) => {
       ],
     );
   };
-
   return (
     <View style={global_style.page}>
       <Spinner
         visible={loadingProcess}
         textContent={titleProcess}
-        textStyle={{color: '#FFF'}}
+        textStyle={{ color: '#FFF' }}
         overlayColor={'rgba(0, 0, 0, 0.60)'}
       />
       <TopHeader
@@ -100,7 +85,7 @@ const AdminHelpdesk = ({navigation}) => {
       <Fab
         active={true}
         containerStyle={{}}
-        style={{backgroundColor: 'orange'}}
+        style={{ backgroundColor: 'orange' }}
         position="bottomRight"
         onPress={() => refreshCollection()}>
         <Icon name="refresh-outline" />

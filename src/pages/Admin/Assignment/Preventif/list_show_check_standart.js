@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, Alert, FlatList, RefreshControl, Text, Image} from 'react-native';
+import {View, Alert, FlatList, RefreshControl, Text, Image, TouchableWithoutFeedback} from 'react-native';
 import {useSelector} from 'react-redux';
 import {
+  ModalShowImage,
   SkeletonFakeList,
   TextLineIndentLight,
   TopHeader,
@@ -16,11 +17,18 @@ import {PreventiveAPIService} from '../../../../services';
 
 const AdminPreventifListShowCheckStandart = ({navigation}) => {
   console.log('in page show list preventif');
+  const [modalImage, setModalImage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const PreventifReducer = useSelector(state => state.PreventifReducer);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [processing, setProcessing] = useState(false);
+
+  const HandleModalVisible = (value, file) => {
+    setModalVisible(value);
+    setModalImage(file);
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -59,6 +67,31 @@ const AdminPreventifListShowCheckStandart = ({navigation}) => {
     } else {
       background_color = colorButton.cancel;
     }
+
+    let imgSource;
+    if (typeof item.url === 'object') {
+      imgSource = item.url;
+    } else {
+      imgSource = { uri: item.url };
+    }
+
+    const imageShow = () => {
+      if (item.image['link'] == null) {
+        return <Image
+          source={addPhoto}
+          style={{ width: 30, height: 30, opacity: 0.3 }}
+        />
+      }else{
+        return <TouchableWithoutFeedback
+          onPress={() => HandleModalVisible(true, { uri: item.image['link'] })}>
+          <Image
+            source={{ uri: item.image['link'] }}
+            style={styles.solid_image}
+          />
+        </TouchableWithoutFeedback>
+      }
+    }
+
     return (
       <ListItem
         style={{
@@ -119,18 +152,7 @@ const AdminPreventifListShowCheckStandart = ({navigation}) => {
               </Text>
               <View style={{marginLeft: 3, width: '75%'}}>
                 <View style={{width: '15%', justifyContent: 'center'}}>
-                  <Image
-                    source={
-                      item.image['link'] == null
-                        ? addPhoto
-                        : {uri: item.image['link']}
-                    }
-                    style={
-                      item.image['link'] == null
-                        ? {width: 30, height: 30, opacity: 0.3}
-                        : styles.solid_image
-                    }
-                  />
+                  {imageShow()}
                 </View>
               </View>
             </View>
@@ -187,7 +209,11 @@ const AdminPreventifListShowCheckStandart = ({navigation}) => {
         onPress={() => navigation.goBack()}
         onPressHome={() => navigation.navigate('AdminDashboard')}
       />
-
+      <ModalShowImage
+        imageURL={modalImage}
+        visible={modalVisible}
+        setVisible={() => setModalVisible(false)}
+      />
       <View style={global_style.sub_page}>
         <View style={global_style.content}>
           <View>

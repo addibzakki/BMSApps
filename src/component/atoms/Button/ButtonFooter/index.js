@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text} from 'react-native';
-import {Footer, FooterTab, Button} from 'native-base';
+import {View} from 'react-native';
+import {Footer, FooterTab} from 'native-base';
 import {ButtonCreateActivity} from '../crm_button/buttonCreateActivity';
 import {ButtonTemporaryCloseActivity} from '../crm_button/buttonTemporaryClose';
 import {ButtonDoneActivity} from '../crm_button/buttonDoneActivity';
@@ -12,6 +12,8 @@ import {ButtonAddMoreAssigment} from '../crm_button/buttonAddMoreAssignment';
 import {ButtonAssign} from '../crm_button/buttonAssign';
 import {ButtonRequestTransfer} from '../crm_button/buttonRequestTransfer';
 import {ButtonResponseTicket} from '../crm_button/buttonResponseTicket';
+import {ButtonTakeNoteActivity} from '../crm_button/buttonTakeNoteActivity';
+import { ButtonTransfer } from '../crm_button/buttonTransfer';
 
 export const ButtonActionFooter = props => {
   const CorrectiveReducer = useSelector(state => state.CorrectiveReducer);
@@ -22,12 +24,12 @@ export const ButtonActionFooter = props => {
   const ticket_status_tenant = CorrectiveReducer.ticket_status_tenant;
 
   let listButton;
-  console.log(ticket_status_id);
   if (level == 'Supervisor') {
     if (ticket_status_id == '4') {
       listButton = (
         <Footer>
           <FooterTab>
+            <ButtonTakeNoteActivity navigation={props.navigation} />
             <ButtonConfirmJobDone
               params={props.data}
               navigation={props.navigation}
@@ -37,7 +39,6 @@ export const ButtonActionFooter = props => {
       );
     }
   }
-  console.log(level, CorrectiveReducer.pic_status);
   if (level == 'Engineer' && CorrectiveReducer.pic_status == 'A') {
     if (ticket_status_id == '1') {
       listButton = (
@@ -89,7 +90,6 @@ export const ButtonActionShow = props => {
   const CorrectiveReducer = useSelector(state => state.CorrectiveReducer);
 
   let button;
-  let buttonActivity;
   let buttonRequestTransfer;
 
   if (LoginReducer.form.profile.level == 'Supervisor') {
@@ -114,17 +114,18 @@ export const ButtonActionShow = props => {
       button = (
         <Footer>
           <FooterTab>
+            {props.data.is_ticket_pd == 'Y' ? null : <ButtonTransfer data={props.data} navigation={props.navigation} />}
             <ButtonAssign data={props.data} navigation={props.navigation} />
           </FooterTab>
         </Footer>
       );
       // }
     } else if (props.data.status_id > 1 && props.data.status_id < 5) {
-      buttonActivity = <ButtonShowActivity navigation={props.navigation} />;
       button = (
         <Footer>
           <FooterTab>
-            {buttonActivity}
+            {props.data.is_ticket_pd == 'Y' ? null : <ButtonTransfer data={props.data} navigation={props.navigation} />}
+            <ButtonShowActivity navigation={props.navigation} />
             <ButtonAddMoreAssigment
               data={props.data}
               navigation={props.navigation}

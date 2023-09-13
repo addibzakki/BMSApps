@@ -6,60 +6,60 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
-8-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml
+8-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="29" />
-9-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml
+9-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:4:5-67
-11-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:4:22-64
+11-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:4:5-67
+11-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:4:22-64
 12    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-12-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:5:5-77
-12-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:5:22-75
+12-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:5:5-77
+12-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:5:22-75
 13    <uses-permission android:name="android.permission.CAMERA" />
-13-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:6:5-65
-13-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:6:22-62
+13-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:6:5-65
+13-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:6:22-62
 14    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-14-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:7:5-80
-14-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:7:22-77
+14-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:7:5-80
+14-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:7:22-77
 15    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-15-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:8:5-80
-15-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:8:22-78
+15-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:8:5-80
+15-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:8:22-78
 16    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-16-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:9:5-88
-16-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:9:22-85
+16-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:9:5-88
+16-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:9:22-85
 17    <uses-permission android:name="android.permission.VIBRATE" />
-17-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:10:5-65
-17-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:10:22-63
+17-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:10:5-65
+17-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:10:22-63
 18    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-18-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:11:5-78
-18-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:11:22-76
+18-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:11:5-78
+18-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:11:22-76
 19    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-19-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:12:5-80
-19-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:12:22-78
+19-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:12:5-80
+19-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:12:22-78
 20    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-20-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:13:5-76
-20-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:13:22-74
+20-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:13:5-76
+20-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:13:22-74
 21    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-21-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:14:5-80
-21-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:14:22-78
+21-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:14:5-80
+21-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:14:22-78
 22    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-22-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:15:5-79
-22-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:15:22-76
+22-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:15:5-79
+22-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:15:22-76
 23
 24    <uses-feature android:name="android.hardware.camera" />
-24-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:16:5-60
-24-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:16:19-57
+24-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:16:5-60
+24-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:16:19-57
 25    <uses-feature android:name="android.hardware.camera.autofocus" />
-25-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:17:5-70
-25-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:17:19-67
+25-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:17:5-70
+25-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:17:19-67
 26
 27    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-27-->[:react-native-community_netinfo] D:\Project\React Native\Production\BMSApp-Production\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:5-76
-27-->[:react-native-community_netinfo] D:\Project\React Native\Production\BMSApp-Production\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:22-73
+27-->[:react-native-community_netinfo] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:5-76
+27-->[:react-native-community_netinfo] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:22-73
 28    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Create a unique permission for your app and use it so only your app can receive your OneSignal messages. -->
-28-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:5-68
-28-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:22-65
+28-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:5-68
+28-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:22-65
 29    <permission
 29-->[com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:7:5-9:47
 30        android:name="com.mmpbmsappeng.permission.C2D_MESSAGE"
@@ -127,184 +127,184 @@
 52-->[com.android.installreferrer:installreferrer:1.1.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\c38d7fa7606b74363cd749f802b319fe\jetified-installreferrer-1.1.2\AndroidManifest.xml:9:22-107
 53
 54    <application
-54-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:19:5-72:19
+54-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:19:5-72:19
 55        android:name="com.mmpbmsappeng.MainApplication"
-55-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:20:7-38
+55-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:20:7-38
 56        android:allowBackup="true"
-56-->[:react-native-gps-state] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-gps-state\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:9-35
+56-->[:react-native-gps-state] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-gps-state\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:9-35
 57        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 57-->[androidx.core:core:1.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\b772068071fffd58ad25bfa657c4f9ad\core-1.6.0\AndroidManifest.xml:24:18-86
 58        android:icon="@mipmap/ic_launcher"
-58-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:22:7-41
+58-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:22:7-41
 59        android:label="@string/app_name"
-59-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:21:7-39
+59-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:21:7-39
 60        android:requestLegacyExternalStorage="true"
-60-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:26:7-50
+60-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:26:7-50
 61        android:roundIcon="@mipmap/ic_launcher_round"
-61-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:23:7-52
+61-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:23:7-52
 62        android:supportsRtl="true"
-62-->[:react-native-gps-state] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-gps-state\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:9-35
+62-->[:react-native-gps-state] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-gps-state\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:9-35
 63        android:theme="@style/AppTheme"
-63-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:25:7-38
+63-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:25:7-38
 64        android:usesCleartextTraffic="true" >
-64-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:24:7-42
+64-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:24:7-42
 65        <activity
-65-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:27:7-43:18
+65-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:27:7-43:18
 66            android:name="com.mmpbmsappeng.MainActivity"
-66-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:28:9-37
+66-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:28:9-37
 67            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-67-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:30:9-86
+67-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:30:9-86
 68            android:label="@string/app_name"
-68-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:29:9-41
+68-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:29:9-41
 69            android:launchMode="singleTask"
-69-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:31:9-40
+69-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:31:9-40
 70            android:windowSoftInputMode="adjustResize" >
-70-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:32:9-51
+70-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:32:9-51
 71            <intent-filter>
-71-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:33:9-36:25
+71-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:33:9-36:25
 72                <action android:name="android.intent.action.MAIN" />
-72-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:34:13-65
-72-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:34:21-62
+72-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:34:13-65
+72-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:34:21-62
 73
 74                <category android:name="android.intent.category.LAUNCHER" />
-74-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:35:13-73
-74-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:35:23-70
+74-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:35:13-73
+74-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:35:23-70
 75            </intent-filter>
 76            <intent-filter>
-76-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:37:9-42:21
+76-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:37:9-42:21
 77                <action android:name="android.intent.action.VIEW" />
-77-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:9-61
-77-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:17-58
+77-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:9-61
+77-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:17-58
 78
 79                <category android:name="android.intent.category.DEFAULT" />
-79-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:39:9-68
-79-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:39:19-65
+79-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:39:9-68
+79-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:39:19-65
 80                <category android:name="android.intent.category.BROWSABLE" />
-80-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:40:9-70
-80-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:40:19-67
+80-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:40:9-70
+80-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:40:19-67
 81
 82                <data
-82-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:9-57
+82-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:9-57
 83                    android:host="app"
-83-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:15-33
+83-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:15-33
 84                    android:scheme="bms" />
-84-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:34-54
+84-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:41:34-54
 85            </intent-filter>
 86        </activity>
 87        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-87-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:44:7-84
-87-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:44:17-81
+87-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:44:7-84
+87-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:44:17-81
 88        <!-- Change the value to true to enable pop-up for in foreground on receiving remote notifications (for prevent duplicating while showing local notifications set this to false) -->
 89        <meta-data
-89-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:46:9-47:44
+89-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:46:9-47:44
 90            android:name="com.dieam.reactnativepushnotification.notification_foreground"
-90-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:46:21-97
+90-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:46:21-97
 91            android:value="false" />
-91-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:47:21-42
+91-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:47:21-42
 92        <!-- Change the resource name to your App's accent color - or any other color you want -->
 93        <meta-data
-93-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:49:9-50:54
+93-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:49:9-50:54
 94            android:name="com.dieam.reactnativepushnotification.notification_color"
-94-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:49:21-92
+94-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:49:21-92
 95            android:resource="@color/white" /> <!-- or @android:color/{name} to use a standard color -->
-95-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:50:21-52
+95-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:50:21-52
 96        <meta-data
-96-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:51:9-53:62
+96-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:51:9-53:62
 97            android:name="com.google.firebase.messaging.default_notification_icon"
-97-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:52:5-75
+97-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:52:5-75
 98            android:resource="@drawable/ic_stat_onesignal_default" />
-98-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:53:5-59
+98-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:53:5-59
 99
 100        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
-100-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:55:9-108
-100-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:55:19-105
+100-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:55:9-108
+100-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:55:19-105
 101        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-101-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:56:9-110
-101-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:56:19-107
+101-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:56:9-110
+101-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:56:19-107
 102        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" >
-102-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:57:9-63:20
-102-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:57:19-115
+102-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:57:9-63:20
+102-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:57:19-115
 103            <intent-filter>
-103-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:58:13-62:29
+103-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:58:13-62:29
 104                <action android:name="android.intent.action.BOOT_COMPLETED" />
-104-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
-104-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
+104-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
+104-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
 105                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-105-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:17-82
-105-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:25-79
+105-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:17-82
+105-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:25-79
 106                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-106-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:61:17-81
-106-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:61:25-79
+106-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:61:17-81
+106-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:61:25-79
 107            </intent-filter>
 108        </receiver>
 109
 110        <service
-110-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:65:9-71:19
+110-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:65:9-71:19
 111            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-111-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:66:13-107
+111-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:66:13-107
 112            android:exported="false" >
-112-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:67:13-37
+112-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:67:13-37
 113            <intent-filter>
-113-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:68:13-70:29
+113-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:68:13-70:29
 114                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-114-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:17-78
-114-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:25-75
+114-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:17-78
+114-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:25-75
 115            </intent-filter>
 116        </service>
 117        <service
-117-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:9-18:72
+117-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:9-18:72
 118            android:name="com.pilloxa.backgroundjob.BackgroundJob"
-118-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:13-67
+118-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:13-67
 119            android:exported="true"
-119-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:13-36
+119-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:13-36
 120            android:permission="android.permission.BIND_JOB_SERVICE" />
-120-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:18:13-69
+120-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:18:13-69
 121        <service
-121-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:19:9-21:38
+121-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:19:9-21:38
 122            android:name="com.pilloxa.backgroundjob.ExactJob"
-122-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:20:13-62
+122-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:20:13-62
 123            android:enabled="true" />
-123-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:21:13-35
+123-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:21:13-35
 124        <service
-124-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:22:9-24:38
+124-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:22:9-24:38
 125            android:name="com.pilloxa.backgroundjob.ReactNativeEventStarter$MyHeadlessJsTaskService"
-125-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:23:13-101
+125-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:23:13-101
 126            android:enabled="true" />
-126-->[:react-native-background-job] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:24:13-35
+126-->[:react-native-background-job] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-background-job\android\build\intermediates\library_manifest\release\AndroidManifest.xml:24:13-35
 127
 128        <provider
-128-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:9-18:20
+128-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:9-18:20
 129            android:name="com.imagepicker.FileProvider"
-129-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:13-56
+129-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:11:13-56
 130            android:authorities="com.mmpbmsappeng.provider"
-130-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:12:13-60
+130-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:12:13-60
 131            android:exported="false"
-131-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:13:13-37
+131-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:13:13-37
 132            android:grantUriPermissions="true" >
-132-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:14:13-47
+132-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:14:13-47
 133            <meta-data
-133-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-17:58
+133-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-17:58
 134                android:name="android.support.FILE_PROVIDER_PATHS"
-134-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:17-67
+134-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:17-67
 135                android:resource="@xml/provider_paths" />
-135-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:17-55
+135-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:17-55
 136        </provider>
 137        <provider
-137-->[:react-native-webview] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:12:9-20:20
+137-->[:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:12:9-20:20
 138            android:name="com.reactnativecommunity.webview.RNCWebViewFileProvider"
-138-->[:react-native-webview] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:13:13-83
+138-->[:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:13:13-83
 139            android:authorities="com.mmpbmsappeng.fileprovider"
-139-->[:react-native-webview] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:14:13-64
+139-->[:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:14:13-64
 140            android:exported="false"
-140-->[:react-native-webview] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-37
+140-->[:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-37
 141            android:grantUriPermissions="true" >
-141-->[:react-native-webview] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:13-47
+141-->[:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:13-47
 142            <meta-data
-142-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-17:58
+142-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:15:13-17:58
 143                android:name="android.support.FILE_PROVIDER_PATHS"
-143-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:17-67
+143-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:16:17-67
 144                android:resource="@xml/file_provider_paths" />
-144-->[:react-native-image-picker] D:\Project\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:17-55
+144-->[:react-native-image-picker] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-image-picker\android\build\intermediates\library_manifest\release\AndroidManifest.xml:17:17-55
 145        </provider>
 146
 147        <receiver
@@ -357,8 +357,8 @@
 173            <intent-filter>
 173-->[com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:75:13-77:29
 174                <action android:name="android.intent.action.VIEW" />
-174-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:9-61
-174-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:17-58
+174-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:9-61
+174-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:38:17-58
 175            </intent-filter>
 176        </activity>
 177
@@ -433,11 +433,11 @@
 213            <intent-filter>
 213-->[com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:115:13-118:29
 214                <action android:name="android.intent.action.BOOT_COMPLETED" />
-214-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
-214-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
+214-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
+214-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
 215                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-215-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:17-82
-215-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:25-79
+215-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:17-82
+215-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:60:25-79
 216            </intent-filter>
 217        </receiver>
 218        <receiver
@@ -495,10 +495,10 @@
 248            android:exported="false" >
 248-->[com.google.firebase:firebase-messaging:21.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\49b5b235b5d5369a7b369de133c1145b\jetified-firebase-messaging-21.1.0\AndroidManifest.xml:44:13-37
 249            <intent-filter android:priority="-500" >
-249-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:68:13-70:29
+249-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:68:13-70:29
 250                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-250-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:17-78
-250-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:25-75
+250-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:17-78
+250-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:69:25-75
 251            </intent-filter>
 252        </service>
 253        <service
@@ -585,18 +585,18 @@
 299             appropriate internal service.
 300        -->
 301        <service
-301-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:32:9-39:19
+301-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:32:9-39:19
 302            android:name="com.firebase.jobdispatcher.GooglePlayReceiver"
-302-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:33:13-73
+302-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:33:13-73
 303            android:exported="true"
-303-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:34:13-36
+303-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:34:13-36
 304            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE" >
-304-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:35:13-93
+304-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:35:13-93
 305            <intent-filter>
-305-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:36:13-38:29
+305-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:36:13-38:29
 306                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
-306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:17-87
-306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\99c68db1551e4944a21c01f91933da60\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:25-84
+306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:17-87
+306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:25-84
 307            </intent-filter>
 308        </service>
 309
@@ -775,8 +775,8 @@
 399            <intent-filter>
 399-->[androidx.work:work-runtime:2.5.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\abcbc347754d9d5028b4d5e32ae71259\work-runtime-2.5.0\AndroidManifest.xml:114:13-118:29
 400                <action android:name="android.intent.action.BOOT_COMPLETED" />
-400-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
-400-->D:\Project\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
+400-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:17-79
+400-->D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\android\app\src\main\AndroidManifest.xml:59:25-76
 401                <action android:name="android.intent.action.TIME_SET" />
 401-->[androidx.work:work-runtime:2.5.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\abcbc347754d9d5028b4d5e32ae71259\work-runtime-2.5.0\AndroidManifest.xml:116:17-73
 401-->[androidx.work:work-runtime:2.5.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\abcbc347754d9d5028b4d5e32ae71259\work-runtime-2.5.0\AndroidManifest.xml:116:25-70
