@@ -9324,6 +9324,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\4f6105b3fe0cc92ffda34f25447f490d\\jetified-android-pdf-viewer-2.8.2\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "288",
+                        "endOffsets": "339"
+                    },
+                    "to": {
+                        "startLines": "6699",
+                        "startColumns": "4",
+                        "startOffsets": "420222",
+                        "endColumns": "288",
+                        "endOffsets": "420506"
+                    }
+                },
+                {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\d6f0b7abfb6481f577a234e1e40d190b\\jetified-glide-4.11.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -9396,6 +9413,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\d3a03507c7d9b3598a03f8444c85198a\\jetified-android-scalablevideoview-1.0.4\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "1028",
+                        "endOffsets": "1079"
+                    },
+                    "to": {
+                        "startLines": "7491",
+                        "startColumns": "4",
+                        "startOffsets": "462578",
+                        "endColumns": "1028",
+                        "endOffsets": "463602"
+                    }
+                },
+                {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\f605f06810b55607654c65ee9ad25579\\browser-1.3.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11",
@@ -9451,23 +9485,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\ea598032583433bb9ea278c6ef2ebb92\\jetified-android-pdf-viewer-2.8.2\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "288",
-                        "endOffsets": "339"
-                    },
-                    "to": {
-                        "startLines": "6699",
-                        "startColumns": "4",
-                        "startOffsets": "420222",
-                        "endColumns": "288",
-                        "endOffsets": "420506"
-                    }
-                },
-                {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\5395d4b772c696142d18377ec98a4001\\jetified-react-native-0.63.3\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,73,77,80,83,86,89,93,97,100,103,106,109,110,111,120,127,134,137,140,143,149",
@@ -9484,23 +9501,6 @@
                         "endLines": "122,123,556,589,590,591,592,593,612,644,645,702,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,740,768,771,772,773,778,779,780,820,821,822,823,824,826,827,828,829,830,831,832,834,835,836,837,846,850,2693,2696,2707,2710,2722,2726,3059,3062,3065,3068,3309,3339,3348,3355,3384,3387,3390,3490,3496,4443",
                         "endColumns": "62,62,50,47,48,47,48,48,42,53,47,72,74,122,95,88,107,116,119,119,109,171,102,106,102,110,168,167,116,103,112,107,112,90,110,168,97,126,124,94,106,79,75,72,86,70,70,77,79,85,83,71,81,80,83,76,86,84,78,74,72,76,77,72,77,10,10,12,12,12,12,10,10,12,12,12,12,25,34,10,10,10,10,10,12,12,10",
                         "endOffsets": "7554,7617,36571,38529,38578,38626,38675,38724,39659,41297,41345,45182,45582,45705,45801,45890,45998,46115,46235,46355,46465,46637,46740,46847,46950,47061,47230,47398,47515,47619,47732,47840,47953,48044,48155,48324,48422,48549,48674,48769,48876,49383,52625,53005,53092,53163,53729,53807,53887,60946,61030,61102,61184,61265,61402,61479,61566,61651,61730,61805,61878,62026,62104,62177,62255,62945,63193,182998,183189,183702,183885,184498,184704,207411,207600,207799,207986,225046,227237,227775,228193,229713,229890,230069,238314,238679,299976"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\1c50031e6c6b4e02548a5f5d2c98f4ed\\jetified-android-scalablevideoview-1.0.4\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "1028",
-                        "endOffsets": "1079"
-                    },
-                    "to": {
-                        "startLines": "7491",
-                        "startColumns": "4",
-                        "startOffsets": "462578",
-                        "endColumns": "1028",
-                        "endOffsets": "463602"
                     }
                 },
                 {

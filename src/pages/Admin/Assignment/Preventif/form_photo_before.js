@@ -12,7 +12,7 @@ import {setRefresh} from '../../../../redux';
 import {PreventiveAPIService} from '../../../../services';
 
 const AdminPreventifPhotoBefore = ({navigation}) => {
-  console.log('In page take photo before');
+  console.log('form_photo_before');
   const dispatch = useDispatch();
   const PreventifReducer = useSelector(state => state.PreventifReducer);
 
@@ -109,7 +109,7 @@ const AdminPreventifPhotoBefore = ({navigation}) => {
     if (LoginReducer.form.profile.level === 'Supervisor') {
       navigation.navigate('AdminPreventiveDashboard');
     } else {
-      navigation.navigate('AdminPICPreventifDashboard');
+      navigation.navigate('AdminPreventif');
     }
   };
 
@@ -127,7 +127,7 @@ const AdminPreventifPhotoBefore = ({navigation}) => {
           if (LoginReducer.form.profile.level === 'Supervisor') {
             navigation.navigate('AdminPreventiveDashboard');
           } else {
-            navigation.navigate('AdminPICPreventifDashboard');
+            navigation.navigate('AdminPreventif');
           }
         }}
         onPressHome={() => navigation.navigate('AdminDashboard')}

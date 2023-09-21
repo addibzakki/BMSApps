@@ -25,7 +25,7 @@ import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-picker';
 
 const AdminPreventifListHistoryCheckStandart = ({navigation}) => {
-  console.log('Halaman history check standar preventif');
+  console.log('list_history_check_standard');
   const dispatch = useDispatch();
   const PreventifReducer = useSelector(state => state.PreventifReducer);
   const [list, setList] = useState([]);

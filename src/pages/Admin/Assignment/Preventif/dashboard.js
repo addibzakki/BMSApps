@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const AdminPreventiveDashboard = ({ navigation }) => {
+  console.log('this dashboard');
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const GlobalReducer = useSelector(state => state.GlobalReducer);
@@ -52,7 +53,7 @@ const AdminPreventiveDashboard = ({ navigation }) => {
       key: 0,
       title: 'List',
       icon: 'ios-list-outline',
-      nav: 'AdminPreventif',
+      nav: 'AdminPreventiveAssignment',
       badge: false,
       count: 0,
       type: 'nav'

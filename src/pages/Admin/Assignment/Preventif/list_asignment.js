@@ -32,7 +32,7 @@ import {db_pv_checklist_tmp} from '../../../../component/databases/create/create
 import {db_pv_checkstandart_tmp} from '../../../../component/databases/create/create_pv_checkstandart_tmp';
 
 const AdminPreventifListAssignment = ({navigation}) => {
-  console.log('Halaman assignment preventif');
+  console.log('list_assignment');
   const dispatch = useDispatch();
   const LoginReducer = useSelector(state => state.LoginReducer);
   const [list, setList] = useState([]);

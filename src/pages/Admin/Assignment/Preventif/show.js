@@ -43,7 +43,7 @@ const AdminPreventifShow = ({route, navigation}) => {
           if (LoginReducer.form.profile.level === 'Supervisor') {
             navigation.navigate('AdminSPVPreventifDashboard');
           } else {
-            navigation.navigate('AdminPICPreventifDashboard');
+            navigation.navigate('AdminPreventiveAssignment');
           }
         }}
         onPressHome={() => navigation.navigate('AdminDashboard')}

@@ -33,8 +33,8 @@ MERGED from [:react-native-view-pdf] D:\0. KERJAAN\PROJECT\React Native\Producti
 MERGED from [:react-native-webview] D:\0. KERJAAN\PROJECT\React Native\Production\BMSApp-Production\node_modules\react-native-webview\android\build\intermediates\library_manifest\release\AndroidManifest.xml:2:1-23:12
 MERGED from [com.facebook.react:react-native:0.63.3] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5395d4b772c696142d18377ec98a4001\jetified-react-native-0.63.3\AndroidManifest.xml:2:1-13:12
 MERGED from [com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:2:1-136:12
-MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\ea598032583433bb9ea278c6ef2ebb92\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:2:1-11:12
-MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\65f51f0b1b58abdd607ad493d41dbc0b\jetified-pdfium-android-1.7.1\AndroidManifest.xml:2:1-11:12
+MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\4f6105b3fe0cc92ffda34f25447f490d\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:2:1-11:12
+MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\6a3ec43ebabe95f3f998f01ed4bd7def\jetified-pdfium-android-1.7.1\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\64510bfc53883d7f8053d3342b05f8f0\legacy-support-v4-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e4e8626b1d17facb21a10f2e7082f0af\legacy-support-core-ui-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\9c84055754f1c87eff14f587bd78fd99\swiperefreshlayout-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -121,7 +121,7 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] C:\Users\zakky\.g
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\7c9fd3ba690abcfb93720c866c223859\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.installreferrer:installreferrer:1.1.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\c38d7fa7606b74363cd749f802b319fe\jetified-installreferrer-1.1.2\AndroidManifest.xml:2:1-13:12
 MERGED from [me.leolin:ShortcutBadger:1.1.22] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\bc01c599257a1fe9afe8896772c62280\jetified-ShortcutBadger-1.1.22\AndroidManifest.xml:2:1-52:12
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\1c50031e6c6b4e02548a5f5d2c98f4ed\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:2:1-12:12
+MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d3a03507c7d9b3598a03f8444c85198a\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:2:1-12:12
 MERGED from [com.facebook.fresco:fbcore:2.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\9a86eb85674ec9ce8d1b3a259725518b\jetified-fbcore-2.0.0\AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.soloader:annotation:0.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\fc766185ed7e4861c7502db25bf01dd6\jetified-annotation-0.8.2\AndroidManifest.xml:2:1-13:12
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f82502d9aed3d8ad9dbb1f5d2002cdd0\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -520,10 +520,10 @@ MERGED from [com.facebook.react:react-native:0.63.3] C:\Users\zakky\.gradle\cach
 MERGED from [com.facebook.react:react-native:0.63.3] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\5395d4b772c696142d18377ec98a4001\jetified-react-native-0.63.3\AndroidManifest.xml:7:5-9:41
 MERGED from [com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:4:5-44
 MERGED from [com.onesignal:OneSignal:4.6.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\f095ab9301b2cf4e2800c942cd99916f\jetified-OneSignal-4.6.0\AndroidManifest.xml:4:5-44
-MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\ea598032583433bb9ea278c6ef2ebb92\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:7:5-9:41
-MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\ea598032583433bb9ea278c6ef2ebb92\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:7:5-9:41
-MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\65f51f0b1b58abdd607ad493d41dbc0b\jetified-pdfium-android-1.7.1\AndroidManifest.xml:7:5-9:41
-MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\65f51f0b1b58abdd607ad493d41dbc0b\jetified-pdfium-android-1.7.1\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\4f6105b3fe0cc92ffda34f25447f490d\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.barteksc:android-pdf-viewer:2.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\4f6105b3fe0cc92ffda34f25447f490d\jetified-android-pdf-viewer-2.8.2\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\6a3ec43ebabe95f3f998f01ed4bd7def\jetified-pdfium-android-1.7.1\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.barteksc:pdfium-android:1.7.1] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\6a3ec43ebabe95f3f998f01ed4bd7def\jetified-pdfium-android-1.7.1\AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\64510bfc53883d7f8053d3342b05f8f0\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-v4:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\64510bfc53883d7f8053d3342b05f8f0\legacy-support-v4-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e4e8626b1d17facb21a10f2e7082f0af\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
@@ -696,8 +696,8 @@ MERGED from [com.android.installreferrer:installreferrer:1.1.2] C:\Users\zakky\.
 MERGED from [com.android.installreferrer:installreferrer:1.1.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\c38d7fa7606b74363cd749f802b319fe\jetified-installreferrer-1.1.2\AndroidManifest.xml:5:5-7:41
 MERGED from [me.leolin:ShortcutBadger:1.1.22] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\bc01c599257a1fe9afe8896772c62280\jetified-ShortcutBadger-1.1.22\AndroidManifest.xml:7:5-9:41
 MERGED from [me.leolin:ShortcutBadger:1.1.22] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\bc01c599257a1fe9afe8896772c62280\jetified-ShortcutBadger-1.1.22\AndroidManifest.xml:7:5-9:41
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\1c50031e6c6b4e02548a5f5d2c98f4ed\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:8:5-10:41
-MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\1c50031e6c6b4e02548a5f5d2c98f4ed\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:8:5-10:41
+MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d3a03507c7d9b3598a03f8444c85198a\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:8:5-10:41
+MERGED from [com.yqritc:android-scalablevideoview:1.0.4] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\d3a03507c7d9b3598a03f8444c85198a\jetified-android-scalablevideoview-1.0.4\AndroidManifest.xml:8:5-10:41
 MERGED from [com.facebook.fresco:fbcore:2.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\9a86eb85674ec9ce8d1b3a259725518b\jetified-fbcore-2.0.0\AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.fresco:fbcore:2.0.0] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\9a86eb85674ec9ce8d1b3a259725518b\jetified-fbcore-2.0.0\AndroidManifest.xml:5:5-7:41
 MERGED from [com.facebook.soloader:annotation:0.8.2] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\fc766185ed7e4861c7502db25bf01dd6\jetified-annotation-0.8.2\AndroidManifest.xml:7:5-9:41

@@ -31,7 +31,7 @@ import {PreventiveAPIService} from '../../../../services';
 import {setPVCheckStandartAttr} from '../../../../redux';
 
 const AdminPreventifListChecklist = ({navigation}) => {
-  console.log('Halaman cheklist assignmnet');
+  console.log('list_checklist');
 
   const dispatch = useDispatch();
   const PreventifReducer = useSelector(state => state.PreventifReducer);
@@ -234,7 +234,7 @@ const AdminPreventifListChecklist = ({navigation}) => {
                 if (LoginReducer.form.profile.level == 'Supervisor') {
                   navigation.navigate('AdminSPVPreventifDashboard');
                 } else {
-                  navigation.navigate('AdminPICPreventifDashboard');
+                  navigation.navigate('AdminPreventiveAssignment');
                 }
               },
             },
@@ -319,7 +319,7 @@ const AdminPreventifListChecklist = ({navigation}) => {
                         if (LoginReducer.form.profile.level == 'Supervisor') {
                           navigation.navigate('AdminSPVPreventifDashboard');
                         } else {
-                          navigation.navigate('AdminPICPreventifDashboard');
+                          navigation.navigate('AdminPreventiveAssignment');
                         }
                       },
                     },
@@ -708,7 +708,7 @@ const AdminPreventifListChecklist = ({navigation}) => {
           if (LoginReducer.form.profile.level == 'Supervisor') {
             navigation.navigate('AdminPreventif');
           } else {
-            navigation.navigate('AdminPICPreventifDashboard');
+            navigation.navigate('AdminPreventiveAssignment');
           }
         }}
         onPressHome={() => navigation.navigate('AdminDashboard')}

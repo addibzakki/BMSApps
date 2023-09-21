@@ -30,7 +30,7 @@ import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 
 const includeExtra = true;
 const AdminPreventifListCheckStandart = ({navigation}) => {
-  console.log('Halaman Checklist Detail Preventif');
+  console.log('list_check_standard');
 
   const PreventifReducer = useSelector(state => state.PreventifReducer);
   const [processing, setProcessing] = useState(false);

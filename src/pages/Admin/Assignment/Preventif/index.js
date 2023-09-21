@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const AdminPreventive = ({ navigation }) => {
+  console.log('index');
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const GlobalReducer = useSelector(state => state.GlobalReducer);
