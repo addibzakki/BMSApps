@@ -58,7 +58,7 @@ const App = () => {
   useEffect(() => {
     //OneSignal Init Code
     OneSignal.setLogLevel(6, 0);
-    OneSignal.setAppId('9340985f-ce16-47f9-b83e-493eff0d0071');
+    OneSignal.setAppId('7f592ae2-08a9-4c0e-83dd-f3955bf1128e');
     //END OneSignal Init Code
 
     //Method for handling notifications opened
