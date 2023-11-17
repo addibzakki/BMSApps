@@ -4,7 +4,6 @@ import {
   View,
   Text,
   StatusBar,
-  Image,
   TouchableOpacity,
   Modal,
   Alert,
@@ -25,7 +24,6 @@ import {colorLogo} from '../../utils';
 import {userAvatar} from '../../assets';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import axios from 'axios';
 import GlobalContext from '../../component/GlobalContext';
 import {ActionButton, ActionButtonHalf} from './ActionButton';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -55,7 +53,6 @@ const AdminDashboard = ({navigation}) => {
   const AreaReducer = useSelector(state => state.AreaReducer);
   const ProfileIdReducer = useSelector(state => state.ProfileIdReducer);
   const GlobalReducer = useSelector(state => state.GlobalReducer);
-  const [greeting, setGreeting] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingModal, setLoadingModal] = useState(false);
   const [titelModal, setTitleModal] = useState('Loading');
@@ -72,6 +69,10 @@ const AdminDashboard = ({navigation}) => {
   const [resultOvertime, setResultOvertime] = useState('');
   const [point, setPoint] = useState(0);
   const [dataSPL, setDataSPL] = useState([]);
+  const [cashAdvance, setCashAdvance] = useState(0);
+  const [cashAdvanceNotif, setCashAdvanceNotif] = useState('FALSE');
+  const [cashAdvancePending, setCashAdvancePending] = useState(0);
+  const [cashAdvancePendingNotif, setCashAdvancePendingNotif] = useState('FALSE');
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
@@ -93,6 +94,8 @@ const AdminDashboard = ({navigation}) => {
       unsubscribe;
     };
   }, [networkContext.networkInfo, GlobalReducer.refresh == true]);
+
+  
 
   const menu = [
     {
@@ -128,43 +131,69 @@ const AdminDashboard = ({navigation}) => {
       notification: notifSpl,
     }
   ];
-  const menuPetty = [
-    {
-      rowID: 1,
-      title: 'Cash Advance',
-      icon: 'cash-outline',
-      route: 'PettyDashboard',
-      notification_val: 1,
-      notification: 'TRUE',
-    },
-    {
-      rowID: 2,
-      title: 'Cash Advance Pending',
-      icon: 'cash',
-      route: 'PettyDashboard',
-      notification_val: 0,
-      notification: 'TRUE',
-    },
-    {
-      rowID: 3,
-      title: 'History Cash Advance',
-      icon: 'newspaper-outline',
-      route: 'Comming',
-      notification_val: 0,
-      notification: 'FALSE',
-    }
-  ];
+    const menuPettySupervisor = [
+      {
+        rowID: 1,
+        title: 'Settlement Advance',
+        icon: 'cash-outline',
+        route: 'PettyDashboard',
+        notification_val: cashAdvance,
+        notification: cashAdvanceNotif,
+      },
+      {
+        rowID: 2,
+        title: 'Request Advance',
+        icon: 'journal-outline',
+        route: 'PettyHistoryRequest',
+        notification_val: 0,
+        notification: 'FALSE',
+      },
+      {
+        rowID: 3,
+        title: 'Advance Pending',
+        icon: 'cash',
+        route: 'PettyPending',
+        notification_val: cashAdvancePending,
+        notification: cashAdvancePendingNotif,
+      },
+      {
+        rowID: 4,
+        title: 'History Advance',
+        icon: 'newspaper-outline',
+        route: 'PettyHistory',
+        notification_val: 0,
+        notification: 'FALSE',
+      }
+    ];
+ 
+    const menuPettyEngineer = [
+      {
+        rowID: 1,
+        title: 'Settlement Advance',
+        icon: 'cash-outline',
+        route: 'PettyDashboard',
+        notification_val: cashAdvance,
+        notification: cashAdvanceNotif,
+      },
+      {
+        rowID: 2,
+        title: 'Advance Pending',
+        icon: 'cash',
+        route: 'PettyPending',
+        notification_val: cashAdvancePending,
+        notification: cashAdvancePendingNotif,
+      },
+      {
+        rowID: 3,
+        title: 'History Advance',
+        icon: 'newspaper-outline',
+        route: 'PettyHistory',
+        notification_val: 0,
+        notification: 'FALSE',
+      }
+    ];
 
   const getDataDashboard = async () => {
-    const today = new Date();
-    const curHr = today.getHours();
-    if (curHr < 12) {
-      setGreeting('Good Morning');
-    } else if (curHr < 18) {
-      setGreeting('Good Afternoon');
-    } else {
-      setGreeting('Good Evening');
-    }
     setLoading(true);
     const deviceState = await OneSignal.getDeviceState();
     dispatch(setProfileId(deviceState.userId));
@@ -180,7 +209,6 @@ const AdminDashboard = ({navigation}) => {
         status: 1,
       };
 
-      console.log(data);
 
       const res = await DashboardAPIService.getDashboard(data);
       console.log(res.data);
@@ -262,9 +290,13 @@ const AdminDashboard = ({navigation}) => {
 
   const checkPetty = async () => {
       try {
-        const res = await PettyLAPIService.getBalance(LoginReducer.form.profile.uid);
-        console.log(res.data.data);
-        setBalance(res.data.data.balance_format);
+        const res = await PettyLAPIService.getNotif(LoginReducer.form.profile.uid);
+        setCashAdvance(res.data.data.cash_advance);
+        setCashAdvanceNotif(res.data.data.cash_advance_notif);
+        setCashAdvancePending(res.data.data.cash_advance_pending);
+        setCashAdvancePendingNotif(res.data.data.cash_advance_notif_pending);
+        const resp = await PettyLAPIService.getBalance(LoginReducer.form.profile.uid);
+        setBalance(resp.data.data.balance_format);
       } catch (error) {
         console.log(error);
         Alert.alert('Error', error.message);
@@ -571,7 +603,6 @@ const AdminDashboard = ({navigation}) => {
         <View style={styles.space(10)} />
         <View style={styles.wrapper.greeting}>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: 16}}>{greeting},</Text>
             <Text
               style={{
                 fontSize: 16,
@@ -590,6 +621,17 @@ const AdminDashboard = ({navigation}) => {
                 ? LoginReducer.form.profile.level
                 : 'Engineer'}
             </Text>
+            {AreaReducer.available && (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                }}>
+                <Icon name="location" /> {AreaReducer.area['project_desc']}
+              </Text>
+            )}
+            
           </View>
           <View
             style={{
@@ -603,12 +645,12 @@ const AdminDashboard = ({navigation}) => {
                 borderWidth: 2,
                 borderColor: colorLogo.color5,
                 borderRadius: 50,
-                width: 75,
-                height: 75,
+                width: 50,
+                height: 50,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text style={{fontSize: RFPercentage(3), fontWeight: 'bold'}}>
+              <Text style={{fontSize: RFPercentage(2.5), fontWeight: 'bold'}}>
                 {point}
               </Text>
             </View>
@@ -624,7 +666,9 @@ const AdminDashboard = ({navigation}) => {
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         }}>
-        {AreaReducer.available ? (
+        
+
+        
           <View
             style={{
               marginBottom: 10,
@@ -642,9 +686,8 @@ const AdminDashboard = ({navigation}) => {
                 paddingHorizontal: 15,
                 paddingVertical: 5,
               }}>
-              <Text style={{color: 'white'}}>
-                Available In : {AreaReducer.area['project_desc']}
-              </Text>
+            <Text style={{ color: 'white' }}><Icon name="wallet" /> Rp. {balance}</Text>
+            {AreaReducer.available ? (
               <TouchableOpacity
                 onPress={() => onCheckOut()}
                 style={{
@@ -653,29 +696,9 @@ const AdminDashboard = ({navigation}) => {
                   padding: 5,
                   borderRadius: 10,
                 }}>
-                <Text style={{color: 'white'}}>Chek-Out</Text>
+                <Text style={{ color: 'white' }}>Chek-Out</Text>
               </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View
-            style={{
-              marginBottom: 10,
-              borderWidth: 1,
-              borderRadius: 20,
-              marginHorizontal: 10,
-              backgroundColor: colorLogo.color4,
-              paddingVertical: 5,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-                paddingVertical: 5,
-              }}>
-              <Text style={{color: 'white'}}>Scan QR Code for attendance</Text>
+            ) : (
               <TouchableOpacity onPress={() => navigation.navigate('WorkArea')}>
                 <MaterialCommunityIcons
                   name="barcode-scan"
@@ -683,9 +706,9 @@ const AdminDashboard = ({navigation}) => {
                   size={28}
                 />
               </TouchableOpacity>
+            )}
             </View>
           </View>
-        )}
         
         <View
           style={{
@@ -697,7 +720,9 @@ const AdminDashboard = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <ListMenu list={menu} navigation={navigation} />
-          <ListMenu list={menuPetty} navigation={navigation} />
+          {
+            (LoginReducer.form.profile.level == 'Supervisor' ? (<ListMenu list={menuPettySupervisor} navigation={navigation} />) : (<ListMenu list={menuPettyEngineer} navigation={navigation} />))
+          }
         </View>
         
         <View style={styles.wrapper.menu}>
@@ -726,11 +751,11 @@ const styles = {
     },
     top_container: {
       paddingTop: 10,
-      height: 130,
+      height: 105,
       backgroundColor: colorLogo.color4,
     },
     greeting: {
-      height: 85,
+      height: 65,
       flexDirection: 'row',
       backgroundColor: '#ffffff',
       paddingLeft: 20,

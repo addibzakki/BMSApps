@@ -16,6 +16,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { NumericFormat } from 'react-number-format';
 
 export const Input = ({placeholder, ...rest}) => {
   return (
@@ -238,6 +239,33 @@ export const InputPopup = ({placeholder, onPress, ...rest}) => {
     </View>
   );
 };
+
+export const InputCurrency = ({placeholder,amount, ...rest}) => {
+  return (
+
+    <View>
+      <Text style={styles.text2}>{placeholder}</Text>
+      <View style={styles.space(5)} />
+      <NumericFormat
+        value={amount}
+        displayType={'text'}
+        thousandSeparator={true}
+        allowLeadingZeros={false}
+        renderText={value => (
+          <TextInput
+            underlineColorAndroid="transparent"
+            style={styles.inputForm2}
+            placeholderTextColor={colorLogo.color3}
+            value={value}
+            keyboardType="number-pad"
+            {...rest}
+          />
+        )}
+      />
+      <View style={styles.space(10)} />
+    </View>
+  )
+}
 
 export const InputNumber = ({placeholder, ...rest}) => {
   return (

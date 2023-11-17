@@ -76,6 +76,11 @@ import PettyDashboard from './Petty';
 import PettyDetail from './Petty/detail';
 import PettyCapture from './Petty/capture';
 import PettyShowCapture from './Petty/show_capture';
+import PettyPending from './Petty/list_pending';
+import PettyHistory from './Petty/history';
+import PettyRequest from './Petty/request';
+import PettyHistoryRequest from './Petty/history_request';
+import PettyShowRequest from './Petty/show_request';
 
 export {
   Splash,
@@ -149,5 +154,10 @@ export {
   PettyDashboard,
   PettyDetail,
   PettyCapture,
-  PettyShowCapture
+  PettyShowCapture,
+  PettyShowRequest,
+  PettyPending,
+  PettyHistory,
+  PettyRequest,
+  PettyHistoryRequest
 };

@@ -26,6 +26,20 @@
       "filters": [
         {
           "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "properties": [],
+      "versionCode": 2097165,
+      "versionName": "1.0.13",
+      "enabled": true,
+      "outputFile": "app-x86-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
           "value": "armeabi-v7a"
         }
       ],
@@ -48,20 +62,6 @@
       "versionName": "1.0.13",
       "enabled": true,
       "outputFile": "app-x86_64-release.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "x86"
-        }
-      ],
-      "properties": [],
-      "versionCode": 2097165,
-      "versionName": "1.0.13",
-      "enabled": true,
-      "outputFile": "app-x86-release.apk"
     }
   ]
 }

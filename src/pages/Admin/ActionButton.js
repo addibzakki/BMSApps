@@ -57,7 +57,7 @@ export const ActionButtonAttachment = ({
   title,
   onPress,
   list,
-  blank = 'No Photo',
+  blank = '',
   show = true,
   fileExists = [],
 }) => {
@@ -203,8 +203,10 @@ export const ActionButtonAttachment = ({
                 resizeMode: 'contain',
                 marginVertical: 5,
               }}>
+              <TouchableWithoutFeedback
+                onPress={() => HandleModalVisible(true, item)}>
               <Image
-                source={item.url}
+                source={(item.url == 'undefined' ? item:item.url)}
                 style={{
                   height: 50,
                   width: null,
@@ -214,6 +216,7 @@ export const ActionButtonAttachment = ({
                 }}
                 resizeMethod="resize"
               />
+              </TouchableWithoutFeedback>
             </View>
           );
         })}

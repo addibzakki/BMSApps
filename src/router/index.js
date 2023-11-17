@@ -75,7 +75,12 @@ import {
   PettyDashboard,
   PettyDetail,
   PettyCapture,
-  PettyShowCapture
+  PettyShowCapture,
+  PettyShowRequest,
+  PettyPending,
+  PettyHistory,
+  PettyRequest,
+  PettyHistoryRequest
 } from '../pages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colorsBar, colorLogo} from '../utils';
@@ -1021,6 +1026,41 @@ const Router = () => {
       <Stack.Screen
         name="PettyShowCapture"
         component={PettyShowCapture}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyPending"
+        component={PettyPending}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyHistory"
+        component={PettyHistory}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyRequest"
+        component={PettyRequest}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyHistoryRequest"
+        component={PettyHistoryRequest}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PettyShowRequest"
+        component={PettyShowRequest}
         options={{
           headerShown: false,
         }}

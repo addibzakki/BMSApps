@@ -3,6 +3,7 @@ import {
   View,
   ScrollView,
   Alert,
+  Text,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {
@@ -14,33 +15,34 @@ import {
 import {colorLogo} from '../../utils';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ImagePicker from 'react-native-image-picker';
-import {Icon} from 'native-base';
+import {Body, CheckBox, Icon, ListItem} from 'native-base';
 import ImageResizer from 'react-native-image-resizer';
 import ImageMarker from 'react-native-image-marker';
 import BackgroundJob from 'react-native-background-job';
 import { ActionButton, ActionButtonAttachment } from '../Admin/ActionButton';
 import PettyLAPIService from '../../services/Petty/PettyAPIService';
+import { RFPercentage } from 'react-native-responsive-fontsize';
+import { InputCurrency } from '../../component/atoms/Input';
 
 const PettyCapture = ({route, navigation}) => {
-  const MeterReducer = useSelector(state => state.MeterReducer);
+  console.log('On page Capture');
+  console.log(route.params);
   const LoginReducer = useSelector(state => state.LoginReducer);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('');
+  const [initialKM, setInitialKM] = useState('');
+  const [finalKM, setFinalKM] = useState('');
   const [description, setDescription] = useState('');
-  const [tenantName, setTenantName] = useState('');
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [picture, setPicture] = useState([]);
-  const [signature, setSign] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-  console.log(LoginReducer.form.profile.uid);
 
   const handleNext = () => {
-    console.log(amount, route.params.header.current_amount);
-    if (amount == '' || amount == '0') {
+    if (amount.replace(',', '') == '' || amount.replace(',', '') == '0') {
       Alert.alert('Attention', 'Please fill amount value');
-    } else if (parseInt(amount) > parseInt(route.params.header.current_amount)) {
-      Alert.alert('Attention', 'Insufficient amount');
+    } else if (parseInt(amount.replace(',', '')) > parseInt(route.params.header.current_amount)) {
+      Alert.alert('Attention', 'Insufficient amount, your remaining balance is ' + route.params.header.current_amount_format);
     } else if (description == '') {
       Alert.alert('Attention', 'Please fill description value');
     } else if (fileList.length == 0) {
@@ -60,7 +62,6 @@ const PettyCapture = ({route, navigation}) => {
       );
     }
   };
-
   const processReading = async () => {
     setLoading(true);
     try {
@@ -74,12 +75,18 @@ const PettyCapture = ({route, navigation}) => {
       });
       uploadData.append('transaction_id', route.params.header.id);
       uploadData.append('entity_project', route.params.header.entity_project);
+      uploadData.append('id_category', route.params.header.id_category);
+      uploadData.append('id_admin', (route.params.header.id_admin == null ? 0 : route.params.header.id_admin));
+      uploadData.append('username_fm', (route.params.header.username_fm == null ? 0 : route.params.header.username_fm));
+      uploadData.append('km_awal', ((route.params.data.category_desc == 'Transport' && isChecked == false) ? initialKM:0));
+      uploadData.append('km_akhir', ((route.params.data.category_desc == 'Transport' && isChecked == false) ? finalKM:0));
       uploadData.append('project_no', route.params.header.project_no);
-      uploadData.append('bank_cd', route.params.header.bank_cd);
       uploadData.append('doc_no', route.params.header.doc_no);
       uploadData.append('amount', amount);
       uploadData.append('descs', description);
+      uploadData.append('is_balance', isChecked);
       uploadData.append('created_by', LoginReducer.form.profile.uid);
+
       console.log(uploadData);
 
       const res = await PettyLAPIService.createTransaction(uploadData);
@@ -88,7 +95,7 @@ const PettyCapture = ({route, navigation}) => {
           'Success',
           res.data.message,
           [
-            { text: 'Ok', onPress: () => navigation.replace('PettyDetail', route.params) },
+            { text: 'Ok', onPress: () => navigation.replace('PettyDetail', route.params.data) },
           ],
         );
         setLoading(false);
@@ -97,8 +104,6 @@ const PettyCapture = ({route, navigation}) => {
         setLoading(false);
       }
     } catch (error) {
-      // inputTablesLog(db, data, 'bms_meter_log', 'error connection');
-      // console.log(error);
       Alert.alert('Error', error.message);
       setLoading(false);
     }
@@ -158,7 +163,7 @@ const PettyCapture = ({route, navigation}) => {
             var dateNow = dd.toString();
             ImageMarker.markText({
               src: response.uri,
-              text: MeterReducer.meterInfo.ref_no + ' \nDate : ' + dateNow,
+              text: ' \nDate : ' + dateNow,
               position: 'bottomLeft',
               color: '#FFFFFF',
               fontName: 'Arial-BoldItalicMT',
@@ -200,6 +205,21 @@ const PettyCapture = ({route, navigation}) => {
       {text: 'Yes', onPress: () => navigation.navigate('AdminDashboard')},
     ]);
 
+  const chkbox_check = () => {
+    // if (networkContext.networkInfo == false) {
+    //   Alert.alert(
+    //     'Attention',
+    //     'Sorry, please use a good network to access this feature',
+    //   );
+    // } else {
+      if (isChecked == true) {
+        setIsChecked(false);
+      } else {
+        setIsChecked(true);
+      }
+    // }
+  };
+
   return (
     <View style={styles.wrapper.page}>
       <Spinner
@@ -210,7 +230,7 @@ const PettyCapture = ({route, navigation}) => {
       <TopHeader
         title={'Capture Settlement'}
         subTitle={'#' + route.params.doc_no}
-        onPress={() => navigation.replace('PettyDetail', route.params)}
+        onPress={() => navigation.replace('PettyDetail', route.params.data)}
         onPressHome={() => ButtonAlert()}
       />
       
@@ -218,12 +238,57 @@ const PettyCapture = ({route, navigation}) => {
         <ScrollView>
           <View style={styles.space(10)} />
           <View style={styles.wrapper.content}>
-            <InputForm
+            <InputCurrency
               placeholder="Amount"
               keyboardType="number-pad"
               onChangeText={value => setAmount(value)}
-              value={amount}
+              amount={amount}
             />
+            <ListItem style={{ paddingTop: 0, paddingBottom: 10, paddingLeft: 0, paddingRight: 0, marginLeft: 0 }} noBorder>
+              <CheckBox
+                onPress={() => chkbox_check()}
+                checked={isChecked}
+                style={{
+                  marginTop: 0,
+                  paddingTop: 0,
+                }}
+              />
+              <Body>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    // letterSpacing: 2,
+                    textTransform: 'capitalize',
+                    fontWeight: 'bold',
+                    color: colorLogo.color3,
+                  }}>
+                  Refund?
+                </Text>
+              </Body>
+            </ListItem>
+            {
+              (route.params.data.category_desc == 'Transport' && isChecked == false) && (
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '49%'}}>
+                    <InputForm
+                      placeholder="Initial KM"
+                      keyboardType="number-pad"
+                      value={initialKM}
+                      onChangeText={value => setInitialKM(value)}
+                    />
+                  </View>
+                  <View style={{width: '2%'}} />
+                  <View style={{width: '49%'}}>
+                    <InputForm
+                      placeholder="Final KM"
+                      keyboardType="number-pad"
+                      value={finalKM}
+                      onChangeText={value => setFinalKM(value)}
+                    />
+                  </View>
+                </View>
+              ) 
+            }
             <InputForm
               placeholder="Description"
               multiline={true}

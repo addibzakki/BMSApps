@@ -39,18 +39,18 @@
         "splits": [
           {
             "filterType": "ABI",
-            "value": "x86_64"
+            "value": "x86"
           }
         ],
-        "versionCode": 4194317,
+        "versionCode": 2097165,
         "versionName": "1.0.13",
-        "filterName": "x86_64",
-        "outputFile": "app-x86_64-debug.apk",
-        "fullName": "x86_64Debug",
-        "baseName": "x86_64-debug",
-        "dirName": "x86_64\\"
+        "filterName": "x86",
+        "outputFile": "app-x86-debug.apk",
+        "fullName": "x86Debug",
+        "baseName": "x86-debug",
+        "dirName": "x86\\"
       },
-      "path": "resources-x86_64Debug.ap_",
+      "path": "resources-x86Debug.ap_",
       "properties": {
         "packageId": "com.bmsappdev",
         "split": "",
@@ -66,18 +66,18 @@
         "splits": [
           {
             "filterType": "ABI",
-            "value": "x86"
+            "value": "x86_64"
           }
         ],
-        "versionCode": 2097165,
+        "versionCode": 4194317,
         "versionName": "1.0.13",
-        "filterName": "x86",
-        "outputFile": "app-x86-debug.apk",
-        "fullName": "x86Debug",
-        "baseName": "x86-debug",
-        "dirName": "x86\\"
+        "filterName": "x86_64",
+        "outputFile": "app-x86_64-debug.apk",
+        "fullName": "x86_64Debug",
+        "baseName": "x86_64-debug",
+        "dirName": "x86_64\\"
       },
-      "path": "resources-x86Debug.ap_",
+      "path": "resources-x86_64Debug.ap_",
       "properties": {
         "packageId": "com.bmsappdev",
         "split": "",

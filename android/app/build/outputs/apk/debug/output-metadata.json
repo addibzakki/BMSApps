@@ -26,20 +26,6 @@
       "filters": [
         {
           "filterType": "ABI",
-          "value": "x86_64"
-        }
-      ],
-      "properties": [],
-      "versionCode": 4194317,
-      "versionName": "1.0.13",
-      "enabled": true,
-      "outputFile": "app-x86_64-debug.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
           "value": "x86"
         }
       ],
@@ -48,6 +34,20 @@
       "versionName": "1.0.13",
       "enabled": true,
       "outputFile": "app-x86-debug.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "properties": [],
+      "versionCode": 4194317,
+      "versionName": "1.0.13",
+      "enabled": true,
+      "outputFile": "app-x86_64-debug.apk"
     },
     {
       "type": "ONE_OF_MANY",

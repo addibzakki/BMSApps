@@ -39,6 +39,33 @@
         "splits": [
           {
             "filterType": "ABI",
+            "value": "x86"
+          }
+        ],
+        "versionCode": 2097165,
+        "versionName": "1.0.13",
+        "filterName": "x86",
+        "outputFile": "app-x86-release.apk",
+        "fullName": "x86Release",
+        "baseName": "x86-release",
+        "dirName": "x86\\"
+      },
+      "path": "resources-x86Release.ap_",
+      "properties": {
+        "packageId": "com.bmsappdev",
+        "split": "",
+        "minSdkVersion": "21"
+      }
+    },
+    {
+      "outputType": {
+        "type": "PROCESSED_RES"
+      },
+      "apkData": {
+        "type": "FULL_SPLIT",
+        "splits": [
+          {
+            "filterType": "ABI",
             "value": "armeabi-v7a"
           }
         ],
@@ -78,33 +105,6 @@
         "dirName": "x86_64\\"
       },
       "path": "resources-x86_64Release.ap_",
-      "properties": {
-        "packageId": "com.bmsappdev",
-        "split": "",
-        "minSdkVersion": "21"
-      }
-    },
-    {
-      "outputType": {
-        "type": "PROCESSED_RES"
-      },
-      "apkData": {
-        "type": "FULL_SPLIT",
-        "splits": [
-          {
-            "filterType": "ABI",
-            "value": "x86"
-          }
-        ],
-        "versionCode": 2097165,
-        "versionName": "1.0.13",
-        "filterName": "x86",
-        "outputFile": "app-x86-release.apk",
-        "fullName": "x86Release",
-        "baseName": "x86-release",
-        "dirName": "x86\\"
-      },
-      "path": "resources-x86Release.ap_",
       "properties": {
         "packageId": "com.bmsappdev",
         "split": "",

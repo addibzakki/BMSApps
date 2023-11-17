@@ -240,7 +240,7 @@ export const ListMenuGrid = props => {
         <Text
           style={{
             color: 'white',
-            fontSize: RFPercentage(2),
+            fontSize: RFPercentage(1.5),
             textTransform: 'uppercase',
             textAlign: 'center',
           }}>

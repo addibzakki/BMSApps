@@ -13,17 +13,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PettyLAPIService from '../../services/Petty/PettyAPIService';
 
 const PettyDashboard = ({navigation}) => {
-
+  console.log('in page list transaction')
   const LoginReducer = useSelector(state => state.LoginReducer);
   const [listTopup, setListTopup] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
-  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getData();
-      checkPetty()
     });
     return () => {
       unsubscribe;
@@ -45,16 +43,6 @@ const PettyDashboard = ({navigation}) => {
     }
   };
 
-  const checkPetty = async () => {
-    try {
-      const res = await PettyLAPIService.getBalance(LoginReducer.form.profile.uid);
-      console.log(res.data.data);
-      setBalance(res.data.data.balance_format);
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', error.message);
-    }
-  };
 
   const onRefresh = () => {
     setRefresh(true);
@@ -66,11 +54,19 @@ const PettyDashboard = ({navigation}) => {
   };
 
   const renderItem = ({ item, index }) => {
-    if (item.status == 'S') {
+    console.log(item);
+    if (item.status == 'R') {
       var status_color = 'orange';
     } else {
-      var status_color = 'red';
+      if (item.status_settle == 'P') {
+        var status_color = 'red';
+      } else if (item.status_settle == 'A4') {
+        var status_color = 'blue';
+      } else {
+        var status_color = 'green';
+      }
     }
+
     return (
       <ListItem
         style={{
@@ -108,13 +104,16 @@ const PettyDashboard = ({navigation}) => {
               borderColor: status_color,
             }}
           />
+          <TextLineIndentLight label="Entity" value={item.location} />
+          <TextLineIndentLight label="Category" value={item.category_desc} />
           <TextLineIndentLight label="Desc" value={item.descs} />
           <TextLineIndentLight
             label="Date"
-            value={moment(item.created_at).format('DD MMMM YYYY')}
+            value={moment(item.transfer_date).format('DD MMMM YYYY')}
           />
           <TextLineIndentLight label="Amount Transfer" value={item.amount_format} />
-          {/* <TextLineIndentLight label="Status" value={item.status} /> */}
+          <TextLineIndentLight label="Status" value={(item.status_settle == null ? item.status_desc : item.status_settle_desc)} />
+          {item.status_settle == 'P' && (<TextLineIndentLight label="Remark" value={item.remarks} />)}
         </Body>
       </ListItem>
     );
@@ -159,34 +158,6 @@ const PettyDashboard = ({navigation}) => {
       />
       <View style={styles.wrapper.subPage}>
         <View style={styles.wrapper.menu}>
-          <View
-            style={{
-              marginBottom: 10,
-              borderWidth: 1,
-              borderColor: '#fff',
-              borderRadius: 20,
-              marginHorizontal: 10,
-              // backgroundColor: colorLogo.color4,
-              paddingVertical: 5,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                // paddingHorizontal: 15,
-                paddingVertical: 5,
-              }}>
-              <Text style={{ color: 'black', fontWeight: 'bold' }}>Saldo Cash Advance : {balance}</Text>
-              {/* <TouchableOpacity onPress={() => navigation.navigate('PettyDashboard')}>
-                <MaterialCommunityIcons
-                  name="account-cash-outline"
-                  color="white"
-                  size={28}
-                />
-              </TouchableOpacity> */}
-            </View>
-          </View>
           {content()}
         </View>
       </View>

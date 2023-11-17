@@ -139,10 +139,10 @@ const AdminMeterWritingMaster = ({navigation}) => {
       let length = MeterReducer.meterInfo.length;
       let width = MeterReducer.meterInfo.width;
       setVolume((length * width * height).toFixed(2));
-    }else{
+    } else {
       // TODO : rumus toren
       let diameter = MeterReducer.meterInfo.diameter;
-      setVolume((((3.14 * ((diameter / 2) * (diameter / 2))) * height) * 2).toFixed(2));
+      setVolume(((3.14 * ((diameter / 2) * (diameter / 2))) * height).toFixed(2));
     }
   }
 
