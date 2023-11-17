@@ -46,7 +46,7 @@ const PettyCapture = ({route, navigation}) => {
     } else if (description == '') {
       Alert.alert('Attention', 'Please fill description value');
     } else if (fileList.length == 0) {
-      Alert.alert('Error', 'Please take a picture document');
+      Alert.alert('Attention', 'Please take a picture document');
     } else {
       Alert.alert(
         'Attention',
@@ -100,11 +100,11 @@ const PettyCapture = ({route, navigation}) => {
         );
         setLoading(false);
       } else {
-        Alert.alert('Error', res.data.message);
+        Alert.alert('Warning', res.data.message);
         setLoading(false);
       }
     } catch (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert('Warning', error.message);
       setLoading(false);
     }
   };
