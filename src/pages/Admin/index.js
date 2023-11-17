@@ -44,6 +44,7 @@ import {
 import AuthenticationAPIService from '../../services/Authentication/AuthenticationService';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import SPLAPIService from '../../services/SPL/APIservice';
+import PettyLAPIService from '../../services/Petty/PettyAPIService';
 
 const AdminDashboard = ({navigation}) => {
   const dispatch = useDispatch();
@@ -69,6 +70,11 @@ const AdminDashboard = ({navigation}) => {
   const [resultOvertime, setResultOvertime] = useState('');
   const [point, setPoint] = useState(0);
   const [dataSPL, setDataSPL] = useState([]);
+  const [cashAdvance, setCashAdvance] = useState(0);
+  const [cashAdvanceNotif, setCashAdvanceNotif] = useState('FALSE');
+  const [cashAdvancePending, setCashAdvancePending] = useState(0);
+  const [cashAdvancePendingNotif, setCashAdvancePendingNotif] = useState('FALSE');
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     // if (GlobalReducer.refresh == true) {
@@ -80,6 +86,7 @@ const AdminDashboard = ({navigation}) => {
       getDataDashboard();
       getPoint();
       dumpData();
+      checkPetty();
     });
 
     return () => {
@@ -120,6 +127,68 @@ const AdminDashboard = ({navigation}) => {
       notification_val: valNotifSpl,
       notification: notifSpl,
     },
+  ];
+
+  const menuPettySupervisor = [
+    {
+      rowID: 1,
+      title: 'Settlement Advance',
+      icon: 'cash-outline',
+      route: 'PettyDashboard',
+      notification_val: cashAdvance,
+      notification: cashAdvanceNotif,
+    },
+    {
+      rowID: 2,
+      title: 'Request Advance',
+      icon: 'journal-outline',
+      route: 'PettyHistoryRequest',
+      notification_val: 0,
+      notification: 'FALSE',
+    },
+    {
+      rowID: 3,
+      title: 'Advance Pending',
+      icon: 'cash',
+      route: 'PettyPending',
+      notification_val: cashAdvancePending,
+      notification: cashAdvancePendingNotif,
+    },
+    {
+      rowID: 4,
+      title: 'History Advance',
+      icon: 'newspaper-outline',
+      route: 'PettyHistory',
+      notification_val: 0,
+      notification: 'FALSE',
+    }
+  ];
+
+  const menuPettyEngineer = [
+    {
+      rowID: 1,
+      title: 'Settlement Advance',
+      icon: 'cash-outline',
+      route: 'PettyDashboard',
+      notification_val: cashAdvance,
+      notification: cashAdvanceNotif,
+    },
+    {
+      rowID: 2,
+      title: 'Advance Pending',
+      icon: 'cash',
+      route: 'PettyPending',
+      notification_val: cashAdvancePending,
+      notification: cashAdvancePendingNotif,
+    },
+    {
+      rowID: 3,
+      title: 'History Advance',
+      icon: 'newspaper-outline',
+      route: 'PettyHistory',
+      notification_val: 0,
+      notification: 'FALSE',
+    }
   ];
 
   const getDataDashboard = async () => {
@@ -230,6 +299,21 @@ const AdminDashboard = ({navigation}) => {
         console.log(error);
         Alert.alert('Error', error.message);
       }
+    }
+  };
+
+  const checkPetty = async () => {
+    try {
+      const res = await PettyLAPIService.getNotif(LoginReducer.form.profile.uid);
+      setCashAdvance(res.data.data.cash_advance);
+      setCashAdvanceNotif(res.data.data.cash_advance_notif);
+      setCashAdvancePending(res.data.data.cash_advance_pending);
+      setCashAdvancePendingNotif(res.data.data.cash_advance_notif_pending);
+      const resp = await PettyLAPIService.getBalance(LoginReducer.form.profile.uid);
+      setBalance(resp.data.data.balance_format);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', error.message);
     }
   };
 
@@ -553,7 +637,7 @@ const AdminDashboard = ({navigation}) => {
           <ActionButton title="Change" onPress={() => changePassword()} />
         </View>
       </Modal>
-      <View style={styles.wrapper.top_container}>
+      {/* <View style={styles.wrapper.top_container}>
         <View style={styles.space(10)} />
         <View style={styles.wrapper.greeting}>
           <View style={{flex: 1}}>
@@ -696,6 +780,146 @@ const AdminDashboard = ({navigation}) => {
           <ListTicket list={listSubmitTicket} navigation={navigation} />
         </View>
         <View style={styles.space(15)} />
+      </View> */}
+      <View style={styles.wrapper.top_container}>
+        <View style={styles.space(10)} />
+        <View style={styles.wrapper.greeting}>
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+              }}>
+              {LoginReducer.form.profile.name}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+              }}>
+              {LoginReducer.form.profile.level
+                ? LoginReducer.form.profile.level
+                : 'Engineer'}
+            </Text>
+            {AreaReducer.available && (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                }}>
+                <Icon name="location" /> {AreaReducer.area['project_desc']}
+              </Text>
+            )}
+
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'flex-end',
+              paddingRight: 5,
+            }}>
+            <View
+              style={{
+                borderStyle: 'solid',
+                borderWidth: 2,
+                borderColor: colorLogo.color5,
+                borderRadius: 50,
+                width: 50,
+                height: 50,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{ fontSize: RFPercentage(2), fontWeight: 'bold' }}>
+                {point}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.space(10)} />
+      </View>
+      <View
+        style={{
+          backgroundColor: 'white',
+          flex: 1,
+          paddingTop: 10,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }}>
+
+
+
+        <View
+          style={{
+            marginBottom: 10,
+            borderWidth: 1,
+            borderRadius: 20,
+            marginHorizontal: 10,
+            backgroundColor: colorLogo.color4,
+            paddingVertical: 5,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+            }}>
+            <Text style={{ color: 'white' }}><Icon name="wallet" /> Rp. {balance}</Text>
+            {AreaReducer.available ? (
+              <TouchableOpacity
+                onPress={() => onCheckOut()}
+                style={{
+                  borderColor: 'white',
+                  borderWidth: 1,
+                  padding: 5,
+                  borderRadius: 10,
+                }}>
+                <Text style={{ color: 'white' }}>Chek-Out</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => navigation.navigate('WorkArea')}>
+                <MaterialCommunityIcons
+                  name="barcode-scan"
+                  color="white"
+                  size={28}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        <View
+          style={{
+            borderWidth: 1,
+            borderRadius: 20,
+            marginHorizontal: 10,
+            backgroundColor: colorLogo.color4,
+            paddingTop: 10,
+            justifyContent: 'center',
+          }}>
+          <ListMenu list={menu} navigation={navigation} />
+          {
+            (LoginReducer.form.profile.level == 'Supervisor' ? (<ListMenu list={menuPettySupervisor} navigation={navigation} />) : (<ListMenu list={menuPettyEngineer} navigation={navigation} />))
+          }
+        </View>
+
+        <View style={styles.wrapper.menu}>
+          <View style={styles.space(10)} />
+          <View>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              <Icon name="arrow-redo-outline" size={20} /> Ticket
+            </Text>
+            <Text style={{ fontSize: 14 }}>Assignment Ticket For You :</Text>
+          </View>
+          <View style={styles.space(10)} />
+
+          <ListTicket list={listSubmitTicket} navigation={navigation} />
+        </View>
+        <View style={styles.space(15)} />
       </View>
     </View>
   );
@@ -709,11 +933,11 @@ const styles = {
     },
     top_container: {
       paddingTop: 10,
-      height: 130,
+      height: 105,
       backgroundColor: colorLogo.color4,
     },
     greeting: {
-      height: 85,
+      height: 65,
       flexDirection: 'row',
       backgroundColor: '#ffffff',
       paddingLeft: 20,

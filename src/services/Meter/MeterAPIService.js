@@ -7,6 +7,9 @@ const MeterAPIService = {
   getMeter: function(params) {
     return axios.get('/get_meter/' + params);
   },
+  getMeterMaster: function(params) {
+    return axios.get('/get_meter_master/' + params);
+  },
   getTenantList: function(params) {
     return axios.get('get_tenant/list');
   },
@@ -14,6 +17,9 @@ const MeterAPIService = {
   //* for post method
   createReadingMeter: function(params) {
     return axios.post('/create_reading_meter', params);
+  },
+  createReadingMeterMaster: function(params) {
+    return axios.post('/create_reading_meter_master', params);
   },
 };
 

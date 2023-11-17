@@ -65,24 +65,42 @@ const AdminMeterBarcode = ({navigation}) => {
     if (networkContext.networkInfo == true) {
       try {
         setLoading(true);
-        const res = await MeterAPIService.getMeter(value);
-        if (res.data.validation == 'valid') {
-          setLoading(false);
-          dispatch(setInfoMeterID(value));
-          dispatch(setInfoMeter(res.data.meterInfo));
-          dispatch(setInfoTenant(res.data.tenantInfo));
-          dispatch(setLastReadingMeter(res.data.lastread));
-          navigation.replace('AdminMeterWriting');
-        } else if (res.data.validation == 'duplicate') {
-          // Alert.alert('Warning', response.data.message);
-          ButtonAlert(false, res.data.message);
-          // ButtonAlert(false, "Sorry, the barcode doesn't match, re-scan?");
-          setLoading(false);
-          startScan();
+        const meterSplit = value.split('::');
+        if (meterSplit[0].includes('MST-')){
+          const res = await MeterAPIService.getMeterMaster(value);
+          if (res.data.validation == 'valid') {
+            setLoading(false);
+            dispatch(setInfoMeterID(res.data.meterInfo.meter_cd));
+            dispatch(setInfoMeter(res.data.meterInfo));
+
+            navigation.replace('AdminMeterWritingMaster');
+          } else {
+            setLoading(false);
+            ButtonAlert(true, res.data.message);
+          }
         } else {
-          setLoading(false);
-          ButtonAlert(true, res.data.message);
-          // ButtonAlert(true, 'Sorry, meter id not found, would you rescan?');
+          const res = await MeterAPIService.getMeter(value);
+          
+          if (res.data.validation == 'valid') {
+            setLoading(false);
+            dispatch(setInfoMeterID(value));
+            dispatch(setInfoMeter(res.data.meterInfo));
+            dispatch(setInfoTenant(res.data.tenantInfo));
+            dispatch(setLastReadingMeter(res.data.lastread));
+            var meter_type = ['water-induk','gardu-induk'];
+            if (meter_type.includes(res.data.meterInfo.meter_id) && res.data.type == 'update') {
+              navigation.replace('AdminMeterWritingUpdate');
+            }else{
+              navigation.replace('AdminMeterWriting');
+            }
+          } else if (res.data.validation == 'duplicate') {
+            ButtonAlert(false, res.data.message);
+            setLoading(false);
+            startScan();
+          } else {
+            setLoading(false);
+            ButtonAlert(true, res.data.message);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -91,7 +109,8 @@ const AdminMeterBarcode = ({navigation}) => {
     } else {
       setLoading(true);
       var meterSplit = value.split('::');
-      if (meterSplit[0] == 'gardu-induk') {
+      var gardu = ['gardu-induk','water-induk']
+      if (gardu.includes(meterSplit[0])) {
         value = meterSplit[0].concat('::', meterSplit[1], '::', meterSplit[2]);
       }
       var temp = [];
@@ -149,7 +168,13 @@ const AdminMeterBarcode = ({navigation}) => {
                         tenant_name: res.rows.item(0).debtor_name,
                       }),
                     );
-                    navigation.replace('AdminMeterWriting');
+
+                    var meter_type = ['water-induk', 'gardu-induk'];
+                    if (meter_type.includes(res.rows.item(0).meter_id)) {
+                      navigation.replace('AdminMeterWritingUpdate');
+                    } else {
+                      navigation.replace('AdminMeterWriting');
+                    }
                   }
                   // setFlatListItems(temp);
                   setLoading(false);

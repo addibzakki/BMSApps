@@ -258,23 +258,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\4f6105b3fe0cc92ffda34f25447f490d\\jetified-android-pdf-viewer-2.8.2\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "288",
-                        "endOffsets": "339"
-                    },
-                    "to": {
-                        "startLines": "6699",
-                        "startColumns": "4",
-                        "startOffsets": "420222",
-                        "endColumns": "288",
-                        "endOffsets": "420506"
-                    }
-                },
-                {
                     "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\d6f0b7abfb6481f577a234e1e40d190b\\jetified-glide-4.11.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -344,23 +327,6 @@
                         "endLines": "6150,6888",
                         "endColumns": "22,22",
                         "endOffsets": "392511,428758"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\d3a03507c7d9b3598a03f8444c85198a\\jetified-android-scalablevideoview-1.0.4\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "1028",
-                        "endOffsets": "1079"
-                    },
-                    "to": {
-                        "startLines": "7491",
-                        "startColumns": "4",
-                        "startOffsets": "462578",
-                        "endColumns": "1028",
-                        "endOffsets": "463602"
                     }
                 },
                 {
@@ -438,6 +404,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\03b37d5d4ebeead70d45a12c96d7a862\\jetified-android-scalablevideoview-1.0.4\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "1028",
+                        "endOffsets": "1079"
+                    },
+                    "to": {
+                        "startLines": "7491",
+                        "startColumns": "4",
+                        "startOffsets": "462578",
+                        "endColumns": "1028",
+                        "endOffsets": "463602"
+                    }
+                },
+                {
                     "source": "D:\\0. KERJAAN\\PROJECT\\React Native\\Production\\BMSApp-Production\\node_modules\\react-native-image-picker\\android\\build\\intermediates\\packaged_res\\release\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -473,6 +456,23 @@
                         "endLines": "4597,4604,4615,6950,6955",
                         "endColumns": "24,24,24,24,24",
                         "endOffsets": "309056,309441,310038,432265,432535"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-2\\files-2.1\\6b82caeb59d836a334e0d3976a5199c1\\jetified-android-pdf-viewer-2.8.2\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "288",
+                        "endOffsets": "339"
+                    },
+                    "to": {
+                        "startLines": "6699",
+                        "startColumns": "4",
+                        "startOffsets": "420222",
+                        "endColumns": "288",
+                        "endOffsets": "420506"
                     }
                 },
                 {

@@ -230,3 +230,105 @@ export const uploadPendingTables = db => {
     );
   });
 };
+
+
+
+export const uploadTablesMaster = (db, params) => {
+  const storeAjax = async (data) => {
+    console.log(data);
+    try {
+      let uploadData = new FormData();
+      uploadData.append('entity_cd', data.entity_cd);
+      uploadData.append('db_identity', data.db_identity);
+      uploadData.append('project_no', data.project_no);
+      uploadData.append('meter_cd', data.meter_cd);
+      uploadData.append('month', data.month);
+      uploadData.append('year', data.year);
+      uploadData.append('status', data.status);
+      uploadData.append('shape', data.shape);
+      uploadData.append('length', data.length);
+      uploadData.append('diameter', data.diameter);
+      uploadData.append('width', data.width);
+      uploadData.append('height', data.height);
+      uploadData.append('volume', data.volume);
+      uploadData.append('clean_water_rate', data.clean_water_rate);
+      uploadData.append('dirty_water_rate', data.dirty_water_rate);
+      uploadData.append('dirty_water_usage', data.dirty_water_usage);
+      uploadData.append('read_by', data.read_by);
+      uploadData.append('read_date', data.read_date);
+
+      console.log(uploadData);
+
+      const res = await MeterAPIService.createReadingMeterMaster(uploadData);
+      if (res.data.code == 200) {
+        // Alert.alert('Success', response.data.message);
+        console.log('insert into bms_meter_fasum_water_trx_volume successfully');
+        BackgroundJob.cancel({
+          jobKey: data.meter_cd,
+        });
+        db.transaction(tx => {
+          tx.executeSql(
+            'DELETE FROM bms_volume_trx_temp WHERE meter_cd = ? AND entity_cd = ? AND project_no = ?',
+            [data.meter_cd, data.entity_cd, data.project_no],
+            (tx, result) => {
+              console.log('delete meter meter cd successfully');
+            },
+            error => {
+              console.log('error on delete item ' + error.message);
+            },
+          );
+        });
+        return true;
+      } else if (res.data.code == 300) {
+        // Alert.alert('Attention', response.data.message);
+        console.log('delete duplicate bms_volume_trx_temp successfully');
+        BackgroundJob.cancel({
+          jobKey: data.meter_cd,
+        });
+        db.transaction(tx => {
+          tx.executeSql(
+            'DELETE FROM bms_volume_trx_temp WHERE meter_cd = ? AND entity_cd = ? AND project_no = ?',
+            [data.meter_cd, data.entity_cd, data.prject_no],
+            (tx, result) => {
+              console.log('delete meter cd successfully');
+            },
+            error => {
+              console.log('error on delete item ' + error.message);
+            },
+          );
+        });
+        return false;
+      } else {
+        BackgroundJob.cancel({
+          jobKey: data.meter_cd,
+        });
+        // Alert.alert('Error', res.data.message);
+        console.log('error :' + 'Submit meter recording failed');
+        return false;
+      }
+    } catch (error) {
+      // inputTablesLog(db, data, 'bms_meter_log', 'error connection');
+      console.log(error);
+      // Alert.alert('Error', error.message);
+    }
+    // end push
+  };
+
+  db.transaction(txn => {
+    txn.executeSql(
+      'SELECT * FROM bms_volume_trx_temp WHERE meter_cd = ? AND entity_cd = ? AND project_no = ?',
+      params,
+      (txn, res) => {
+        for (let i = 0; i < res.rows.length; ++i) {
+          storeAjax(
+            res.rows.item(i),
+          );
+        }
+        console.log('select table bms_volume_trx_temp successfully');
+      },
+      error => {
+        console.log('error on select table bms_volume_trx_temp ' + error.message);
+      },
+    );
+  });
+};

@@ -152,7 +152,7 @@ export const ButtonIconBadge = ({
         />
         {notif != 'FALSE' && (
           <Badge style={{position: 'absolute', top: 0, right: -10}}>
-            <Text style={{color: '#FFFFFF', fontSize: RFPercentage(2)}}>
+            <Text style={{color: '#FFFFFF', fontSize: RFPercentage(1.2)}}>
               {value}
             </Text>
           </Badge>
@@ -162,7 +162,7 @@ export const ButtonIconBadge = ({
         style={{
           marginTop: 5,
           color: '#FFFFFF',
-          fontSize: RFPercentage(1.7),
+          fontSize: RFPercentage(1.2),
           // fontWeight: 'bold',
           textTransform: 'uppercase',
           textAlign: 'center',

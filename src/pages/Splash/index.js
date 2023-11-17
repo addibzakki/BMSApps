@@ -39,7 +39,9 @@ const Splash = ({navigation}) => {
   }, []);
 
   const table_collection = () => {
+    console.log('table collection');
     createTables(db, 'bms_meter');
+    createTables(db, 'bms_volume_trx_temp');
     createTables(db, 'list_meter');
     createTables(db, 'bms_meter_temp');
     createTables(db, 'bms_meter_log');
