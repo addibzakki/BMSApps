@@ -1,8 +1,8 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.mmpbmsappeng"
-4    android:versionCode="9"
-5    android:versionName="1.2.7" >
+4    android:versionCode="12"
+5    android:versionName="1.2.10" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
@@ -585,18 +585,18 @@
 299             appropriate internal service.
 300        -->
 301        <service
-301-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:32:9-39:19
+301-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:32:9-39:19
 302            android:name="com.firebase.jobdispatcher.GooglePlayReceiver"
-302-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:33:13-73
+302-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:33:13-73
 303            android:exported="true"
-303-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:34:13-36
+303-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:34:13-36
 304            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE" >
-304-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:35:13-93
+304-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:35:13-93
 305            <intent-filter>
-305-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:36:13-38:29
+305-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:36:13-38:29
 306                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
-306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:17-87
-306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\e73c1e9ef4862005b4328b754295e10c\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:25-84
+306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:17-87
+306-->[com.firebase:firebase-jobdispatcher:0.8.5] C:\Users\zakky\.gradle\caches\transforms-2\files-2.1\a3e28d2f0afc317107e1e376f939ee20\jetified-firebase-jobdispatcher-0.8.5\AndroidManifest.xml:37:25-84
 307            </intent-filter>
 308        </service>
 309

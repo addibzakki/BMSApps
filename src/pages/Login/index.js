@@ -89,6 +89,7 @@ const Login = ({navigation}) => {
           dispatch(setForm(res.data.profile));
           navigation.replace('AdminDashboard');
         } else {
+          console.log(res.data);
           setLoading(false);
           Alert.alert('Attention', 'Please fill valid Username & Password');
         }

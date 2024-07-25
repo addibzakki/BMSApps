@@ -14,6 +14,7 @@ import {colorLogo} from '../../../utils';
 import {ActionButton} from '../ActionButton';
 import Spinner from 'react-native-loading-spinner-overlay';
 import BackgroundJob from 'react-native-background-job';
+import { InputFormIcon } from '../../../component/atoms/Input';
 
 const AdminMeterWritingMaster = ({navigation}) => {
   const MeterReducer = useSelector(state => state.MeterReducer);
@@ -164,7 +165,7 @@ const AdminMeterWritingMaster = ({navigation}) => {
           <View style={styles.space(10)} />
           <View style={styles.wrapper.content}>
             <View>
-                <InputForm
+                <InputFormIcon
                   placeholder="Height"
                   keyboardType="number-pad"
                 value={heightVal}

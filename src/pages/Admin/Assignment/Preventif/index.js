@@ -60,7 +60,7 @@ const AdminPreventive = ({ navigation }) => {
     },
     {
       key: 1,
-      title: 'History Asset',
+      title: 'History Maintenance',
       icon: 'ios-calendar-outline',
       nav: 'AdminPreventifScanHistory',
       badge: false,

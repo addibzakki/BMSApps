@@ -15,6 +15,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const PettyHistoryRequest = ({navigation}) => {
 
+  console.log('in page history request')
   const LoginReducer = useSelector(state => state.LoginReducer);
   const [visible, setVisible] = useState(false);
   const [listTopup, setListTopup] = useState([]);
@@ -154,6 +155,8 @@ const PettyHistoryRequest = ({navigation}) => {
     );
   };
 
+  
+
   const content = () => {
     if (loading == true) {
       return <SkeletonFakeList row={4} height={50} />;
@@ -217,6 +220,7 @@ const styles = {
       paddingTop: 5,
     },
     menu: {
+      flex: 1,
       marginHorizontal: 10,
     },
   },

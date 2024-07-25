@@ -271,7 +271,7 @@ const PettyCapture = ({route, navigation}) => {
                 <View style={{flexDirection: 'row'}}>
                   <View style={{width: '49%'}}>
                     <InputForm
-                      placeholder="Initial KM"
+                      placeholder="KM Awal"
                       keyboardType="number-pad"
                       value={initialKM}
                       onChangeText={value => setInitialKM(value)}
@@ -280,7 +280,7 @@ const PettyCapture = ({route, navigation}) => {
                   <View style={{width: '2%'}} />
                   <View style={{width: '49%'}}>
                     <InputForm
-                      placeholder="Final KM"
+                      placeholder="KM Akhir"
                       keyboardType="number-pad"
                       value={finalKM}
                       onChangeText={value => setFinalKM(value)}

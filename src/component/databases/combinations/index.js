@@ -235,7 +235,6 @@ export const uploadPendingTables = db => {
 
 export const uploadTablesMaster = (db, params) => {
   const storeAjax = async (data) => {
-    console.log(data);
     try {
       let uploadData = new FormData();
       uploadData.append('entity_cd', data.entity_cd);
@@ -257,9 +256,9 @@ export const uploadTablesMaster = (db, params) => {
       uploadData.append('read_by', data.read_by);
       uploadData.append('read_date', data.read_date);
 
-      console.log(uploadData);
-
       const res = await MeterAPIService.createReadingMeterMaster(uploadData);
+
+      console.log(res.data.code);
       if (res.data.code == 200) {
         // Alert.alert('Success', response.data.message);
         console.log('insert into bms_meter_fasum_water_trx_volume successfully');

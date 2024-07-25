@@ -20,6 +20,7 @@ export const global_style = StyleSheet.create({
   },
 
   content: {
+    flex: 1,
     paddingTop: 5,
     marginHorizontal: 10,
   },

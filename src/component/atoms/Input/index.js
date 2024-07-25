@@ -82,6 +82,31 @@ export const InputForm = ({placeholder, ...rest}) => {
   );
 };
 
+export const InputFormIcon = ({ placeholder, ...rest }) => {
+  return (
+    <View style={{ marginBottom: 15 }}>
+      <Text style={styles.text2}>{placeholder}</Text>
+      <View style={styles.space(5)} />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          style={styles.inputFormIcon}
+          placeholderTextColor={colorLogo.color3}
+          {...rest}
+        />
+        <Text style={{
+          paddingHorizontal: 10,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: colorLogo.color3,
+          color: colorLogo.color3,
+          borderTopRightRadius: 10,
+          borderBottomRightRadius: 10,
+        }}>m</Text>
+      </View>
+    </View>
+  );
+};
+
 export const InputDropdownForm = ({placeholder, ...rest}) => {
   return (
     <View style={{marginBottom: 15}}>

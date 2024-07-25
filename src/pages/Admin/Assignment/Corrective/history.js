@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {View, FlatList, RefreshControl, Text, Alert} from 'react-native';
 import {ListItem, Left, Body} from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
-import {SkeletonFake, TopHeader} from '../../../../component';
+import {ListTicket, SkeletonFake, TopHeader} from '../../../../component';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colorLogo} from '../../../../utils';
 import {CorrectiveAPIService} from '../../../../services';
-import {setParamsRouteCorrective} from '../../../../redux';
+import { setParamsRouteCorrective } from '../../../../redux';
+import { Searchbar } from 'react-native-paper';
 
 const AdminHelpdeskHistory = ({navigation}) => {
   const LoginReducer = useSelector(state => state.LoginReducer);
@@ -15,6 +16,8 @@ const AdminHelpdeskHistory = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [listHistory, setListHistory] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [listFilter, setListFilter] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -141,6 +144,14 @@ const AdminHelpdeskHistory = ({navigation}) => {
     }
   };
 
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    const newFilter = listHistory.filter(item => {
+      return (item.tenant_ticket_id.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.tenant_ticket_location.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    });
+    setListFilter(newFilter);
+  };
+
   return (
     <View style={styles.wrapper.page}>
       <TopHeader
@@ -151,17 +162,19 @@ const AdminHelpdeskHistory = ({navigation}) => {
       />
       <View style={styles.wrapper.subPage}>
         <View style={styles.wrapper.menu}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={listHistory}
-            renderItem={renderItem}
-            ListEmptyComponent={renderEmpty(loading)}
-            keyExtractor={(item, index) => index.toString()}
-            extraData={listHistory}
-            refreshControl={
-              <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-            }
+          <Searchbar
+            style={{
+              marginTop: 5,
+              marginBottom: 10,
+              borderRadius: 15,
+              borderBottomWidth: 1
+            }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
           />
+          <View style={{ borderWidth: 1, borderBottomColor: colorLogo.color5, marginBottom: 10 }} />
+          <ListTicket list={searchQuery == '' ? listHistory : listFilter} navigation={navigation} />
         </View>
       </View>
     </View>

@@ -57,7 +57,7 @@ const AdminPreventifListChecklist = ({navigation}) => {
 
   useEffect(() => {
     if (refresh == true) {
-      getCollection();
+      // getCollection();
     }
     const unsubscribe = navigation.addListener('focus', () => {
       getCollection();
@@ -557,6 +557,26 @@ const AdminPreventifListChecklist = ({navigation}) => {
     }
   };
 
+  const correctiveButton = () => {
+    if (LoginReducer.form.profile.level != 'Driver') {
+         return <Button
+          warning
+          full
+          onPress={() => setModalVisible(true)}
+          style={{ borderRightColor: '#ccc', borderRightWidth: 1 }}>
+          <Text
+            style={{
+              color: '#FFF',
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}>
+            To Corrective
+          </Text>
+        </Button>
+    }
+  }
+
   return (
     <View style={global_style.page}>
       <Spinner
@@ -732,21 +752,10 @@ const AdminPreventifListChecklist = ({navigation}) => {
                 Submit
               </Text>
             </Button>
-            <Button
-              warning
-              full
-              onPress={() => setModalVisible(true)}
-              style={{borderRightColor: '#ccc', borderRightWidth: 1}}>
-              <Text
-                style={{
-                  color: '#FFF',
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                To Corrective
-              </Text>
-            </Button>
+            {
+              correctiveButton()
+            }
+            
           </FooterTab>
         </Footer>
       </View>

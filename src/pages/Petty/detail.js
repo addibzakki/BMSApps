@@ -269,6 +269,7 @@ const PettyDetail = ({ route, navigation }) => {
                                     'project_no': route.params.project_no,
                                     'bank_cd': route.params.bank_cd,
                                     'doc_no': route.params.doc_no,
+                                    'data': route.params
                                 });
                             }}>
                             <Text

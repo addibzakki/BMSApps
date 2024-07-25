@@ -11,12 +11,15 @@ import SPLAPIService from '../../../services/SPL/APIservice';
 import {Body, Left, ListItem, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import { Searchbar } from 'react-native-paper';
 
 const HistorySPL = ({navigation}) => {
   const LoginReducer = useSelector(state => state.LoginReducer);
   const [listRequestSPL, setListRequestSPL] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+  const [listFilter, setListFilter] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getData();
@@ -132,13 +135,21 @@ const HistorySPL = ({navigation}) => {
     );
   };
 
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    const newFilter = listRequestSPL.filter(item => {
+      return (item.spl_cd.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.engineer_name.toLowerCase().indexOf(query.toLowerCase()) > -1 || moment(item.request_date).format('DD MMMM YYYY').toLowerCase().indexOf(query.toLowerCase()) > -1);
+    });
+    setListFilter(newFilter);
+  };
+
   const content = () => {
     if (loading == true) {
       return <SkeletonFakeList row={4} height={50} />;
     } else {
       return (
         <FlatList
-          data={listRequestSPL}
+          data={searchQuery == '' ? listRequestSPL : listFilter}
           renderItem={renderItem}
           ListEmptyComponent={renderEmpty()}
           keyExtractor={(item, index) => index.toString()}
@@ -160,6 +171,18 @@ const HistorySPL = ({navigation}) => {
       />
       <View style={styles.wrapper.subPage}>
         <View style={styles.wrapper.menu}>
+          <Searchbar
+            style={{
+              marginTop: 5,
+              marginBottom: 10,
+              borderRadius: 15,
+              borderBottomWidth: 1
+            }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
+          <View style={{ borderWidth: 1, borderBottomColor: colorLogo.color5, marginBottom: 10 }} />
           {content()}
           {/* <ListItemSPL
             list={listRequestSPL}
@@ -187,6 +210,7 @@ const styles = {
       paddingTop: 5,
     },
     menu: {
+      flex: 1,
       marginHorizontal: 10,
     },
   },

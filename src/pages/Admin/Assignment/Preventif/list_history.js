@@ -10,7 +10,9 @@ import {global_style} from '../../../../styles';
 import {setPVTransCode} from '../../../../redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {PreventiveAPIService} from '../../../../services';
-import {Left, ListItem, Body} from 'native-base';
+import { Left, ListItem, Body } from 'native-base';
+import { Searchbar } from 'react-native-paper';
+import { colorLogo } from '../../../../utils';
 
 const AdminPreventifListHistory = ({navigation}) => {
   console.log('in page list history preventif');
@@ -19,6 +21,8 @@ const AdminPreventifListHistory = ({navigation}) => {
   const [list, setList] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [listFilter, setListFilter] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -119,6 +123,14 @@ const AdminPreventifListHistory = ({navigation}) => {
     );
   };
 
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    const newFilter = list.filter(item => {
+      return (item.trans_code.toLowerCase().indexOf(query.toLowerCase()) > -1 || (item.length > 0 && item.asset_detail.asset_name.toLowerCase().indexOf(query.toLowerCase()) > -1) || item.location.description.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.bms_status.status_name.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    });
+    setListFilter(newFilter);
+  };
+
   return (
     <View style={global_style.page}>
       <TopHeader
@@ -136,11 +148,23 @@ const AdminPreventifListHistory = ({navigation}) => {
 
       <View style={global_style.sub_page}>
         <View style={global_style.content}>
+          <Searchbar
+            style={{
+              marginTop: 5,
+              marginBottom: 10,
+              borderRadius: 15,
+              borderBottomWidth: 1
+            }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
+          <View style={{ borderWidth: 1, borderBottomColor: colorLogo.color5, marginBottom: 10 }} />
           {loading == true ? (
             <SkeletonFakeList row={8} height={110} />
           ) : (
             <FlatList
-              data={list}
+              data={searchQuery == '' ? list : listFilter}
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
               ListEmptyComponent={renderEmpty()}

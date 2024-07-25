@@ -12,15 +12,19 @@ import { Body, Left, ListItem } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PettyLAPIService from '../../services/Petty/PettyAPIService';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Searchbar } from 'react-native-paper';
 
 const PettyHistory = ({navigation}) => {
 
+  console.log('in page history')
   const LoginReducer = useSelector(state => state.LoginReducer);
   const [listTopup, setListTopup] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [balance, setBalance] = useState(0);
   const [loadingReceive, setLoadingReceive] = useState(false);
+  const [listFilter, setListFilter] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -159,13 +163,21 @@ const PettyHistory = ({navigation}) => {
     );
   };
 
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    const newFilter = listTopup.filter(item => {
+      return (item.doc_no.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.descs.toLowerCase().indexOf(query.toLowerCase()) > -1 || moment(item.transfer_date).format('DD MMMM YYYY').toLowerCase().indexOf(query.toLowerCase()) > -1);
+    });
+    setListFilter(newFilter);
+  };
+
   const content = () => {
     if (loading == true) {
       return <SkeletonFakeList row={4} height={50} />;
     } else {
       return (
         <FlatList
-          data={listTopup}
+          data={searchQuery == '' ? listTopup : listFilter}
           renderItem={renderItem}
           ListEmptyComponent={renderEmpty()}
           keyExtractor={(item, index) => index.toString()}
@@ -192,6 +204,18 @@ const PettyHistory = ({navigation}) => {
       />
       <View style={styles.wrapper.subPage}>
         <View style={styles.wrapper.menu}>
+          <Searchbar
+            style={{
+              marginTop: 5,
+              marginBottom: 10,
+              borderRadius: 15,
+              borderBottomWidth: 1
+            }}
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+          />
+          <View style={{ borderWidth: 1, borderBottomColor: colorLogo.color5, marginBottom: 10 }} />
           {content()}
         </View>
       </View>
@@ -214,6 +238,7 @@ const styles = {
       paddingTop: 5,
     },
     menu: {
+      flex: 1,
       marginHorizontal: 10,
     },
   },
