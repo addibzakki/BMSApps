@@ -80,6 +80,14 @@ target 'BMSApp' do
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
 
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
+  pod 'react-native-pdf', :path => '../node_modules/react-native-pdf'
+
+  pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
+
+  pod 'react-native-gps-state', :path => '../node_modules/react-native-gps-state'
+
   target 'BMSAppTests' do
     inherit! :complete
     # Pods for testing

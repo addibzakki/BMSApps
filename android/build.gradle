@@ -2,18 +2,22 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "29.0.2"
+        buildToolsVersion = "30.0.2"
         minSdkVersion = 21
-        compileSdkVersion = 29
-        targetSdkVersion = 29
+        compileSdkVersion = 30
+        targetSdkVersion = 30
         androidXCore = "1.6.0"
+
+        // kotlinVersion = "1.4.10"
+        // reactNativeVersion = "0.63.3"
     }
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.1")
+        classpath("com.android.tools.build:gradle:4.1.0")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -34,13 +38,18 @@ allprojects {
         }
 
         google()
+        mavenCentral()
         jcenter()
         maven { url 'https://www.jitpack.io' }
+        flatDir {
+            dirs project(':app').file('libs')  // tambahkan ini!
+        }
     }
     configurations.all {
         resolutionStrategy {
             // Remove this override in 0.65+, as a proper fix is included in react-native itself.
-            force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+            // force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+            force 'com.facebook.react:react-native:0.63.3'
         }
     }
 }

@@ -24,6 +24,7 @@ import {Icon} from 'native-base';
 import ImageResizer from 'react-native-image-resizer';
 import ImageMarker from 'react-native-image-marker';
 import BackgroundJob from 'react-native-background-job';
+import moment from 'moment-timezone';
 
 const AdminMeterWritingUpdate = ({navigation}) => {
   const MeterReducer = useSelector(state => state.MeterReducer);
@@ -110,7 +111,7 @@ const AdminMeterWritingUpdate = ({navigation}) => {
     });
     db.transaction(txn => {
       txn.executeSql(
-        'INSERT OR IGNORE INTO bms_meter_temp (entity_cd, project_no, debtor_acct, lot_no, debtor_name, meter_id, curr_read_date, curr_read, curr_read_high, attachment, tenant_name, signature, read_by, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT OR IGNORE INTO bms_meter_temp (entity_cd, project_no, debtor_acct, lot_no, debtor_name, meter_id, curr_read_date, curr_read, curr_read_high, attachment, tenant_name, signature, read_by, read_date, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           MeterReducer.meterInfo.entity_cd,
           MeterReducer.meterInfo.project_no,
@@ -125,6 +126,7 @@ const AdminMeterWritingUpdate = ({navigation}) => {
           tenantName,
           signature,
           LoginReducer.form.profile.uid,
+          moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
           available == false ? 0 : 1,
         ],
         (txn, res) => {
@@ -189,25 +191,9 @@ const AdminMeterWritingUpdate = ({navigation}) => {
       } else {
         ImageResizer.createResizedImage(response.uri, 800, 600, 'JPEG', 90)
           .then(response => {
-            var d = new Date();
-            var dd =
-              ('0' + d.getDate()).slice(-2) +
-              '-' +
-              ('0' + (d.getMonth() + 1)).slice(-2) +
-              '-' +
-              d.getFullYear() +
-              ' ' +
-              d.getHours() +
-              ':' +
-              (d.getMinutes() < 10 ? '0' : '') +
-              d.getMinutes() +
-              ':' +
-              (d.getSeconds() < 10 ? '0' : '') +
-              d.getSeconds();
-            var dateNow = dd.toString();
             ImageMarker.markText({
               src: response.uri,
-              text: MeterReducer.meterInfo.ref_no + ' \nDate : ' + dateNow,
+              text: MeterReducer.meterInfo.ref_no + ' \nDate : ' + moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss'),
               position: 'bottomLeft',
               color: '#FFFFFF',
               fontName: 'Arial-BoldItalicMT',

@@ -7,6 +7,8 @@ import {MeterAPIService} from '../../../services';
 
 export const uploadTables = (db, params) => {
   const storeAjax = async (data, longitude, latitude) => {
+    console.log(data.curr_read_date);
+    console.log(data.read_date);
     try {
       let uploadData = new FormData();
       let picture = data.attachment.split(';;');
@@ -26,6 +28,7 @@ export const uploadTables = (db, params) => {
       uploadData.append('meter_id', data.meter_id);
       uploadData.append('curr_read', data.curr_read);
       uploadData.append('curr_read_high', data.curr_read_high);
+      uploadData.append('curr_read_date', data.curr_read_date);
       uploadData.append('tenant_name', data.tenant_name);
       uploadData.append('signature', data.signature);
       uploadData.append('entity_cd', data.entity_cd);
@@ -34,6 +37,7 @@ export const uploadTables = (db, params) => {
       uploadData.append('debtor_name', data.debtor_name);
       uploadData.append('lot_no', data.lot_no);
       uploadData.append('read_by', data.read_by);
+      uploadData.append('read_date', data.read_date);
       uploadData.append('tenant_available', tenant_available);
       uploadData.append('longitude', longitude);
       uploadData.append('latitude', latitude);
@@ -167,6 +171,8 @@ export const uploadPendingTables = db => {
                   'curr_read_high',
                   res.rows.item(i).curr_read_high,
                 );
+
+                uploadData.append('curr_read_date', res.rows.item(i).curr_read_date);
                 uploadData.append('tenant_name', res.rows.item(i).tenant_name);
                 uploadData.append('signature', res.rows.item(i).signature);
                 uploadData.append('entity_cd', res.rows.item(i).entity_cd);
@@ -175,6 +181,7 @@ export const uploadPendingTables = db => {
                 uploadData.append('debtor_name', res.rows.item(i).debtor_name);
                 uploadData.append('lot_no', res.rows.item(i).lot_no);
                 uploadData.append('read_by', res.rows.item(i).read_by);
+                uploadData.append('read_date', res.rows.item(i).read_date);
                 uploadData.append('tenant_available', tenant_available);
                 uploadData.append('longitude', location.longitude);
                 uploadData.append('latitude', location.latitude);

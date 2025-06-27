@@ -67,8 +67,6 @@ import com.horcrux.svg.SvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 // react-native-video
 import com.brentvatne.react.ReactVideoPackage;
-// react-native-view-pdf
-import com.rumax.reactnative.pdfviewer.PDFViewPackage;
 // react-native-webview
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 
@@ -144,7 +142,6 @@ public class PackageList {
       new SvgPackage(),
       new VectorIconsPackage(),
       new ReactVideoPackage(),
-      new PDFViewPackage(),
       new RNCWebViewPackage()
     ));
   }
