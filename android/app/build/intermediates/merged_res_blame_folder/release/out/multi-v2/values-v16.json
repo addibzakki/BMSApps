@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\BMSApps-production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v16\\values-v16.xml",
+            "outputFile": "D:\\BMSApps-development\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v16\\values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-3\\63630bff35c5941492530625c68eb7d4\\transformed\\core-1.6.0\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\zakki\\.gradle\\caches\\transforms-3\\63630bff35c5941492530625c68eb7d4\\transformed\\core-1.6.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-3\\f1d8efb4b8d7ab611577761c63516cd8\\transformed\\appcompat-1.2.0\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\zakki\\.gradle\\caches\\transforms-3\\f1d8efb4b8d7ab611577761c63516cd8\\transformed\\appcompat-1.2.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

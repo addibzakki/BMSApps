@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\BMSApps-production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-w360dp-port-v13\\values-w360dp-port-v13.xml",
+            "outputFile": "D:\\BMSApps-development\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-w360dp-port-v13\\values-w360dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\zakky\\.gradle\\caches\\transforms-3\\442232dfc3bd4636261367c7466b9eb8\\transformed\\material-1.1.0\\res\\values-w360dp-port-v13\\values-w360dp-port-v13.xml",
+                    "source": "C:\\Users\\zakki\\.gradle\\caches\\transforms-3\\442232dfc3bd4636261367c7466b9eb8\\transformed\\material-1.1.0\\res\\values-w360dp-port-v13\\values-w360dp-port-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

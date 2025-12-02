@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\BMSApps-production\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v29\\values-v29.xml",
+            "outputFile": "D:\\BMSApps-development\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v29\\values-v29.xml",
             "map": [
                 {
-                    "source": "D:\\BMSApps-production\\android\\app\\src\\main\\res\\values-v29\\system.xml",
+                    "source": "D:\\BMSApps-development\\android\\app\\src\\main\\res\\values-v29\\system.xml",
                     "from": {
                         "startLines": "1",
                         "startColumns": "4",

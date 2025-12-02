@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mmpbmsappeng"
+    package="com.bmsappdev"
     android:versionCode="14"
     android:versionName="1.3.1" >
 
@@ -27,10 +27,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Create a unique permission for your app and use it so only your app can receive your OneSignal messages. -->
     <permission
-        android:name="com.mmpbmsappeng.permission.C2D_MESSAGE"
+        android:name="com.bmsappdev.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.mmpbmsappeng.permission.C2D_MESSAGE" /> <!-- OneSignal SDK has runtime checks Android version. -->
+    <uses-permission android:name="com.bmsappdev.permission.C2D_MESSAGE" /> <!-- OneSignal SDK has runtime checks Android version. -->
     <!-- <uses-sdk tools:overrideLibrary="android.support.customtabs"/> -->
     <!-- Required runtime permission to display notifications on Android 13 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- c2dm RECEIVE are basic requirements for push messages through Google's FCM -->
@@ -55,7 +55,7 @@
     <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
 
     <application
-        android:name="com.mmpbmsappeng.MainApplication"
+        android:name="com.bmsappdev.MainApplication"
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:icon="@mipmap/ic_launcher"
@@ -66,7 +66,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name="com.mmpbmsappeng.MainActivity"
+            android:name="com.bmsappdev.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -130,7 +130,7 @@
 
         <provider
             android:name="com.imagepicker.FileProvider"
-            android:authorities="com.mmpbmsappeng.provider"
+            android:authorities="com.bmsappdev.provider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -139,7 +139,7 @@
         </provider>
         <provider
             android:name="com.reactnativecommunity.webview.RNCWebViewFileProvider"
-            android:authorities="com.mmpbmsappeng.fileprovider"
+            android:authorities="com.bmsappdev.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true" >
             <meta-data
@@ -156,7 +156,7 @@
             <intent-filter android:priority="999" >
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.mmpbmsappeng" />
+                <category android:name="com.bmsappdev" />
             </intent-filter>
         </receiver>
 
@@ -304,7 +304,7 @@
 
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.mmpbmsappeng.firebaseinitprovider"
+            android:authorities="com.bmsappdev.firebaseinitprovider"
             android:directBootAware="true"
             android:exported="false"
             android:initOrder="100" />
@@ -315,7 +315,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.mmpbmsappeng.androidx-startup"
+            android:authorities="com.bmsappdev.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"

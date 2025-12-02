@@ -1,4 +1,4 @@
-package com.mmpbmsappeng;
+package com.bmsappdev;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

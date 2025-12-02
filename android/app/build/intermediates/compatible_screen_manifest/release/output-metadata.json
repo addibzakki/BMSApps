@@ -4,7 +4,7 @@
     "type": "COMPATIBLE_SCREEN_MANIFEST",
     "kind": "Directory"
   },
-  "applicationId": "com.mmpbmsappeng",
+  "applicationId": "com.bmsappdev",
   "variantName": "release",
   "elements": []
 }

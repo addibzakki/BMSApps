@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.mmpbmsappeng",
+  "applicationId": "com.bmsappdev",
   "variantName": "processReleaseResources",
   "elements": [
     {

@@ -1,4 +1,4 @@
-package com.mmpbmsappeng;
+package com.bmsappdev;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,9 +1,9 @@
 com/mmpbmsappeng/MainActivity.java
- com.mmpbmsappeng.MainActivity
+ com.bmsappdev.MainActivity
 com/mmpbmsappeng/MainApplication.java
- com.mmpbmsappeng.MainApplication
- com.mmpbmsappeng.MainApplication$1
-com/mmpbmsappeng/BuildConfig.java
- com.mmpbmsappeng.BuildConfig
+ com.bmsappdev.MainApplication
+ com.bmsappdev.MainApplication$1
+com/bmsappdev/BuildConfig.java
+ com.bmsappdev.BuildConfig
 com/facebook/react/PackageList.java
  com.facebook.react.PackageList

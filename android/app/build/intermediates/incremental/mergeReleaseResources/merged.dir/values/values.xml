@@ -703,7 +703,7 @@
     <string name="abc_toolbar_collapse_description">Collapse</string>
     <string name="alert_description" translatable="false">Alert</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
-    <string name="app_name">BMSApp</string>
+    <string name="app_name">BMSApp Dev</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="button_description" translatable="false">Button</string>
